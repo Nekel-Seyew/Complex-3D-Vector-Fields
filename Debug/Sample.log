@@ -1,43 +1,18 @@
-﻿Build started 11/16/2015 11:32:29 PM.
-     1>Project "C:\Users\romul\Documents\ToShare\Sample.vcxproj" on node 2 (Build target(s)).
+﻿Build started 1/5/2016 5:35:13 PM.
+     1>Project "C:\Users\Zosit\Desktop\Sinor\Latest\Complex-3D-Vector-Fields\Sample.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _VC80_UPGRADE=0x0710 /D _MBCS /Gm- /EHsc /RTC1 /MTd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo".\Debug/" /Fd".\Debug/vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Framework.cpp sample.cpp SweeneyTest.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _VC80_UPGRADE=0x0710 /D _MBCS /Gm- /EHsc /RTC1 /MTd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo".\Debug/" /Fd".\Debug/vc140.pdb" /Gd /TP /analyze- /errorReport:prompt Framework.cpp
          Framework.cpp
-     1>c:\users\romul\documents\toshare\framework.h(23): error C2536: 'Framework::Framework::BACKCOLOR' : cannot specify explicit initializer for arrays
-                 c:\users\romul\documents\toshare\framework.h(23) : see declaration of 'Framework::BACKCOLOR'
-                 c:\users\romul\documents\toshare\framework.h(23) : see declaration of 'Framework::BACKCOLOR'
-                 c:\users\romul\documents\toshare\framework.h(23) : see declaration of 'Framework::BACKCOLOR'
-     1>c:\users\romul\documents\toshare\framework.cpp(76): error C3867: 'Framework::Display': function call missing argument list; use '&Framework::Display' to create a pointer to member
-     1>c:\users\romul\documents\toshare\framework.cpp(77): error C3867: 'Framework::Resize': function call missing argument list; use '&Framework::Resize' to create a pointer to member
-     1>c:\users\romul\documents\toshare\framework.cpp(78): error C3867: 'Framework::Keyboard': function call missing argument list; use '&Framework::Keyboard' to create a pointer to member
-     1>c:\users\romul\documents\toshare\framework.cpp(79): error C3867: 'Framework::Mouse': function call missing argument list; use '&Framework::Mouse' to create a pointer to member
-     1>c:\users\romul\documents\toshare\framework.cpp(80): error C3867: 'Framework::MouseMotion': function call missing argument list; use '&Framework::MouseMotion' to create a pointer to member
-     1>c:\users\romul\documents\toshare\framework.cpp(81): error C3867: 'Framework::PassiveMotion': function call missing argument list; use '&Framework::PassiveMotion' to create a pointer to member
-     1>c:\users\romul\documents\toshare\framework.cpp(82): error C3867: 'Framework::Visibility': function call missing argument list; use '&Framework::Visibility' to create a pointer to member
-     1>c:\users\romul\documents\toshare\framework.cpp(83): error C3867: 'Framework::Entry': function call missing argument list; use '&Framework::Entry' to create a pointer to member
-     1>c:\users\romul\documents\toshare\framework.cpp(84): error C3867: 'Framework::Special': function call missing argument list; use '&Framework::Special' to create a pointer to member
-     1>c:\users\romul\documents\toshare\framework.cpp(85): error C3867: 'Framework::SpaceballMotion': function call missing argument list; use '&Framework::SpaceballMotion' to create a pointer to member
-     1>c:\users\romul\documents\toshare\framework.cpp(86): error C3867: 'Framework::SpaceballRotate': function call missing argument list; use '&Framework::SpaceballRotate' to create a pointer to member
-     1>c:\users\romul\documents\toshare\framework.cpp(87): error C3867: 'Framework::SpaceballButton': function call missing argument list; use '&Framework::SpaceballButton' to create a pointer to member
-     1>c:\users\romul\documents\toshare\framework.cpp(88): error C3867: 'Framework::ButtonBox': function call missing argument list; use '&Framework::ButtonBox' to create a pointer to member
-     1>c:\users\romul\documents\toshare\framework.cpp(89): error C3867: 'Framework::Dials': function call missing argument list; use '&Framework::Dials' to create a pointer to member
-     1>c:\users\romul\documents\toshare\framework.cpp(90): error C3867: 'Framework::TabletMotion': function call missing argument list; use '&Framework::TabletMotion' to create a pointer to member
-     1>c:\users\romul\documents\toshare\framework.cpp(91): error C3867: 'Framework::TabletButton': function call missing argument list; use '&Framework::TabletButton' to create a pointer to member
-     1>c:\users\romul\documents\toshare\framework.cpp(92): error C3867: 'Framework::MenuState': function call missing argument list; use '&Framework::MenuState' to create a pointer to member
-     1>c:\users\romul\documents\toshare\framework.cpp(93): error C3867: 'Framework::Timer': function call missing argument list; use '&Framework::Timer' to create a pointer to member
-         sample.cpp
-     1>c:\users\romul\documents\toshare\framework.h(23): error C2536: 'Framework::Framework::BACKCOLOR' : cannot specify explicit initializer for arrays
-                 c:\users\romul\documents\toshare\framework.h(23) : see declaration of 'Framework::BACKCOLOR'
-     1>c:\users\romul\documents\toshare\sample.cpp(239): warning C4305: 'initializing' : truncation from 'double' to 'float'
-     1>c:\users\romul\documents\toshare\sample.cpp(374): warning C4305: 'initializing' : truncation from 'double' to 'float'
-     1>c:\users\romul\documents\toshare\sample.cpp(956): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>c:\users\romul\documents\toshare\sample.cpp(963): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>c:\users\romul\documents\toshare\sample.cpp(967): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>c:\users\romul\documents\toshare\sample.cpp(971): warning C4305: 'argument' : truncation from 'double' to 'float'
-         SweeneyTest.cpp
-         Generating Code...
-     1>Done Building Project "C:\Users\romul\Documents\ToShare\Sample.vcxproj" (Build target(s)) -- FAILED.
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:".\Debug/Sample.exe" /INCREMENTAL:NO /NOLOGO glui32.lib glut32.lib glu32.lib opengl32.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /Debug /PDB:".\Debug/Sample.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE:NO /IMPLIB:".\Debug\Sample.lib" /MACHINE:X86 /SAFESEH:NO .\Debug/color.obj
+         .\Debug/Framework.obj
+         .\Debug/HeatMapCenters.obj
+         .\Debug/SweeneyTest.obj
+         .\Debug/vector3d.obj
+     1>color.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/OPT:LBR' specification
+         Sample.vcxproj -> C:\Users\Zosit\Desktop\Sinor\Latest\Complex-3D-Vector-Fields\.\Debug\Sample.exe
+     1>Done Building Project "C:\Users\Zosit\Desktop\Sinor\Latest\Complex-3D-Vector-Fields\Sample.vcxproj" (Build target(s)).
 
-Build FAILED.
+Build succeeded.
 
-Time Elapsed 00:00:02.23
+Time Elapsed 00:00:04.32

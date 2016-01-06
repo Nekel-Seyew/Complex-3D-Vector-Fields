@@ -1,0 +1,34 @@
+﻿Build started 1/5/2016 3:37:14 PM.
+     1>Project "C:\Users\Zosit\Desktop\Sinor\Latest\Complex-3D-Vector-Fields\Sample.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Ob1 /Oy- /D WIN32 /D NDEBUG /D _CONSOLE /D _VC80_UPGRADE=0x0710 /D _MBCS /GF /Gm- /EHsc /MT /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo".\Release/" /Fd".\Release/vc140.pdb" /Gd /TP /analyze- /errorReport:prompt color.cpp Framework.cpp HeatMapCenters.cpp SweeneyTest.cpp vector3d.cpp
+         color.cpp
+     1>color.cpp(15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+     1>color.cpp(46): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+         Framework.cpp
+         HeatMapCenters.cpp
+     1>HeatMapCenters.cpp(30): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+         SweeneyTest.cpp
+         vector3d.cpp
+         Generating Code...
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:".\Release/Sample.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:".\Release/Sample.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE:NO /IMPLIB:".\Release\Sample.lib" /MACHINE:X86 /SAFESEH .\Release/color.obj
+         .\Release/Framework.obj
+         .\Release/HeatMapCenters.obj
+         .\Release/SweeneyTest.obj
+         .\Release/vector3d.obj
+     1>Framework.obj : error LNK2019: unresolved external symbol "public: __thiscall KeyboardState::KeyboardState(void)" (??0KeyboardState@@QAE@XZ) referenced in function "public: __thiscall Framework::Framework(void)" (??0Framework@@QAE@XZ)
+     1>Framework.obj : error LNK2019: unresolved external symbol "public: __thiscall KeyboardState::~KeyboardState(void)" (??1KeyboardState@@QAE@XZ) referenced in function __unwindfunclet$??0Framework@@QAE@XZ$0
+     1>Framework.obj : error LNK2019: unresolved external symbol "public: __thiscall MouseState::MouseState(void)" (??0MouseState@@QAE@XZ) referenced in function "public: __thiscall Framework::Framework(void)" (??0Framework@@QAE@XZ)
+     1>Framework.obj : error LNK2019: unresolved external symbol "public: __thiscall MouseState::~MouseState(void)" (??1MouseState@@QAE@XZ) referenced in function "public: __thiscall Framework::~Framework(void)" (??1Framework@@QAE@XZ)
+     1>Framework.obj : error LNK2001: unresolved external symbol "public: virtual void __thiscall Framework::Update(void)" (?Update@Framework@@UAEXXZ)
+     1>Framework.obj : error LNK2001: unresolved external symbol "public: virtual void __thiscall Framework::Draw(void)" (?Draw@Framework@@UAEXXZ)
+     1>Framework.obj : error LNK2001: unresolved external symbol "public: virtual void __thiscall Framework::addDrawable(class Drawable *)" (?addDrawable@Framework@@UAEXPAVDrawable@@@Z)
+     1>Framework.obj : error LNK2001: unresolved external symbol "public: virtual void __thiscall Framework::addUpdateable(class Updateable *)" (?addUpdateable@Framework@@UAEXPAVUpdateable@@@Z)
+     1>LIBCMT.lib(exe_main.obj) : error LNK2019: unresolved external symbol _main referenced in function "int __cdecl __scrt_common_main_seh(void)" (?__scrt_common_main_seh@@YAHXZ)
+     1>.\Release/Sample.exe : fatal error LNK1120: 9 unresolved externals
+     1>Done Building Project "C:\Users\Zosit\Desktop\Sinor\Latest\Complex-3D-Vector-Fields\Sample.vcxproj" (Build target(s)) -- FAILED.
+
+Build FAILED.
+
+Time Elapsed 00:00:05.54

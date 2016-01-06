@@ -18,3 +18,8 @@ Framework::Framework()
 Framework::~Framework()
 {
 }
+
+int main() {
+	//just here for compile checks. Remove when you want things to run
+	return 1;
+}
