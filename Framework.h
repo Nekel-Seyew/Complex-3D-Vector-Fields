@@ -23,8 +23,8 @@ public:
 
 	//virtual void addDrawable(Drawable*);
 	//virtual void addUpdateable(Updateable*);
-	virtual void Update(void); //This is the update function
-	virtual void Draw(void); //This is the render function
+	//virtual void Update(void); //This is the update function
+	//virtual void Draw(void); //This is the render function
 	virtual void Run(void);
 
 };
