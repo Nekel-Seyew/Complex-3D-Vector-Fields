@@ -1,10 +1,15 @@
 #pragma once
-
 //#include "KeyboardState.h"
 //#include "MouseState.h"
 //#include "Updateable.h"
 //#include "Drawable.h"
-#include <vector>
+//Our Header Files
+
+#include <GL/gl.h>
+#include <GL/glu.h>
+#include "glut.h"
+#include "glui.h"
+
 #include "SpaceDefiner.h"
 #include "VectorDefiner.h"
 #include "RenderingEngine.h"
@@ -13,19 +18,26 @@
 #include "Sliders.h"
 #include "Mouse.h"
 
+
+
 //#pragma warning(default:C4005)
 class Framework{
 protected:
+	GLUI * Glui;				// instance of glui window
+	int	GluiWindow;				// the glut id for the glui window
+	const char *GLUITITLE = { "User Interface Window" };
+	int MainWindow;
 	int frameArgc;
-	char ** frameArgv; //Check this later - might be something fishing with pointers
+	char ** frameArgv; //Check this later - might be something fishy with pointers
 	//KeyboardState keyboard;
 	//MouseState mouse;
 	//std::vector<Updateable*> updateableObjects;
 	//std::vector<Drawable*> drawableObjects;
 	void BuildClasses();
-	void InitGlui();
+	GLUI* InitGlui();
 	void InitGraphics();
 public:
+	
 	Framework(int, char **);
 	~Framework();
 	void Framework::RestoreDefaults();
