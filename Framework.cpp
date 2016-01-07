@@ -9,14 +9,23 @@
 #include "glut.h"
 #include "glui.h"
 
-Framework::Framework()
+//If we need too we will make this a singleton
+Framework::Framework(/*int argc, char ** argv*/)
 {
 	
+	//Do the all Init Glui Stuff Here!
+	//glutInit(&argc, argv);
+	//Do all of the Init Glut Stuff Here
+
 }
 
 
 Framework::~Framework()
 {
+
+}
+void Framework::Run(void) {
+
 }
 
 int main() {
