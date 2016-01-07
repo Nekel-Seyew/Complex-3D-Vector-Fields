@@ -5,6 +5,13 @@
 //#include "Updateable.h"
 //#include "Drawable.h"
 #include <vector>
+#include "SpaceDefiner.h"
+#include "VectorDefiner.h"
+#include "RenderingEngine.h"
+#include "ControlWindow.h"
+#include "RenderWindow.h"
+#include "Sliders.h"
+#include "Mouse.h"
 
 //#pragma warning(default:C4005)
 class Framework{
