@@ -129,6 +129,7 @@
     <ClCompile Include="color.cpp" />
     <ClCompile Include="Framework.cpp" />
     <ClCompile Include="HeatMapCenters.cpp" />
+    <ClCompile Include="Main.cpp" />
     <ClCompile Include="SweeneyTest.cpp" />
     <ClCompile Include="vector3d.cpp" />
   </ItemGroup>
