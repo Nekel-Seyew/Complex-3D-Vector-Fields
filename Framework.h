@@ -5,10 +5,12 @@
 //#include "Drawable.h"
 //Our Header Files
 
+
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include "glut.h"
 #include "glui.h"
+
 
 #include "SpaceDefiner.h"
 #include "VectorDefiner.h"
@@ -26,6 +28,9 @@ protected:
 	GLUI * Glui;				// instance of glui window
 	int	GluiWindow;				// the glut id for the glui window
 	const char *GLUITITLE = { "User Interface Window" };
+	const int INIT_WINDOW_SIZE = { 600 };
+	const char *WINDOWTITLE = { "OpenGL / GLUT / GLUI Sample -- Corinne Brucks" };
+	const float BACKCOLOR[4] = { 0.1f, 0.1f, 0.1f, 0.f };
 	int MainWindow;
 	int frameArgc;
 	char ** frameArgv; //Check this later - might be something fishy with pointers
@@ -34,7 +39,7 @@ protected:
 	//std::vector<Updateable*> updateableObjects;
 	//std::vector<Drawable*> drawableObjects;
 	void BuildClasses();
-	GLUI* InitGlui();
+	void InitGlui();
 	void InitGraphics();
 public:
 	

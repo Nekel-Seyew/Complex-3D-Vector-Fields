@@ -6,23 +6,13 @@
 #include <stdio.h>
 // yes, I know stdio.h is not good C++, but I like the *printf( ) - This is Bailey's Note
 #include <stdlib.h>
-#include <ctype.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
-#include "glut.h"
-#include "glui.h"
+
 #include "Framework.h"
 
-const int INIT_WINDOW_SIZE = { 600 };
-const char *WINDOWTITLE = { "OpenGL / GLUT / GLUI Sample -- Corinne Brucks" };
-
-// window background color (rgba):
-const float BACKCOLOR[] = { 0.1f, 0.1f, 0.1f, 0.f };
-
-const float BOXSIZE = { 2.f };
+/*const float BOXSIZE = { 2.f };
 int	AxesOn;					// != 0 means to draw the axes
 int	DebugOn;				// != 0 means to print debugging info
-int	DepthCueOn;				// != 0 means to use intensity depth cueing
+int	DepthCueOn;				// != 0 means to use intensity depth cueing*/
 
 
 //If we need too we will make this a singleton
@@ -31,9 +21,9 @@ Framework::Framework(int argc, char ** argv)
 	glutInit(&argc, argv);
 	frameArgc = argc;
 	frameArgv = argv;
-	Glui = InitGlui();
-	BuildClasses();
 	InitGraphics();
+	InitGlui();
+	BuildClasses();
 	
 }
 
@@ -53,7 +43,7 @@ void Framework::Run(void) {
 
 	// setup all the user interface stuff:
 
-	//InitGlui();
+	InitGlui();
 
 
 	// draw the scene once and wait for some interaction:
@@ -93,7 +83,7 @@ void Framework::InitGraphics() {
 
 	// setup the clear values:
 
-	//glClearColor(BACKCOLOR[0], BACKCOLOR[1], BACKCOLOR[2], BACKCOLOR[3]);
+	glClearColor(BACKCOLOR[0], BACKCOLOR[1], BACKCOLOR[2], BACKCOLOR[3]);
 
 
 	// setup the callback routines:
@@ -141,13 +131,13 @@ void Framework::InitGraphics() {
 	// glutIdleFunc( NULL );
 	// let glui take care of it in InitGlui( )
 }
-GLUI* Framework::InitGlui() {
-	GLUI * GluiTmp;
+void Framework::InitGlui() {
+
 	glutInitWindowPosition(INIT_WINDOW_SIZE + 50, 0);
-	//GluiTmp = GLUI_Master.create_glui((char *)"User Interface Window"); //This is the Bad Line!
-	/*GluiTmp->add_statictext((char *)GLUITITLE);
-	GluiTmp->add_separator();*/
-	return GluiTmp;
+	Glui = GLUI_Master.create_glui((char *)"User Interface Window"); //This is the Bad Line!
+	char buffer[50];
+	sprintf(buffer, "test");
+	
 	/*Glui->add_statictext((char *)GLUITITLE);
 	Glui->add_separator();
 
