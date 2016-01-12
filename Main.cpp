@@ -16,8 +16,8 @@ int main(int argc, char ** argv) {
 
 	//just here for compile checks. Remove when you want things to run
 	Framework * myFramework = new Framework(argc, argv);
-	myFramework->Run(); 
+	myFramework->Run();
 	delete myFramework;
-	
+
 	return 1;
 }

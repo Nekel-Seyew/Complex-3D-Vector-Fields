@@ -30,10 +30,10 @@ protected:
 	const char *GLUITITLE = { "User Interface Window" };
 	const int INIT_WINDOW_SIZE = { 600 };
 	const char *WINDOWTITLE = { "OpenGL / GLUT / GLUI Sample -- Corinne Brucks" };
-	const float BACKCOLOR[4] = { 0.1f, 0.1f, 0.1f, 0.f };
+	
 	int MainWindow;
 	int frameArgc;
-	char ** frameArgv; //Check this later - might be something fishy with pointers
+	char ** frameArgv; //Check this later - might be something fishy with pointers*/
 	//KeyboardState keyboard;
 	//MouseState mouse;
 	//std::vector<Updateable*> updateableObjects;

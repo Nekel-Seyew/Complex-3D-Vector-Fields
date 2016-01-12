@@ -1,12 +1,11 @@
 #pragma once
+#include <stdio.h>
+// yes, I know stdio.h is not good C++, but I like the *printf( ) - This is Bailey's Note
+#include <stdlib.h>
 #ifdef WIN32
 #include <windows.h>
 #pragma warning(disable:4996)
 #endif
-#include <stdio.h>
-// yes, I know stdio.h is not good C++, but I like the *printf( ) - This is Bailey's Note
-#include <stdlib.h>
-
 #include "Framework.h"
 
 /*const float BOXSIZE = { 2.f };
@@ -19,10 +18,9 @@ int	DepthCueOn;				// != 0 means to use intensity depth cueing*/
 Framework::Framework(int argc, char ** argv)
 {
 	glutInit(&argc, argv);
-	frameArgc = argc;
-	frameArgv = argv;
+	//frameArgc = argc;
+	//frameArgv = argv;
 	InitGraphics();
-	InitGlui();
 	BuildClasses();
 	
 }
@@ -66,7 +64,7 @@ void Framework::InitGraphics() {
 	// setup the display mode:
 	// ( *must* be done before call to glutCreateWindow( ) )
 	// ask for color, double-buffering, and z-buffering:
-
+	const float BACKCOLOR[4] = { 0.1f, 0.1f, 0.1f, 0.f };
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
 
 
@@ -135,13 +133,12 @@ void Framework::InitGlui() {
 
 	glutInitWindowPosition(INIT_WINDOW_SIZE + 50, 0);
 	Glui = GLUI_Master.create_glui((char *)"User Interface Window"); //This is the Bad Line!
-	char buffer[50];
-	sprintf(buffer, "test");
-	
-	/*Glui->add_statictext((char *)GLUITITLE);
+	printf("HelloWorld");
+
+	Glui->add_statictext((char *)"My Title"); 
 	Glui->add_separator();
 
-	Glui->add_checkbox("Axes", &AxesOn);
+	//Glui->add_checkbox("Axes", &AxesOn);
 
-	Glui->add_checkbox("Intensity Depth Cue", &DepthCueOn);*/
+	//Glui->add_checkbox("Intensity Depth Cue", &DepthCueOn);
 }
