@@ -19,5 +19,5 @@ int main(int argc, char ** argv) {
 	myFramework->Run();
 	delete myFramework;
 
-	return 1;
+	return 0;
 }
