@@ -61,7 +61,7 @@ protected:
 	void InitGraphics1();
 	void InitGraphics2();
 public:
-	static void Display();
+	void Display();
 	void Init1(int, char **);
 	void Init2();
 	Framework();

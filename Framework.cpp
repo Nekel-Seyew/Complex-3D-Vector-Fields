@@ -15,17 +15,8 @@ int	DepthCueOn;				// != 0 means to use intensity depth cueing*/
 
 Framework::Framework()
 {
-	DepthCueOn = 1;
-	AxesOn = 1;
-	FOGCOLOR[0] = .0;
-	FOGCOLOR[1] = .0;
-	FOGCOLOR[2] = .0;
-	FOGCOLOR[3] = 1.;
-		FOGMODE = { GL_LINEAR };
-	FOGDENSITY = { 0.30f };
-	FOGSTART = { 1.5 };
-	FOGEND = { 4. };
-	MINSCALE = { 0.05f };
+	RestoreDefaults();
+	
 	//glutInit(&argc, argv);
 	//frameArgc = argc;
 	//frameArgv = argv;
@@ -77,12 +68,32 @@ void Framework::BuildClasses() {
 
 }
 void Framework::RestoreDefaults() {
-
+	DepthCueOn = 1;
+	AxesOn = 1;
+	FOGCOLOR[0] = .0;
+	FOGCOLOR[1] = .0;
+	FOGCOLOR[2] = .0;
+	FOGCOLOR[3] = 1.;
+	FOGMODE = { GL_LINEAR };
+	FOGDENSITY = { 0.30f };
+	FOGSTART = { 1.5 };
+	FOGEND = { 4. };
+	MINSCALE = { 0.05f };
+	Scale = 1.0;
+	Scale2 = 0.0;		// because we add 1. to it in Display( )
+	WhichProjection = PERSP;
+	Xrot = Yrot = 0.;
+	TransXYZ[0] = TransXYZ[1] = TransXYZ[2] = 0.;
+	RotMatrix[0][1] = RotMatrix[0][2] = RotMatrix[0][3] = 0.;
+	RotMatrix[1][0] = RotMatrix[1][2] = RotMatrix[1][3] = 0.;
+	RotMatrix[2][0] = RotMatrix[2][1] = RotMatrix[2][3] = 0.;
+	RotMatrix[3][0] = RotMatrix[3][1] = RotMatrix[3][3] = 0.;
+	RotMatrix[0][0] = RotMatrix[1][1] = RotMatrix[2][2] = RotMatrix[3][3] = 1.;
 }
 void Framework::Display() {
 
 //	glutSetWindow(MainWindow);
-
+	printf("DisplayStarted\n");
 
 	// erase the background:
 
@@ -159,7 +170,6 @@ void Framework::Display() {
 
 	// set the fog parameters:
 	// DON'T NEED THIS IF DOING 2D !
-/*
 	if (DepthCueOn != 0)
 	{
 		glFogi(GL_FOG_MODE, FOGMODE);
@@ -181,14 +191,46 @@ void Framework::Display() {
 	{
 //		glCallList(AxesList);
 	}
-	*/
 	
 	// draw the current object:
 
 	//draw the cube:
 	GLdouble size = 2.0;
+	glColor3f(1., 1., 0.);
 	glutWireCube(size);
 	glPointSize(5);
+	printf("DisplayDrewSomething\n");
+	// draw some gratuitous text that just rotates on top of the scene:
+
+	glDisable(GL_DEPTH_TEST);
+	glColor3f(0., 1., 1.);
+	//DoRasterString( 0., 1., 0., "Text That Moves" );
+
+
+	// draw some gratuitous text that is fixed on the screen:
+	//
+	// the projection matrix is reset to define a scene whose
+	// world coordinate system goes from 0-100 in each axis
+	//init
+	// this is called "percent units", and is just a convenience
+	//
+	// the modelview matrix is reset to identity as we don't
+	// want to transform these coordinates
+
+	glDisable(GL_DEPTH_TEST);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluOrtho2D(0., 100., 0., 100.);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glColor3f(1., 1., 1.);
+	//DoRasterString(5., 5., 0., "Team TARDIS");
+
+
+	// swap the double-buffered framebuffers:
+
+	glutSwapBuffers();
+	//glutPostRedisplay();
 }
 void Framework::InitGraphics1() {
 	// setup the display mode:
@@ -261,8 +303,8 @@ void Framework::InitGraphics2() {
 	// TimerFunc -- trigger something to happen a certain time from now
 	// IdleFunc -- what to do when nothing else is going on
 	*/
-	//glutSetWindow(MainWindow);
-	//glutDisplayFunc(DisplayFuncl);
+	glutSetWindow(MainWindow);
+	//glutDisplayFunc(GLForwader::DisplayFuncl);
 	/*glutReshapeFunc(Resize);
 	glutKeyboardFunc(Keyboard);
 	glutMouseFunc(MouseButton);
@@ -287,10 +329,14 @@ void Framework::InitGraphics2() {
 }
 
 void Framework::InitGlui() {
-
+	GLUI_Panel *panel;
+	GLUI_Panel *probePanel;
+	GLUI_RadioGroup *group;
+	GLUI_Rotation *rot;
+	GLUI_Translation *trans, *scale;
 	glutInitWindowPosition(INIT_WINDOW_SIZE + 50, 0);
 	Glui = GLUI_Master.create_glui((char *)"User Interface Window"); //This is the Bad Line!
-	printf("HelloWorld");
+	printf("GluiInitiated\n");
 
 	Glui->add_statictext((char *)"My Title"); 
 	Glui->add_separator();
@@ -299,6 +345,25 @@ void Framework::InitGlui() {
 
 	Glui->add_checkbox("Intensity Depth Cue", &DepthCueOn);
 	// tell glui what graphics window it needs to post a redisplay to:
+	panel = Glui->add_panel("Object Transformation");
+
+	rot = Glui->add_rotation_to_panel(panel, "Rotation", (float *)RotMatrix);
+
+	// allow the object to be spun via the glui rotation widget:
+
+	rot->set_spin(1.0);
+
+	Glui->add_column_to_panel(panel, false);
+	scale = Glui->add_translation_to_panel(panel, "Scale", GLUI_TRANSLATION_Y, &Scale2);
+	scale->set_speed(0.005f);
+
+	Glui->add_column_to_panel(panel, false);
+	trans = Glui->add_translation_to_panel(panel, "Trans XY", GLUI_TRANSLATION_XY, &TransXYZ[0]);
+	trans->set_speed(0.05f);
+
+	Glui->add_column_to_panel(panel, false);
+	trans = Glui->add_translation_to_panel(panel, "Trans Z", GLUI_TRANSLATION_Z, &TransXYZ[2]);
+	trans->set_speed(0.05f);
 
 	Glui->set_main_gfx_window(MainWindow);
 
