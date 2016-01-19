@@ -21,7 +21,6 @@
 #include "Mouse.h"
 
 
-
 //#pragma warning(default:C4005)
 class Framework{
 protected:
@@ -31,22 +30,22 @@ protected:
 	const int INIT_WINDOW_SIZE = { 600 };
 	const char *WINDOWTITLE = { "OpenGL / GLUT / GLUI Sample -- Corinne Brucks" };
 	// fog parameters:
-	/* static GLfloat FOGCOLOR[4];
-	static GLenum  FOGMODE;
-	static GLfloat FOGDENSITY;
-	static GLfloat FOGSTART;
-	static GLfloat FOGEND; */
+	GLfloat FOGCOLOR[4];
+	GLenum  FOGMODE;
+	GLfloat FOGDENSITY;
+	GLfloat FOGSTART;
+	GLfloat FOGEND;
 	int MainWindow;
 	int frameArgc;
 	int AxesOn;
 	int DepthCueOn;
-	//static int WhichProjection;
-	//static float MINSCALE;
-	//static GLfloat	RotMatrix[4][4];	// set by glui rotation widget
-	//static float	Scale, Scale2;		// scaling factors
-	//static int	Xmouse, Ymouse;			// mouse values
-	//static float	Xrot, Yrot;			// rotation angles in degrees
-	//static float	TransXYZ[3];		// set by glui translation widgets
+	int WhichProjection;
+	float MINSCALE;
+	GLfloat	RotMatrix[4][4];	// set by glui rotation widget
+	float	Scale, Scale2;		// scaling factors
+	int	Xmouse, Ymouse;			// mouse values
+	float	Xrot, Yrot;			// rotation angles in degrees
+	float	TransXYZ[3];		// set by glui translation widgets
 	enum Projections
 	{
 		ORTHO,
@@ -58,12 +57,14 @@ protected:
 	//std::vector<Updateable*> updateableObjects;
 	//std::vector<Drawable*> drawableObjects;
 	void BuildClasses();
-	static void Display();
 	void InitGlui();
-	void InitGraphics();
+	void InitGraphics1();
+	void InitGraphics2();
 public:
-	
-	Framework(int, char **);
+	static void Display();
+	void Init1(int, char **);
+	void Init2();
+	Framework();
 	~Framework();
 	void Framework::RestoreDefaults();
 
@@ -74,8 +75,12 @@ public:
 	//virtual void addUpdateable(Updateable*);
 	//virtual void Update(void); //This is the update function
 	//virtual void Draw(void); //This is the render function
-	void virtual Run(void);
+	void virtual Run(int, char **);
 	
 
 };
+
+
+
+
 

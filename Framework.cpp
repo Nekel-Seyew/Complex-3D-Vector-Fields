@@ -13,38 +13,46 @@ int	AxesOn;					// != 0 means to draw the axes
 int	DebugOn;				// != 0 means to print debugging info
 int	DepthCueOn;				// != 0 means to use intensity depth cueing*/
 
-
-//If we need too we will make this a singleton
-Framework::Framework(int argc, char ** argv)
+Framework::Framework()
 {
 	DepthCueOn = 1;
 	AxesOn = 1;
-	//FOGCOLOR[0] = .0;
-	//FOGCOLOR[1] = .0;
-	//FOGCOLOR[2] = .0;
-	//FOGCOLOR[3] = 1.;
-//	FOGMODE = { GL_LINEAR };
-	//FOGDENSITY = { 0.30f };
-	//FOGSTART = { 1.5 };
-	//FOGEND = { 4. };
-	//MINSCALE = { 0.05f };
-	glutInit(&argc, argv);
+	FOGCOLOR[0] = .0;
+	FOGCOLOR[1] = .0;
+	FOGCOLOR[2] = .0;
+	FOGCOLOR[3] = 1.;
+		FOGMODE = { GL_LINEAR };
+	FOGDENSITY = { 0.30f };
+	FOGSTART = { 1.5 };
+	FOGEND = { 4. };
+	MINSCALE = { 0.05f };
+	//glutInit(&argc, argv);
 	//frameArgc = argc;
 	//frameArgv = argv;
-	InitGraphics();
-	BuildClasses();
-	
+	//InitGraphics();
+	//BuildClasses();
+
 }
 
+void Framework::Init1(int argc, char ** argv) {
+	glutInit(&argc, argv);
+	InitGraphics1();
+	//BuildClasses();
+}
+
+void Framework::Init2() {
+	//glutInit(&argc, argv);
+	InitGraphics2();
+	BuildClasses();
+}
 
 Framework::~Framework()
 {
 
 }
-void Framework::Run(void) {
+void Framework::Run(int argc, char ** argv) {
 
-	//Do the all Init Glui Stuff Here!
-
+	//Init(argc, argv);
 
 	//Do all of the Init Glut Stuff Here
 	RestoreDefaults();
@@ -102,13 +110,13 @@ void Framework::Display() {
 	// remember that the Z clipping  values are actually
 	// given as DISTANCES IN FRONT OF THE EYE
 	// USE gluOrtho2D( ) IF YOU ARE DOING 2D !
-	/*
+	
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	if (WhichProjection == ORTHO)
+	//if (WhichProjection == ORTHO)
 		glOrtho(-3., 3., -3., 3., 0.1, 1000.);
-	else
-		gluPerspective(90., 1., 0.1, 1000.);
+	//else
+	//	gluPerspective(90., 1., 0.1, 1000.);
 
 
 	// place the objects into the scene:
@@ -182,11 +190,37 @@ void Framework::Display() {
 	glutWireCube(size);
 	glPointSize(5);
 }
-void Framework::InitGraphics() {
+void Framework::InitGraphics1() {
 	// setup the display mode:
 	// ( *must* be done before call to glutCreateWindow( ) )
 	// ask for color, double-buffering, and z-buffering:
 	const float BACKCOLOR[4] = { 0.1f, 0.1f, 0.1f, 0.f };
+	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
+
+
+	// set the initial window configuration:
+
+	glutInitWindowPosition(0, 0);
+	glutInitWindowSize(INIT_WINDOW_SIZE, INIT_WINDOW_SIZE);
+
+
+	// open the window and set its title:
+
+	MainWindow = glutCreateWindow(WINDOWTITLE);
+	glutSetWindowTitle(WINDOWTITLE);
+
+	// setup the clear values:
+
+	glClearColor(BACKCOLOR[0], BACKCOLOR[1], BACKCOLOR[2], BACKCOLOR[3]);
+
+	glutSetWindow(MainWindow);
+}
+
+void Framework::InitGraphics2() {
+	// setup the display mode:
+	// ( *must* be done before call to glutCreateWindow( ) )
+	// ask for color, double-buffering, and z-buffering:
+	/*const float BACKCOLOR[4] = { 0.1f, 0.1f, 0.1f, 0.f };
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
 
 
@@ -226,9 +260,9 @@ void Framework::InitGraphics() {
 	// MenuStateFunc -- declare when a pop-up menu is in use
 	// TimerFunc -- trigger something to happen a certain time from now
 	// IdleFunc -- what to do when nothing else is going on
-
-	glutSetWindow(MainWindow);
-	glutDisplayFunc(Framework::Display);
+	*/
+	//glutSetWindow(MainWindow);
+	//glutDisplayFunc(DisplayFuncl);
 	/*glutReshapeFunc(Resize);
 	glutKeyboardFunc(Keyboard);
 	glutMouseFunc(MouseButton);
@@ -251,6 +285,7 @@ void Framework::InitGraphics() {
 	// glutIdleFunc( NULL );
 	// let glui take care of it in InitGlui( )
 }
+
 void Framework::InitGlui() {
 
 	glutInitWindowPosition(INIT_WINDOW_SIZE + 50, 0);
@@ -271,4 +306,8 @@ void Framework::InitGlui() {
 	// set the graphics window's idle function if needed:
 
 	GLUI_Master.set_glutIdleFunc(NULL);
+}
+
+void Func() {
+
 }

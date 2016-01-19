@@ -1,4 +1,4 @@
-#include "HeatMapCenters.h"
+/*#include "HeatMapCenters.h"
 #include <cmath>
 
 
@@ -35,4 +35,4 @@ float HeatMapCenters::Temperature(float x, float y, float z, float tempmax){
 	}
 
 	return t;
-}
+}*/

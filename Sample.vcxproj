@@ -25,7 +25,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -136,6 +136,7 @@
     <ClCompile Include="RenderWindow.cpp" />
     <ClCompile Include="Sliders.cpp" />
     <ClCompile Include="SpaceDefiner.cpp" />
+    <ClCompile Include="SphericalInterpolator.cpp" />
     <ClCompile Include="SweeneyTest.cpp" />
     <ClCompile Include="vector3d.cpp" />
     <ClCompile Include="VectorDefiner.cpp" />
@@ -146,8 +147,10 @@
     <ClInclude Include="Framework.h" />
     <ClInclude Include="HeatMapCenters.h" />
     <ClInclude Include="Mouse.h" />
+    <ClInclude Include="NameSpace.h" />
     <ClInclude Include="RenderingEngine.h" />
     <ClInclude Include="RenderWindow.h" />
+    <ClInclude Include="SphericalInterpolator.h" />
     <ClInclude Include="Sliders.h" />
     <ClInclude Include="SpaceDefiner.h" />
     <ClInclude Include="SweeneyTest.h" />
