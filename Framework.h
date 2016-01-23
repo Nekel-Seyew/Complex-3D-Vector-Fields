@@ -38,6 +38,7 @@ protected:
 	int MainWindow;
 	int frameArgc;
 	int AxesOn;
+	GLuint	AxesList;			// list to hold the axes
 	int DepthCueOn;
 	int WhichProjection;
 	float MINSCALE;
@@ -58,6 +59,9 @@ protected:
 	//std::vector<Drawable*> drawableObjects;
 	void BuildClasses();
 	void InitGlui();
+	void InitLists();
+	void Axes(float);
+	void DoRasterString(float, float, float, char *);
 	void InitGraphics1();
 	void InitGraphics2();
 public:
