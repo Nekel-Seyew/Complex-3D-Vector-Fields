@@ -313,9 +313,9 @@ void Framework::InitGraphics2() {
 	/*glutReshapeFunc(Resize);
 	glutKeyboardFunc(Keyboard);
 	glutMouseFunc(MouseButton);
-	glutMotionFunc(MouseMotion);
+	glutMotionFunc(MouseMotion);*/
 	glutPassiveMotionFunc(NULL);
-	glutVisibilityFunc(Visibility);*/
+	//glutVisibilityFunc(Visibility);
 	glutEntryFunc(NULL);
 	glutSpecialFunc(NULL);
 	glutSpaceballMotionFunc(NULL);
@@ -334,42 +334,58 @@ void Framework::InitGraphics2() {
 }
 
 void Framework::InitGlui() {
+
 	GLUI_Panel *panel;
 	GLUI_Panel *probePanel;
 	GLUI_RadioGroup *group;
 	GLUI_Rotation *rot;
+	GLUI_Rotation *rot2;
 	GLUI_Translation *trans, *scale;
+	char tempstr[128];
+	char xstr[128];
+	char ystr[128];
+	char zstr[128];
+	char radstr[128];
+	char gradstr[128];
+	char vecstr[128];
+	// setup the glui window:
+
 	glutInitWindowPosition(INIT_WINDOW_SIZE + 50, 0);
-	Glui = GLUI_Master.create_glui((char *)"User Interface Window"); //This is the Bad Line!
-	printf("GluiInitiated\n");
+	Glui = GLUI_Master.create_glui((char *)GLUITITLE);
 
-	Glui->add_statictext((char *)"My Title"); 
+	Glui->add_statictext((char *)GLUITITLE);
 	Glui->add_separator();
+	rot2 = Glui->add_rotation("Rotation", (float *)RotMatrix);
 
+	// allow the object to be spun via the glui rotation widget:
+
+	rot2->set_spin(1.0);
 	Glui->add_checkbox("Axes", &AxesOn);
 
-	Glui->add_checkbox("Intensity Depth Cue", &DepthCueOn);
-	// tell glui what graphics window it needs to post a redisplay to:
-	panel = Glui->add_panel("Object Transformation");
+	Glui->add_checkbox("Perspective", &WhichProjection);
 
+	Glui->add_checkbox("Intensity Depth Cue", &DepthCueOn);
+
+	panel = Glui->add_panel("Object Transformation");
+	Glui->add_column_to_panel(panel, 0);
 	rot = Glui->add_rotation_to_panel(panel, "Rotation", (float *)RotMatrix);
 
 	// allow the object to be spun via the glui rotation widget:
 
-	rot->set_spin(0.001);
+	rot->set_spin(1.0);
 
-	Glui->add_column_to_panel(panel, false);
+	Glui->add_column_to_panel(panel, 0);
 	scale = Glui->add_translation_to_panel(panel, "Scale", GLUI_TRANSLATION_Y, &Scale2);
 	scale->set_speed(0.005f);
 
-	Glui->add_column_to_panel(panel, false);
+	Glui->add_column_to_panel(panel, 0);
 	trans = Glui->add_translation_to_panel(panel, "Trans XY", GLUI_TRANSLATION_XY, &TransXYZ[0]);
 	trans->set_speed(0.05f);
 
-	Glui->add_column_to_panel(panel, false);
+	Glui->add_column_to_panel(panel, 0);
 	trans = Glui->add_translation_to_panel(panel, "Trans Z", GLUI_TRANSLATION_Z, &TransXYZ[2]);
 	trans->set_speed(0.05f);
-
+	
 	Glui->set_main_gfx_window(MainWindow);
 
 
