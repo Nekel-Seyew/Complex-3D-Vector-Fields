@@ -46,13 +46,13 @@ void Framework::Run(int argc, char ** argv) {
 	//Init(argc, argv);
 
 	//Do all of the Init Glut Stuff Here
-	RestoreDefaults();
+	
 
 	//Builds the Axes and Other Lists
 	InitLists();
 
 	// setup all the user interface stuff:
-
+	RestoreDefaults();
 	InitGlui();
 
 
@@ -95,7 +95,7 @@ void Framework::RestoreDefaults() {
 void Framework::Display() {
 
 	glutSetWindow(MainWindow);
-	printf("DisplayStarted\n");
+	//printf("DisplayStarted\n");
 
 	// erase the background:
 
@@ -204,7 +204,7 @@ void Framework::Display() {
 
 	glDisable(GL_DEPTH_TEST);
 	glColor3f(0., 1., 1.);
-	DoRasterString( 0., 1., 0., "Text That Moves" );
+	DoRasterString( 0., 1., 0., "Fantastic" );
 
 
 	// draw some gratuitous text that is fixed on the screen:
@@ -340,6 +340,7 @@ void Framework::InitGlui() {
 	GLUI_RadioGroup *group;
 	GLUI_Rotation *rot;
 	GLUI_Rotation *rot2;
+	GLUI_Rotation *rot3;
 	GLUI_Translation *trans, *scale;
 	char tempstr[128];
 	char xstr[128];
@@ -355,11 +356,6 @@ void Framework::InitGlui() {
 
 	Glui->add_statictext((char *)GLUITITLE);
 	Glui->add_separator();
-	rot2 = Glui->add_rotation("Rotation", (float *)RotMatrix);
-
-	// allow the object to be spun via the glui rotation widget:
-
-	rot2->set_spin(1.0);
 	Glui->add_checkbox("Axes", &AxesOn);
 
 	Glui->add_checkbox("Perspective", &WhichProjection);
@@ -368,12 +364,12 @@ void Framework::InitGlui() {
 
 	panel = Glui->add_panel("Object Transformation");
 	Glui->add_column_to_panel(panel, 0);
-	rot = Glui->add_rotation_to_panel(panel, "Rotation", (float *)RotMatrix);
+	rot2 = Glui->add_rotation_to_panel(panel, "Rotation", (float *)RotMatrix);
 
 	// allow the object to be spun via the glui rotation widget:
 
-	rot->set_spin(1.0);
-
+	rot2 ->set_spin(1.0);
+	rot2->reset();
 	Glui->add_column_to_panel(panel, 0);
 	scale = Glui->add_translation_to_panel(panel, "Scale", GLUI_TRANSLATION_Y, &Scale2);
 	scale->set_speed(0.005f);
