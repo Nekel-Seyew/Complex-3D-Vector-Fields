@@ -13,6 +13,14 @@ int	AxesOn;					// != 0 means to draw the axes
 int	DebugOn;				// != 0 means to print debugging info
 int	DepthCueOn;				// != 0 means to use intensity depth cueing*/
 
+Framework* Framework::_instance = 0;
+Framework* Framework::instance()
+{
+	if (!_instance)
+		_instance = new Framework();
+	return _instance;
+}
+
 Framework::Framework()
 {
 	RestoreDefaults();
@@ -28,6 +36,7 @@ Framework::Framework()
 void Framework::Init1(int argc, char ** argv) {
 	glutInit(&argc, argv);
 	InitGraphics1();
+	//glutDisplayFunc(DisplayFuncl);
 	//BuildClasses();
 }
 
