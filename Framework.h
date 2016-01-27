@@ -38,6 +38,7 @@ protected:
 	int MainWindow;
 	int frameArgc;
 	int AxesOn;
+	GLuint	AxesList;			// list to hold the axes
 	int DepthCueOn;
 	int WhichProjection;
 	float MINSCALE;
@@ -58,14 +59,20 @@ protected:
 	//std::vector<Drawable*> drawableObjects;
 	void BuildClasses();
 	void InitGlui();
+	void InitLists();
+	void Axes(float);
+	void DoRasterString(float, float, float, char *);
 	void InitGraphics1();
 	void InitGraphics2();
+
+
 public:
+	static Framework* instance();
+
 	void Display();
 	void Init1(int, char **);
 	void Init2();
-	Framework();
-	~Framework();
+	
 	void Framework::RestoreDefaults();
 
 	//virtual void Update(void);
@@ -77,7 +84,16 @@ public:
 	//virtual void Draw(void); //This is the render function
 	void virtual Run(int, char **);
 	
+private:
+		// Singleton Junk
+	static Framework *_instance;
 
+	Framework();
+	~Framework();
+	//singleton requirements, but they dont work?
+	Framework(const Framework& copy);
+	//it says error, but builds?
+	Framework& operator=(const Framework& rhs);
 };
 
 

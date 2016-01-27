@@ -13,6 +13,14 @@ int	AxesOn;					// != 0 means to draw the axes
 int	DebugOn;				// != 0 means to print debugging info
 int	DepthCueOn;				// != 0 means to use intensity depth cueing*/
 
+Framework* Framework::_instance = 0;
+Framework* Framework::instance()
+{
+	if (!_instance)
+		_instance = new Framework();
+	return _instance;
+}
+
 Framework::Framework()
 {
 	RestoreDefaults();
@@ -28,6 +36,7 @@ Framework::Framework()
 void Framework::Init1(int argc, char ** argv) {
 	glutInit(&argc, argv);
 	InitGraphics1();
+	//glutDisplayFunc(DisplayFuncl);
 	//BuildClasses();
 }
 
@@ -46,11 +55,13 @@ void Framework::Run(int argc, char ** argv) {
 	//Init(argc, argv);
 
 	//Do all of the Init Glut Stuff Here
-	RestoreDefaults();
+	
 
+	//Builds the Axes and Other Lists
+	InitLists();
 
 	// setup all the user interface stuff:
-
+	RestoreDefaults();
 	InitGlui();
 
 
@@ -92,8 +103,8 @@ void Framework::RestoreDefaults() {
 }
 void Framework::Display() {
 
-//	glutSetWindow(MainWindow);
-	printf("DisplayStarted\n");
+	glutSetWindow(MainWindow);
+	//printf("DisplayStarted\n");
 
 	// erase the background:
 
@@ -124,10 +135,10 @@ void Framework::Display() {
 	
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	//if (WhichProjection == ORTHO)
+	if (WhichProjection == ORTHO)
 		glOrtho(-3., 3., -3., 3., 0.1, 1000.);
-	//else
-	//	gluPerspective(90., 1., 0.1, 1000.);
+	else
+		gluPerspective(90., 1., 0.1, 1000.);
 
 
 	// place the objects into the scene:
@@ -189,22 +200,20 @@ void Framework::Display() {
 
 	if (AxesOn != 0)
 	{
-//		glCallList(AxesList);
+		glCallList(AxesList);
 	}
 	
-	// draw the current object:
-
 	//draw the cube:
 	GLdouble size = 2.0;
 	glColor3f(1., 1., 0.);
 	glutWireCube(size);
 	glPointSize(5);
-	printf("DisplayDrewSomething\n");
+	//printf("DisplayDrewSomething\n");
 	// draw some gratuitous text that just rotates on top of the scene:
 
 	glDisable(GL_DEPTH_TEST);
 	glColor3f(0., 1., 1.);
-	//DoRasterString( 0., 1., 0., "Text That Moves" );
+	DoRasterString( 0., 1., 0., "Fantastic" );
 
 
 	// draw some gratuitous text that is fixed on the screen:
@@ -224,13 +233,18 @@ void Framework::Display() {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glColor3f(1., 1., 1.);
-	//DoRasterString(5., 5., 0., "Team TARDIS");
+	DoRasterString(5., 5., 0., "Team TARDIS");
 
 
 	// swap the double-buffered framebuffers:
 
 	glutSwapBuffers();
 	//glutPostRedisplay();
+
+	// be sure the graphics buffer has been sent:
+	// note: be sure to use glFlush( ) here, not glFinish( ) !
+
+	glFlush();
 }
 void Framework::InitGraphics1() {
 	// setup the display mode:
@@ -303,14 +317,14 @@ void Framework::InitGraphics2() {
 	// TimerFunc -- trigger something to happen a certain time from now
 	// IdleFunc -- what to do when nothing else is going on
 	*/
-	glutSetWindow(MainWindow);
+	//glutSetWindow(MainWindow);
 	//glutDisplayFunc(GLForwader::DisplayFuncl);
 	/*glutReshapeFunc(Resize);
 	glutKeyboardFunc(Keyboard);
 	glutMouseFunc(MouseButton);
-	glutMotionFunc(MouseMotion);
+	glutMotionFunc(MouseMotion);*/
 	glutPassiveMotionFunc(NULL);
-	glutVisibilityFunc(Visibility);*/
+	//glutVisibilityFunc(Visibility);
 	glutEntryFunc(NULL);
 	glutSpecialFunc(NULL);
 	glutSpaceballMotionFunc(NULL);
@@ -329,42 +343,54 @@ void Framework::InitGraphics2() {
 }
 
 void Framework::InitGlui() {
+
 	GLUI_Panel *panel;
 	GLUI_Panel *probePanel;
 	GLUI_RadioGroup *group;
 	GLUI_Rotation *rot;
+	GLUI_Rotation *rot2;
+	GLUI_Rotation *rot3;
 	GLUI_Translation *trans, *scale;
+	char tempstr[128];
+	char xstr[128];
+	char ystr[128];
+	char zstr[128];
+	char radstr[128];
+	char gradstr[128];
+	char vecstr[128];
+	// setup the glui window:
+
 	glutInitWindowPosition(INIT_WINDOW_SIZE + 50, 0);
-	Glui = GLUI_Master.create_glui((char *)"User Interface Window"); //This is the Bad Line!
-	printf("GluiInitiated\n");
+	Glui = GLUI_Master.create_glui((char *)GLUITITLE);
 
-	Glui->add_statictext((char *)"My Title"); 
+	Glui->add_statictext((char *)GLUITITLE);
 	Glui->add_separator();
-
 	Glui->add_checkbox("Axes", &AxesOn);
 
-	Glui->add_checkbox("Intensity Depth Cue", &DepthCueOn);
-	// tell glui what graphics window it needs to post a redisplay to:
-	panel = Glui->add_panel("Object Transformation");
+	Glui->add_checkbox("Perspective", &WhichProjection);
 
-	rot = Glui->add_rotation_to_panel(panel, "Rotation", (float *)RotMatrix);
+	Glui->add_checkbox("Intensity Depth Cue", &DepthCueOn);
+
+	panel = Glui->add_panel("Object Transformation");
+	Glui->add_column_to_panel(panel, 0);
+	rot2 = Glui->add_rotation_to_panel(panel, "Rotation", (float *)RotMatrix);
 
 	// allow the object to be spun via the glui rotation widget:
 
-	rot->set_spin(1.0);
-
-	Glui->add_column_to_panel(panel, false);
+	rot2 ->set_spin(1.0);
+	rot2->reset();
+	Glui->add_column_to_panel(panel, 0);
 	scale = Glui->add_translation_to_panel(panel, "Scale", GLUI_TRANSLATION_Y, &Scale2);
 	scale->set_speed(0.005f);
 
-	Glui->add_column_to_panel(panel, false);
+	Glui->add_column_to_panel(panel, 0);
 	trans = Glui->add_translation_to_panel(panel, "Trans XY", GLUI_TRANSLATION_XY, &TransXYZ[0]);
 	trans->set_speed(0.05f);
 
-	Glui->add_column_to_panel(panel, false);
+	Glui->add_column_to_panel(panel, 0);
 	trans = Glui->add_translation_to_panel(panel, "Trans Z", GLUI_TRANSLATION_Z, &TransXYZ[2]);
 	trans->set_speed(0.05f);
-
+	
 	Glui->set_main_gfx_window(MainWindow);
 
 
@@ -372,7 +398,138 @@ void Framework::InitGlui() {
 
 	GLUI_Master.set_glutIdleFunc(NULL);
 }
+void Framework::InitLists() {
+	AxesList = glGenLists(1);
+	glNewList(AxesList, GL_COMPILE);
+	glLineWidth(3.);
+	Axes(1.5);
+	glLineWidth(1.);
+	glEndList();
 
+}
+void Framework::Axes(float length) {
+	// the stroke characters 'X' 'Y' 'Z' :
+
+	static float xx[] = {
+		0.f, 1.f, 0.f, 1.f
+	};
+
+	static float xy[] = {
+		-.5f, .5f, .5f, -.5f
+	};
+
+	static int xorder[] = {
+		1, 2, -3, 4
+	};
+
+
+	static float yx[] = {
+		0.f, 0.f, -.5f, .5f
+	};
+
+	static float yy[] = {
+		0.f, .6f, 1.f, 1.f
+	};
+
+	static int yorder[] = {
+		1, 2, 3, -2, 4
+	};
+
+
+	static float zx[] = {
+		1.f, 0.f, 1.f, 0.f, .25f, .75f
+	};
+
+	static float zy[] = {
+		.5f, .5f, -.5f, -.5f, 0.f, 0.f
+	};
+
+	static int zorder[] = {
+		1, 2, 3, 4, -5, 6
+	};
+
+
+	// fraction of the length to use as height of the characters:
+
+	const float LENFRAC = 0.10f;
+
+
+	// fraction of length to use as start location of the characters:
+
+	const float BASEFRAC = 1.10f;
+		glBegin(GL_LINE_STRIP);
+		glVertex3f(length, 0., 0.);
+		glVertex3f(0., 0., 0.);
+		glVertex3f(0., length, 0.);
+		glEnd();
+		glBegin(GL_LINE_STRIP);
+		glVertex3f(0., 0., 0.);
+		glVertex3f(0., 0., length);
+		glEnd();
+
+		float fact = LENFRAC * length;
+		float base = BASEFRAC * length;
+
+		glBegin(GL_LINE_STRIP);
+		for (int i = 0; i < 4; i++)
+		{
+			int j = xorder[i];
+			if (j < 0)
+			{
+
+				glEnd();
+				glBegin(GL_LINE_STRIP);
+				j = -j;
+			}
+			j--;
+			glVertex3f(base + fact*xx[j], fact*xy[j], 0.0);
+		}
+		glEnd();
+
+		glBegin(GL_LINE_STRIP);
+		for (int i = 0; i < 5; i++)
+		{
+			int j = yorder[i];
+			if (j < 0)
+			{
+
+				glEnd();
+				glBegin(GL_LINE_STRIP);
+				j = -j;
+			}
+			j--;
+			glVertex3f(fact*yx[j], base + fact*yy[j], 0.0);
+		}
+		glEnd();
+
+		glBegin(GL_LINE_STRIP);
+		for (int i = 0; i < 6; i++)
+		{
+			int j = zorder[i];
+			if (j < 0)
+			{
+
+				glEnd();
+				glBegin(GL_LINE_STRIP);
+				j = -j;
+			}
+			j--;
+			glVertex3f(0.0, fact*zy[j], base + fact*zx[j]);
+		}
+		glEnd();
+
+}
+void
+Framework::DoRasterString(float x, float y, float z, char *s)
+{
+	char c;			// one character to print
+
+	glRasterPos3f((GLfloat)x, (GLfloat)y, (GLfloat)z);
+	for (; (c = *s) != '\0'; s++)
+	{
+		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, c);
+	}
+}
 void Func() {
 
 }
