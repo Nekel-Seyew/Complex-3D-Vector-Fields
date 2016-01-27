@@ -1,20 +1,22 @@
-#pragma once
-class vector3d {
-protected:
-	float xyz[3];
+#ifndef _VECTOR_3D_H
+#define _VECTOR3D_H
+
+class vector3d{
 public:
 	vector3d(float a, float b, float c);
-	vector3d(float xyz[3]);
-	vector3d();
-	~vector3d();
-	
-	inline float x();
-	inline float y();
-	inline float z();
+	vector3d(float a, float b, float c, int mode);
+	vector3d(float* v, int mode);
 
-	//class stuff
-	static void  Cross(float[3], float[3], float[3]);
-	static float Dot(float[3], float[3]);
-	static float Unit(float[3], float[3]);
+	float* xyz(); //rectangular
+	float* rtz(); //cylindrical
+	float* rtp(); //spherical
+
+private:
+	int mode; //0-rect, 1-cylindrival, 2-spherical
+	float abc[3];
+	float* to_rect();
+	float* to_cyl();
+	float* to_sph();
 };
 
+#endif
