@@ -1,4 +1,4 @@
-#pragma once
+/*#pragma once
 #include "Framework.h"
 
 namespace GLForwader
@@ -7,4 +7,4 @@ namespace GLForwader
 
 	void DisplayFuncl() { myFrame->Display(); }
 	//void glutMotionFunc() { myGlClass->glutMotionFunc(); }
-}
+}*/

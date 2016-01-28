@@ -141,6 +141,7 @@
     <ClCompile Include="SweeneyTest.cpp" />
     <ClCompile Include="vector3d.cpp" />
     <ClCompile Include="VectorDefiner.cpp" />
+    <ClCompile Include="Wrappers.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="color.h" />

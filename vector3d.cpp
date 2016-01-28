@@ -1,61 +1,89 @@
-#include "vector3d.h"
 #include <cmath>
-#include <cstring>
+#include "vector3d.h"
 
-vector3d::vector3d(){
-}
-vector3d::~vector3d(){
-}
 vector3d::vector3d(float a, float b, float c){
-	this->xyz[0] = a;
-	this->xyz[1] = b;
-	this->xyz[2] = c;
+	this->abc[0] = a;
+	this->abc[1] = b;
+	this->abc[2] = c;
+	this->mode = 0;
 }
-vector3d::vector3d(float xyz[3]){
-	memcpy(this->xyz, xyz, sizeof(float)* 3);
-}
-
-inline float vector3d::x(){
-	return this->xyz[0];
-}
-inline float vector3d::y(){
-	return this->xyz[1];
-}
-inline float vector3d::z(){
-	return this->xyz[2];
+vector3d::vector3d(float a, float b, float c, int mode){
+	this->abc[0] = a;
+	this->abc[1] = b;
+	this->abc[2] = c;
+	this->mode = mode;
 }
 
-//static class stuff
-void  vector3d::Cross(float v1[3], float v2[3], float vout[3]){
-	float tmp[3];
-
-	tmp[0] = v1[1] * v2[2] - v2[1] * v1[2];
-	tmp[1] = v2[0] * v1[2] - v1[0] * v2[2];
-	tmp[2] = v1[0] * v2[1] - v2[0] * v1[1];
-
-	vout[0] = tmp[0];
-	vout[1] = tmp[1];
-	vout[2] = tmp[2];
+vector3d::vector3d(float* v, int mode){
+	this->abc[0] = v[0];
+	this->abc[1] = v[1];
+	this->abc[2] = v[2];
+	this->mode = mode;
 }
-
-float vector3d::Dot(float v1[3], float v2[3]){
-	return v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2];
-}
-
-float vector3d::Unit(float vin[3], float vout[3]){
-	float dist = vin[0] * vin[0] + vin[1] * vin[1] + vin[2] * vin[2];
-
-	if (dist > 0.0){
-		dist = sqrt(dist);
-		vout[0] = vin[0] / dist;
-		vout[1] = vin[1] / dist;
-		vout[2] = vin[2] / dist;
+	
+float* vector3d::xyz(){
+	if(mode == 0){
+		return this->abc;
 	}
-	else{
-		vout[0] = vin[0];
-		vout[1] = vin[1];
-		vout[2] = vin[2];
-	}
-
-	return dist;
+	return this->to_rect();
 }
+float* vector3d::rtz(){
+	if(mode == 1){
+		return this->abc;
+	}
+	return this->to_cyl();
+}
+float* vector3d::rtp(){
+	if(mode == 2){
+		return this->abc;
+	}
+	return this->to_sph();
+}
+
+float* vector3d::to_rect(){
+	if(mode == 1){
+		float x = this->abc[0] * cos(this->abc[1]);
+		float y = this->abc[0] * sin(this->abc[1]);
+		this->abc[0] = x;
+		this->abc[1] = y;
+	}else if(mode == 2){
+		float x = this->abc[0] * sin(this->abc[2]) * cos(this->abc[1]);
+		float y = this->abc[0] * sin(this->abc[2]) * sin(this->abc[1]);
+ 		float z = this->abc[0] * cos(this->abc[2]);
+		this->abc[0] = x;
+		this->abc[1] = y;
+		this->abc[2] = z;
+	}
+	return this->abc;
+}
+float* vector3d::to_cyl(){
+	if(mode == 0){
+		float r = sqrt((this->abc[0] * this->abc[0]) + (this->abc[1] * this->abc[1]));
+		float t = atan(this->abc[1] / this->abc[0]);
+		this->abc[0] = r;
+		this->abc[1] = t;
+	}else if(mode == 2){
+		float r = this->abc[0] * sin(this->abc[2]);
+		float z = this->abc[0] * cos(this->abc[2]);
+		this->abc[0] = r;
+		this->abc[2] = z;
+	}
+	return this->abc;
+}
+float* vector3d::to_sph(){
+	if(mode == 0){
+		float r = sqrt((this->abc[0] * this->abc[0]) + (this->abc[1] * this->abc[1]) + (this->abc[2] * this->abc[2]));
+		float t = atan(this->abc[1] / this->abc[0]);
+		float p = acos(this->abc[2] / r);
+		this->abc[0] = r;
+		this->abc[1] = t;
+		this->abc[2] = p;
+	}else if(mode == 1){
+		float r = sqrt((this->abc[0] * this->abc[0]) + (this->abc[2] * this->abc[2]));
+		float p = acos(this->abc[2] / r);
+		this->abc[0] = r;
+		this->abc[2] = p;
+	}
+	return this->abc;
+}
+

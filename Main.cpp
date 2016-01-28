@@ -13,17 +13,23 @@ int MainWindow;
 
 
 #include "Framework.h"
-#include "NameSpace.h"
+//#include "NameSpace.h"
 
+//until this is figured out, the wrapper functions will be placed here
+void DisplayFuncl()
+{
+	Framework::instance()->Display();
+}
 
 int main(int argc, char ** argv) {
 
 	//just here for compile checks. Remove when you want things to run
 	//Framework * myFramework = new Framework(argc, argv);
-	GLForwader::myFrame->Init1(argc, argv);
-	glutDisplayFunc(GLForwader::DisplayFuncl);
-	GLForwader::myFrame->Init2();
-	GLForwader::myFrame->Run(argc, argv);
+    Framework* pointer = Framework::instance();
+	pointer->Init1(argc, argv);
+	glutDisplayFunc(DisplayFuncl);
+	pointer->Init2();
+	pointer->Run(argc, argv);
 	//delete myFramework;
 
 	return 0;
