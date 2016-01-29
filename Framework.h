@@ -47,6 +47,10 @@ protected:
 	int	Xmouse, Ymouse;			// mouse values
 	float	Xrot, Yrot;			// rotation angles in degrees
 	float	TransXYZ[3];		// set by glui translation widgets
+	char SpaceDefinerString[sizeof(GLUI_String)];
+	char VectorDefinerString[sizeof(GLUI_String)];
+	GLUI_EditText *edittext;
+	GLUI_EditText *edittext2;
 	enum Projections
 	{
 		ORTHO,
@@ -64,7 +68,7 @@ protected:
 	void DoRasterString(float, float, float, char *);
 	void InitGraphics1();
 	void InitGraphics2();
-
+	void Framework::control_cb(int );
 
 public:
 	static Framework* instance();

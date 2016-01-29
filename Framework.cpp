@@ -13,6 +13,7 @@ int	AxesOn;					// != 0 means to draw the axes
 int	DebugOn;				// != 0 means to print debugging info
 int	DepthCueOn;				// != 0 means to use intensity depth cueing*/
 
+
 Framework* Framework::_instance = 0;
 Framework* Framework::instance()
 {
@@ -391,6 +392,7 @@ void Framework::InitGlui() {
 	trans = Glui->add_translation_to_panel(panel, "Trans Z", GLUI_TRANSLATION_Z, &TransXYZ[2]);
 	trans->set_speed(0.05f);
 	
+	//*edittext = Glui->add_edittext("Space Definer:", GLUI_EDITTEXT_TEXT, SpaceDefinerString, 1, Framework::control_cb);
 	Glui->set_main_gfx_window(MainWindow);
 
 
