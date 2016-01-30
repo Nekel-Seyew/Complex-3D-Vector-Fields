@@ -25,11 +25,11 @@ int main(int argc, char ** argv) {
 
 	//just here for compile checks. Remove when you want things to run
 	//Framework * myFramework = new Framework(argc, argv);
-    Framework* pointer = Framework::instance();
-	pointer->Init1(argc, argv);
+	glutInit(&argc, argv);
+    Framework::instance()->Init1(argc, argv);
 	glutDisplayFunc(DisplayFuncl);
-	pointer->Init2();
-	pointer->Run(argc, argv);
+	Framework::instance()->Init2();
+	Framework::instance()->Run(argc, argv);
 	//delete myFramework;
 
 	return 0;

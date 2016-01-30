@@ -24,6 +24,9 @@
 //#pragma warning(default:C4005)
 class Framework{
 protected:
+	SpaceDefiner *SDef;
+	char *SpaceInput = { "Text here" };
+
 	GLUI * Glui;				// instance of glui window
 	int	GluiWindow;				// the glut id for the glui window
 	const char *GLUITITLE = { "User Interface Window" };

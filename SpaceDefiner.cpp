@@ -10,3 +10,8 @@ SpaceDefiner::~SpaceDefiner()
 {
 
 }
+
+void SpaceDefiner::Define(char input[50])
+{
+
+}

@@ -7,5 +7,6 @@ protected:
 public:
 	SpaceDefiner();
 	~SpaceDefiner();
+	void Define(char[50]);
 	
 };
