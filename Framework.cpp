@@ -58,14 +58,8 @@ void Framework::Run(int argc, char ** argv) {
 
 	//Do all of the Init Glut Stuff Here
 	
-
+	//Put all of this in Main
 	//Builds the Axes and Other Lists
-	InitLists();
-
-	// setup all the user interface stuff:
-	RestoreDefaults();
-	InitGlui();
-
 
 	// draw the scene once and wait for some interaction:
 	// (this will never return)
@@ -81,6 +75,7 @@ void Framework::BuildClasses() {
 
 }
 void Framework::RestoreDefaults() {
+	
 	DepthCueOn = 1;
 	AxesOn = 1;
 	FOGCOLOR[0] = .0;
@@ -102,8 +97,16 @@ void Framework::RestoreDefaults() {
 	RotMatrix[2][0] = RotMatrix[2][1] = RotMatrix[2][3] = 0.;
 	RotMatrix[3][0] = RotMatrix[3][1] = RotMatrix[3][3] = 0.;
 	RotMatrix[0][0] = RotMatrix[1][1] = RotMatrix[2][2] = RotMatrix[3][3] = 1.;
+	VECMIN = 1.f;
+	VECMAX = 10.f;
+	VectorLowHigh[0] = VECMIN;
+	VectorLowHigh[1] = VECMAX;
+	ArrowLength = 0.01;
+	
 }
 void Framework::Display() {
+	printf("At the Beginning of Display, Vector Min is %f\n", VectorLowHigh[0]);
+	printf("At the End of Display, Vector Max is %f\n", VectorLowHigh[1]);
 
 	glutSetWindow(MainWindow);
 	//printf("DisplayStarted\n");
@@ -272,6 +275,8 @@ void Framework::InitGraphics1() {
 	glClearColor(BACKCOLOR[0], BACKCOLOR[1], BACKCOLOR[2], BACKCOLOR[3]);
 
 	glutSetWindow(MainWindow);
+	
+
 }
 
 void Framework::InitGraphics2() {
@@ -321,8 +326,8 @@ void Framework::InitGraphics2() {
 	*/
 	//glutSetWindow(MainWindow);
 	//glutDisplayFunc(GLForwader::DisplayFuncl);
-	/*glutReshapeFunc(Resize);
-	glutKeyboardFunc(Keyboard);
+	/*glutReshapeFunc(Resize);*/
+	/*
 	glutMouseFunc(MouseButton);
 	glutMotionFunc(MouseMotion);*/
 	glutPassiveMotionFunc(NULL);
@@ -344,9 +349,11 @@ void Framework::InitGraphics2() {
 	// let glui take care of it in InitGlui( )
 }
 
+/*
 void Framework::InitGlui() {
-
+	const char * VECFORMAT = { "Speed: %5.2f - %5.2f" };
 	GLUI_Panel *panel;
+	GLUI_Rollout *settings;
 	GLUI_Panel *probePanel;
 	GLUI_RadioGroup *group;
 	GLUI_Rotation *rot;
@@ -364,15 +371,22 @@ void Framework::InitGlui() {
 
 	glutInitWindowPosition(INIT_WINDOW_SIZE + 50, 0);
 	Glui = GLUI_Master.create_glui((char *)GLUITITLE);
-
 	Glui->add_statictext((char *)GLUITITLE);
+	VectorSlider = Glui->add_slider(true, GLUI_HSLIDER_FLOAT, VectorLowHigh , 1, (GLUI_Update_CB)MySliders);
+	edittext = Glui-> add_edittext("Space Definer Equation:", GLUI_EDITTEXT_TEXT, SpaceDefinerString);
+	edittext->set_w(400);
+	edittext2 = Glui-> add_edittext("Vector Definer Equation:", GLUI_EDITTEXT_TEXT, VectorDefinerString);
+	edittext2->set_w(400);
+	edittext3 = Glui-> add_edittext("Vector Field Data File:", GLUI_EDITTEXT_TEXT, VectorDefinerString);
+	edittext3->set_w(400);
 	Glui->add_separator();
-	Glui->add_checkbox("Axes", &AxesOn);
+	settings = Glui->add_rollout("Visual Settings", 0);
+	Glui->add_checkbox_to_panel(settings, "Axes", &AxesOn);
 
-	Glui->add_checkbox("Perspective", &WhichProjection);
+	Glui->add_checkbox_to_panel(settings, "Perspective", &WhichProjection);
 
-	Glui->add_checkbox("Intensity Depth Cue", &DepthCueOn);
-
+	Glui->add_checkbox_to_panel(settings, "Intensity Depth Cue", &DepthCueOn);
+	Glui->add_separator();
 	panel = Glui->add_panel("Object Transformation");
 	Glui->add_column_to_panel(panel, 0);
 	rot2 = Glui->add_rotation_to_panel(panel, "Rotation", (float *)RotMatrix);
@@ -392,8 +406,13 @@ void Framework::InitGlui() {
 	Glui->add_column_to_panel(panel, 0);
 	trans = Glui->add_translation_to_panel(panel, "Trans Z", GLUI_TRANSLATION_Z, &TransXYZ[2]);
 	trans->set_speed(0.05f);
+
 	
-	//*edittext = Glui->add_edittext("Space Definer:", GLUI_EDITTEXT_TEXT, SpaceDefinerString, 1, Framework::control_cb);
+	VectorSlider->set_float_limits(VECMIN, VECMAX);
+	VectorSlider->set_w(200);		// good slider width
+	sprintf(vecstr, VECFORMAT, VectorLowHigh[0], VectorLowHigh[1]);
+	VectorLabel = Glui->add_statictext(vecstr);
+	
 	Glui->set_main_gfx_window(MainWindow);
 
 
@@ -401,6 +420,7 @@ void Framework::InitGlui() {
 
 	GLUI_Master.set_glutIdleFunc(NULL);
 }
+*/
 void Framework::InitLists() {
 	AxesList = glGenLists(1);
 	glNewList(AxesList, GL_COMPILE);
@@ -410,6 +430,43 @@ void Framework::InitLists() {
 	glEndList();
 
 }
+void
+Framework::Keyboard(unsigned char c, int x, int y)
+{
+
+	// synchronize the GLUI display with the variables:
+
+	Glui->sync_live();
+
+
+	// force a call to Display( ):
+
+	glutSetWindow(MainWindow);
+	glutPostRedisplay();
+}
+void Framework::MySliders(int id)
+{
+	const char * VECFORMAT = { "Speed: %5.2f - %5.2f" };
+	char tempstr[128];
+	char xstr[128];
+	char ystr[128];
+	char zstr[128];
+	char radstr[128];
+	char gradstr[128];
+	char vecstr[128];
+
+	switch (id)
+	{
+
+	case 1:
+		sprintf(vecstr, VECFORMAT, VectorLowHigh[0], VectorLowHigh[1]);
+		VectorLabel->set_text(vecstr);
+		break;
+	}
+	glutSetWindow(MainWindow);
+	glutPostRedisplay();
+}
+
 void Framework::Axes(float length) {
 	// the stroke characters 'X' 'Y' 'Z' :
 

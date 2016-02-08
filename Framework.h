@@ -20,26 +20,51 @@
 #include "Sliders.h"
 #include "Mouse.h"
 
+#define VecId 1
 
 //#pragma warning(default:C4005)
 class Framework{
 protected:
 	SpaceDefiner *SDef;
 	char *SpaceInput = { "Text here" };
-
-	GLUI * Glui;				// instance of glui window
-	int	GluiWindow;				// the glut id for the glui window
-	const char *GLUITITLE = { "User Interface Window" };
-	const int INIT_WINDOW_SIZE = { 600 };
-	const char *WINDOWTITLE = { "OpenGL / GLUT / GLUI Sample -- Corinne Brucks" };
+				// the glut id for the glui window
 	// fog parameters:
 	GLfloat FOGCOLOR[4];
 	GLenum  FOGMODE;
 	GLfloat FOGDENSITY;
 	GLfloat FOGSTART;
 	GLfloat FOGEND;
-	int MainWindow;
+	
 	int frameArgc;
+
+	enum Projections
+	{
+		ORTHO,
+		PERSP
+	};
+	char ** frameArgv; //Check this later - might be something fishy with pointers*/
+	
+
+	//KeyboardState keyboard;
+	//MouseState mouse;
+	//std::vector<Updateable*> updateableObjects;
+	//std::vector<Drawable*> drawableObjects;
+	void BuildClasses();
+	void InitGlui();
+	
+	void Axes(float);
+	void DoRasterString(float, float, float, char *);
+	void InitGraphics1();
+	void InitGraphics2();
+	//void Framework::control_cb(int );
+	void Framework::MySliders(int);
+	
+public:
+	float ArrowLength;
+	const char * VECFORMAT = { "Vector Magnitude: %5.2f - %5.2f" };
+	void InitLists();
+	int MainWindow;
+	int	GluiWindow;
 	int AxesOn;
 	GLuint	AxesList;			// list to hold the axes
 	int DepthCueOn;
@@ -50,32 +75,22 @@ protected:
 	int	Xmouse, Ymouse;			// mouse values
 	float	Xrot, Yrot;			// rotation angles in degrees
 	float	TransXYZ[3];		// set by glui translation widgets
-	char SpaceDefinerString[sizeof(GLUI_String)];
-	char VectorDefinerString[sizeof(GLUI_String)];
+	char SpaceDefinerString[sizeof(GLUI_String)] = "";
+	char VectorDefinerString[sizeof(GLUI_String)] = "";
+	char FileNameString[sizeof(GLUI_String)] = "";
 	GLUI_EditText *edittext;
 	GLUI_EditText *edittext2;
-	enum Projections
-	{
-		ORTHO,
-		PERSP
-	};
-	char ** frameArgv; //Check this later - might be something fishy with pointers*/
-	//KeyboardState keyboard;
-	//MouseState mouse;
-	//std::vector<Updateable*> updateableObjects;
-	//std::vector<Drawable*> drawableObjects;
-	void BuildClasses();
-	void InitGlui();
-	void InitLists();
-	void Axes(float);
-	void DoRasterString(float, float, float, char *);
-	void InitGraphics1();
-	void InitGraphics2();
-	void Framework::control_cb(int );
-
-public:
+	GLUI_EditText *edittext3;
+	GLUI * Glui;				// instance of glui window
 	static Framework* instance();
-
+	float			VectorLowHigh[2]; //temperature highlow
+	GLUI_HSlider *		VectorSlider; //temperature slider
+	GLUI_StaticText *	VectorLabel; //temperature static text label
+	float VECMIN, VECMAX;
+	const char *GLUITITLE = { "User Interface Window" };
+	const int INIT_WINDOW_SIZE = { 600 };
+	const char *WINDOWTITLE = { "OpenGL / GLUT / GLUI Sample -- Corinne Brucks" };
+	void Keyboard(unsigned char, int , int );
 	void Display();
 	void Init1(int, char **);
 	void Init2();
