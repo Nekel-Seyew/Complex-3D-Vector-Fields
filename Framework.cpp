@@ -102,6 +102,15 @@ void Framework::RestoreDefaults() {
 	VectorLowHigh[0] = VECMIN;
 	VectorLowHigh[1] = VECMAX;
 	ArrowLength = 0.01;
+	useArrows = 1;
+	usePoints = 0;
+	useStreamlines = 0;
+	useStrokes = 0;
+	useAnimation = 0;
+	useIsosurfaces = 0;
+	NumPoints = 15;
+	spinVecMax = VECMAX;
+	spinVecMin = VECMIN;
 	
 }
 void Framework::Display() {

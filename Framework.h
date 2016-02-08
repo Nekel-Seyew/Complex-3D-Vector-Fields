@@ -78,9 +78,11 @@ public:
 	char SpaceDefinerString[sizeof(GLUI_String)] = "";
 	char VectorDefinerString[sizeof(GLUI_String)] = "";
 	char FileNameString[sizeof(GLUI_String)] = "";
+	char ObjFileNameString[sizeof(GLUI_String)] = "";
 	GLUI_EditText *edittext;
 	GLUI_EditText *edittext2;
 	GLUI_EditText *edittext3;
+	GLUI_EditText *edittext4;
 	GLUI * Glui;				// instance of glui window
 	static Framework* instance();
 	float			VectorLowHigh[2]; //temperature highlow
@@ -90,6 +92,15 @@ public:
 	const char *GLUITITLE = { "User Interface Window" };
 	const int INIT_WINDOW_SIZE = { 600 };
 	const char *WINDOWTITLE = { "OpenGL / GLUT / GLUI Sample -- Corinne Brucks" };
+	int useArrows;
+	int usePoints;
+	int useStreamlines;
+	int useAnimation;
+	int useIsosurfaces;
+	int useStrokes;
+	unsigned int NumPoints;
+	float spinVecMin;
+	float spinVecMax;
 	void Keyboard(unsigned char, int , int );
 	void Display();
 	void Init1(int, char **);
