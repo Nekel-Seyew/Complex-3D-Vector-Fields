@@ -13,7 +13,7 @@ VectorDefiner::~VectorDefiner()
 	delete this->vectors;
 }
 
-void populate(std::vector<vector3d*>* list, equation* eqr){
+void VectorDefiner::populate(std::vector<vector3d*>* list, equation* eqr){
 	float* f = new float[3];
 	
 	if(this->eqr != NULL){
@@ -36,7 +36,7 @@ void populate(std::vector<vector3d*>* list, equation* eqr){
 	delete f;
 }
 
-std::vector<vector3d*>* define(float xmin, float xmax, float ymin, float ymax, float zmin, float zmax){
+std::vector<vector3d*>* VectorDefiner::define(float xmin, float xmax, float ymin, float ymax, float zmin, float zmax){
 	std::vector<vector3d*>* vec = new std::vector<vector3d*>();
 
 	for(unsigned int i=0; i<this->vectors->size(); ++i){
