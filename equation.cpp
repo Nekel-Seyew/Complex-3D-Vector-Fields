@@ -1,5 +1,6 @@
 #include <cfloat>
 #include <cctype>
+#include <cmath>
 #include <cstdlib>
 #include <sstream>
 #include "equation.h"
