@@ -1,6 +1,4 @@
-#ifndef _VECTOR_3D_H
-#define _VECTOR3D_H
-
+#pragma once
 class vector3d{
 public:
 	vector3d(float a, float b, float c);
@@ -19,4 +17,3 @@ private:
 	float* to_sph();
 };
 
-#endif
