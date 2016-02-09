@@ -1,5 +1,4 @@
-#ifndef EQUATION_H
-#define EQUATION_H
+#pragma once
 /*
  * AST:
  * 1 - addition
@@ -72,4 +71,3 @@ private:
 	
 };
 
-#endif
