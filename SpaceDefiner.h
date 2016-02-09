@@ -1,12 +1,15 @@
 #pragma once
 
-
+#include <string>
+#include "equation.h"
+#include <vector>
+#include "vector3d.h"
 class SpaceDefiner {
 protected:
-	
+//yes	
 public:
 	SpaceDefiner();
 	~SpaceDefiner();
-	void Define(char[50]);
+	std::vector<vector3d>* Define(std::string str);
 	
 };
