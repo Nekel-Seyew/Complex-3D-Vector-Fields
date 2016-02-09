@@ -36,7 +36,7 @@ Framework::Framework()
 
 void Framework::Init1(int argc, char ** argv) {
 	InitGraphics1();
-	SDef = new SpaceDefiner;
+	SDef = new SpaceDefiner();
 	SDef->Define(SpaceInput);
 	//glutDisplayFunc(DisplayFuncl);
 	//BuildClasses();
