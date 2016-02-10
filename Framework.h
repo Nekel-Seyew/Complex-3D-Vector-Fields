@@ -26,7 +26,7 @@
 class Framework{
 protected:
 	SpaceDefiner *SDef;
-	char *SpaceInput = { "Text here" };
+	char *SpaceInput = { "<1,1,1>" };
 				// the glut id for the glui window
 	// fog parameters:
 	GLfloat FOGCOLOR[4];
