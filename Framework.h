@@ -13,7 +13,7 @@
 
 
 #include "SpaceDefiner.h"
-#include "VectorDefiner.h"
+//#include "VectorDefiner.h"
 #include "RenderingEngine.h"
 #include "ControlWindow.h"
 #include "RenderWindow.h"
@@ -22,7 +22,7 @@
 
 #define VecId 1
 
-//#pragma warning(default:C4005)
+#pragma warning(default:C4005)
 class Framework{
 protected:
 	SpaceDefiner *SDef;

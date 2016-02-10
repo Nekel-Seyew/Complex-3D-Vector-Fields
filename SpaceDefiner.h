@@ -10,6 +10,6 @@ protected:
 public:
 	SpaceDefiner();
 	~SpaceDefiner();
-	std::vector<vector3d*>* Define(std::string str, float start, float end, float num);
+	std::vector<vector3d*>* SpaceDefine(std::string str, float start, float end, float num);
 	
 };

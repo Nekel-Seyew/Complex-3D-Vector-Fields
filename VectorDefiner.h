@@ -1,7 +1,7 @@
 #pragma once
 
-#include <vector>
 
+#include <vector>
 #include "vector3d.h"
 #include "equation.h"
 class VectorDefiner {

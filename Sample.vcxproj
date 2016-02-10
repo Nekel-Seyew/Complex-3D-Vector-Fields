@@ -129,6 +129,7 @@
   <ItemGroup>
     <ClCompile Include="color.cpp" />
     <ClCompile Include="ControlWindow.cpp" />
+    <ClCompile Include="equation.cpp" />
     <ClCompile Include="Framework.cpp" />
     <ClCompile Include="HeatMapCenters.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -146,6 +147,7 @@
   <ItemGroup>
     <ClInclude Include="color.h" />
     <ClInclude Include="ControlWindow.h" />
+    <ClInclude Include="equation.h" />
     <ClInclude Include="Framework.h" />
     <ClInclude Include="HeatMapCenters.h" />
     <ClInclude Include="Mouse.h" />
