@@ -2,17 +2,20 @@
 #include <stdio.h>
 // yes, I know stdio.h is not good C++, but I like the *printf( ) - This is Bailey's Note
 #include <stdlib.h>
+#define _USE_MATH_DEFINES
+#include <math.h>
 #ifdef WIN32
 #include <windows.h>
 #pragma warning(disable:4996)
 #endif
 #include "Framework.h"
 
+void Arrow(float*, float*);
+
 /*const float BOXSIZE = { 2.f };
 int	AxesOn;					// != 0 means to draw the axes
 int	DebugOn;				// != 0 means to print debugging info
 int	DepthCueOn;				// != 0 means to use intensity depth cueing*/
-
 
 Framework* Framework::_instance = 0;
 Framework* Framework::instance()
@@ -34,8 +37,48 @@ Framework::Framework()
 
 }
 
+//remove later with temp init beloq
+inline float SQR(float x) { //Dr. Bailey timed this - its much faster than actually using Pow
+	return x * x;
+}
+void Vector(float x, float y, float z, float *vxp, float *vyp, float *vzp) {
+	*vxp = y * z * (y*y + z*z);
+	*vyp = x * z * (x*x + z*z);
+	*vzp = x * y * (x*x + y*y);
+
+
+}
+
 void Framework::Init1(int argc, char ** argv) {
 	InitGraphics1();
+	//SDef = new SpaceDefiner;
+	//SDef->Define(SpaceInput, Nodes);
+	//VDef = new VectorDefiner;
+	//VDef->Define(SpaceInput, Nodes);
+	//temporary init. Should be in vector definer. remove with SQR above
+	minvec = 100;
+	maxvec = 0;
+	for (int i = 0; i < nodeXCount; i++) {
+		for (int j = 0; j < nodeYCount; j++) {
+			for (int k = 0; k < nodeZCount; k++) {
+				Nodes[i][j][k].x = -1. + 2. * (float)i / (float)(nodeXCount - 1);
+				Nodes[i][j][k].y = -1. + 2. * (float)j / (float)(nodeYCount - 1);
+				Nodes[i][j][k].z = -1. + 2. * (float)k / (float)(nodeZCount - 1);
+				Nodes[i][j][k].rad = (sqrt(SQR((float)Nodes[i][j][k].x) + SQR((float)Nodes[i][j][k].y) + SQR((float)Nodes[i][j][k].z)));
+				Nodes[i][j][k].colorval = 0.1 + (0.9)* Nodes[i][j][k].rad;
+				Vector(Nodes[i][j][k].x, Nodes[i][j][k].y, Nodes[i][j][k].z, &Nodes[i][j][k].vx, &Nodes[i][j][k].vy, &Nodes[i][j][k].vz);
+				Nodes[i][j][k].vecLength = sqrt(SQR(Nodes[i][j][k].vx) + SQR(Nodes[i][j][k].vy) + SQR(Nodes[i][j][k].vz));
+				if (Nodes[i][j][k].vecLength < minvec) {
+					minvec = Nodes[i][j][k].vecLength;
+				}
+				if (Nodes[i][j][k].vecLength > maxvec) {
+					maxvec = Nodes[i][j][k].vecLength;
+				}
+			}
+		}
+	}
+
+
 	SDef = new SpaceDefiner();
 	SDef->SpaceDefine(SpaceInput,0,1,100); //need a start, stop, and end steps
 	//glutDisplayFunc(DisplayFuncl);
@@ -76,6 +119,10 @@ void Framework::BuildClasses() {
 }
 void Framework::RestoreDefaults() {
 	
+	nodeXCount = 20;
+	nodeYCount = 20;
+	nodeZCount = 20;
+
 	DepthCueOn = 1;
 	AxesOn = 1;
 	FOGCOLOR[0] = .0;
@@ -101,7 +148,7 @@ void Framework::RestoreDefaults() {
 	VECMAX = 10.f;
 	VectorLowHigh[0] = VECMIN;
 	VectorLowHigh[1] = VECMAX;
-	ArrowLength = 0.01;
+	ArrowLength = 1.0;
 	useArrows = 1;
 	usePoints = 0;
 	useStreamlines = 0;
@@ -222,6 +269,66 @@ void Framework::Display() {
 	glColor3f(1., 1., 0.);
 	glutWireCube(size);
 	glPointSize(5);
+
+	//Draw Points
+	if(usePoints){
+		glBegin(GL_POINTS);
+		for (int i = 0; i < nodeXCount; i++) {
+			for (int j = 0; j < nodeYCount; j++) {
+				for (int k = 0; k < nodeZCount; k++) {
+					float hsv[3], rgb[3];
+					// finally draw the point if it passes all the tests
+					hsv[0] = 240. - 240.* (Nodes[i][j][k].vecLength - minvec) / (maxvec - minvec);
+					//These are alternative Color Schemes - Fun to Experiment with
+					//hsv[0] = 240.- 240.* (Nodes[i][j][k].vecLength - vecmax)/(vecmax - vecmin);
+					//hsv[0] = 240. - 240.* (vecmax - Nodes[i][j][k].t) / (vecmax - vecmin);
+					//hsv[0] = 240. - 240.* (TEMPMIN - Nodes[i][j][k].t) / (TEMPMAX - TEMPMIN);
+					hsv[1] = 1.;
+					hsv[2] = 1.;
+					color::HsvRgb(hsv, rgb);
+					glColor3fv(rgb);
+					glVertex3f(Nodes[i][j][k].x, Nodes[i][j][k].y, Nodes[i][j][k].z);
+				}
+			}
+		}
+		glEnd();
+	}
+
+	
+
+	if (useArrows) {
+		for (int i = 0; i < nodeXCount; i++) {
+			for (int j = 0; j < nodeYCount; j++) {
+				for (int k = 0; k < nodeZCount; k++) {
+					//printf("test: %lf\n", Nodes[i][j][k].vecLength);
+					if ((Nodes[i][j][k].vecLength < spinVecMin) || (Nodes[i][j][k].vecLength > spinVecMax)) {
+					continue;
+					}
+					float hsv[3], rgb[3];
+
+					hsv[0] = 240. - 240.* (Nodes[i][j][k].vecLength - minvec) / (maxvec - minvec);
+					//Alternative Color Schemes
+					//hsv[0] = 240. - 240.* (Nodes[i][j][k].vecLength - vecmax) / (vecmax - vecmin);
+					//hsv[0] = 240. - 240.* (vecmax - Nodes[i][j][k].t) / (vecmax - vecmin);
+					//hsv[0] = 240. - 240.* (vecmin - Nodes[i][j][k].t) / (vecmax - vecmin);
+					hsv[1] = 1.;
+					hsv[2] = 1.;
+					color::HsvRgb(hsv, rgb);
+					glColor3fv(rgb);
+					float tail[3], head[3];
+					float tailx, taily, tailz, headx, heady, headz;
+					//printf("nodetest: %lf, %lf\n", Nodes[i][j][k].vx, ArrowLength);
+					tail[0] = Nodes[i][j][k].x - (Nodes[i][j][k].vx * ArrowLength) / 2.0;;
+					tail[1] = Nodes[i][j][k].y - (Nodes[i][j][k].vy * ArrowLength) / 2.0;
+					tail[2] = Nodes[i][j][k].z - (Nodes[i][j][k].vz * ArrowLength) / 2.0;
+					head[0] = Nodes[i][j][k].x + (Nodes[i][j][k].vx * ArrowLength) / 2.0;
+					head[1] = Nodes[i][j][k].y + (Nodes[i][j][k].vy * ArrowLength) / 2.0;
+					head[2] = Nodes[i][j][k].z + (Nodes[i][j][k].vz * ArrowLength) / 2.0;
+					Arrow(tail, head);
+				}
+			}
+		}
+	}
 	//printf("DisplayDrewSomething\n");
 	// draw some gratuitous text that just rotates on top of the scene:
 
@@ -249,6 +356,10 @@ void Framework::Display() {
 	glColor3f(1., 1., 1.);
 	DoRasterString(5., 5., 0., "Team TARDIS");
 
+
+	
+
+	
 
 	// swap the double-buffered framebuffers:
 
@@ -588,6 +699,149 @@ void Framework::Axes(float length) {
 		glEnd();
 
 }
+
+//to be moved to vector3d?
+void
+Cross(float v1[3], float v2[3], float vout[3])
+{
+	float tmp[3];
+
+	tmp[0] = v1[1] * v2[2] - v2[1] * v1[2];
+	tmp[1] = v2[0] * v1[2] - v1[0] * v2[2];
+	tmp[2] = v1[0] * v2[1] - v2[0] * v1[1];
+
+	vout[0] = tmp[0];
+	vout[1] = tmp[1];
+	vout[2] = tmp[2];
+}
+
+
+//to be moved to vector3d?
+float
+Unit(float vin[3], float vout[3])
+{
+	float dist = vin[0] * vin[0] + vin[1] * vin[1] + vin[2] * vin[2];
+
+	if (dist > 0.0)
+	{
+		dist = sqrt(dist);
+		vout[0] = vin[0] / dist;
+		vout[1] = vin[1] / dist;
+		vout[2] = vin[2] / dist;
+	}
+	else
+	{
+		vout[0] = vin[0];
+		vout[1] = vin[1];
+		vout[2] = vin[2];
+	}
+
+	return dist;
+}
+
+void Arrow(float tail[3], float head[3]) {
+	float u[3], v[3], w[3];		// arrow coordinate system
+	//printf("start of arrow: %lf, %lf, %lf, %lf, %lf, %lf\n", tail[0], tail[1], tail[2], head[0], head[1], head[2]);
+								// set w direction in u-v-w coordinate system:
+
+	w[0] = head[0] - tail[0];
+	w[1] = head[1] - tail[1];
+	w[2] = head[2] - tail[2];
+	//printf("start of arrow: %lf, %lf, %lf\n", w[0], w[1], w[2]);
+
+	// determine major direction:
+
+	int axis = X;
+	float mag = fabs(w[0]);
+	if (fabs(w[1])  > mag) {
+		axis = Y;
+		mag = fabs(w[1]);
+	}
+	if (fabs(w[2])  > mag) {
+		axis = Z;
+		mag = fabs(w[2]);
+	}
+
+
+	// set size of wings and turn w into a Unit vector:
+
+	float d = WINGS * Unit(w, w);
+
+	// draw the shaft of the arrow:
+	glBegin(GL_LINE_STRIP);
+	glVertex3fv(tail);
+	glVertex3fv(head);
+	glEnd();
+
+	// draw two sets of wings in the non-major directions:
+
+	float x, y, z;
+
+	if (axis != X) {
+		Cross(w, axx, v);
+		(void)Unit(v, v);
+		Cross(v, w, u);
+		x = head[0] + d * (u[0] - w[0]);
+		y = head[1] + d * (u[1] - w[1]);
+		z = head[2] + d * (u[2] - w[2]);
+		glBegin(GL_LINE_STRIP);
+		glVertex3fv(head);
+		glVertex3f(x, y, z);
+		glEnd();
+		x = head[0] + d * (-u[0] - w[0]);
+		y = head[1] + d * (-u[1] - w[1]);
+		z = head[2] + d * (-u[2] - w[2]);
+		glBegin(GL_LINE_STRIP);
+		glVertex3fv(head);
+		glVertex3f(x, y, z);
+		glEnd();
+	}
+
+
+	if (axis != Y) {
+		Cross(w, ayy, v);
+		(void)Unit(v, v);
+		Cross(v, w, u);
+		x = head[0] + d * (u[0] - w[0]);
+		y = head[1] + d * (u[1] - w[1]);
+		z = head[2] + d * (u[2] - w[2]);
+		glBegin(GL_LINE_STRIP);
+		glVertex3fv(head);
+		glVertex3f(x, y, z);
+		glEnd();
+		x = head[0] + d * (-u[0] - w[0]);
+		y = head[1] + d * (-u[1] - w[1]);
+		z = head[2] + d * (-u[2] - w[2]);
+		glBegin(GL_LINE_STRIP);
+		glVertex3fv(head);
+		glVertex3f(x, y, z);
+		glEnd();
+	}
+
+
+
+	if (axis != Z) {
+		Cross(w, azz, v);
+		(void)Unit(v, v);
+		Cross(v, w, u);
+		x = head[0] + d * (u[0] - w[0]);
+		y = head[1] + d * (u[1] - w[1]);
+		z = head[2] + d * (u[2] - w[2]);
+		glBegin(GL_LINE_STRIP);
+		glVertex3fv(head);
+		glVertex3f(x, y, z);
+		glEnd();
+		x = head[0] + d * (-u[0] - w[0]);
+		y = head[1] + d * (-u[1] - w[1]);
+		z = head[2] + d * (-u[2] - w[2]);
+		glBegin(GL_LINE_STRIP);
+		glVertex3fv(head);
+		glVertex3f(x, y, z);
+		glEnd();
+	}
+
+}
+
 void
 Framework::DoRasterString(float x, float y, float z, char *s)
 {
@@ -598,7 +852,4 @@ Framework::DoRasterString(float x, float y, float z, char *s)
 	{
 		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, c);
 	}
-}
-void Func() {
-
 }

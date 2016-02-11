@@ -1,4 +1,5 @@
 #pragma once
+#define NODE_MAX 20
 
 
 #include <vector>

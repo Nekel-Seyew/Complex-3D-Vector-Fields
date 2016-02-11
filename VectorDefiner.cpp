@@ -54,3 +54,7 @@ std::vector<vector3d*>* VectorDefiner::define(float xmin, float xmax, float ymin
 	return vec;
 }
 
+/*void VectorDefiner::Define(char input[50], struct node nodes[NODE_MAX][NODE_MAX][NODE_MAX])
+{
+
+}*/
