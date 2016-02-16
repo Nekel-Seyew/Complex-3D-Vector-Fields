@@ -13,20 +13,52 @@
 
 
 #include "SpaceDefiner.h"
-#include "VectorDefiner.h"
+//#include "VectorDefiner.h"
 #include "RenderingEngine.h"
 #include "ControlWindow.h"
 #include "RenderWindow.h"
 #include "Sliders.h"
 #include "Mouse.h"
 
+#include "vector3d.h"
+#include "color.h"
+
 #define VecId 1
+#define NODE_MAX 20
+
+// size of wings as fraction of length:
+#define WINGS	0.10
+
+// axes:
+#define X	1
+#define Y	2
+#define Z	3
+
+// x, y, z, axes:
+
+static float axx[3] = { 1., 0., 0. };
+static float ayy[3] = { 0., 1., 0. };
+static float azz[3] = { 0., 0., 1. };
+
+struct node {
+	float x, y, z;          // location
+	float t;                // temperature
+	float r, g, b;		// the assigned color (to be used later)
+	float rad;              // radius (to be used later)
+	float grad;             // total gradient (to be used later)
+	float dTdx, dTdy, dTdz;	// can store these if you want, or not
+	float colorval;
+	float vx, vy, vz;
+	float vecLength;
+};
 
 //#pragma warning(default:C4005)
 class Framework{
 protected:
 	SpaceDefiner *SDef;
-	char *SpaceInput = { "Text here" };
+	char *SpaceInput = { "<1,1,1>" };
+	//VectorDefiner *VDef;
+	//char *SpaceInput = { "Text here" };
 				// the glut id for the glui window
 	// fog parameters:
 	GLfloat FOGCOLOR[4];
@@ -60,6 +92,14 @@ protected:
 	void Framework::MySliders(int);
 	
 public:
+	struct node Nodes[NODE_MAX][NODE_MAX][NODE_MAX];
+	int nodeXCount;
+	int nodeYCount;
+	int nodeZCount;
+
+	float minvec;
+	float maxvec;
+
 	float ArrowLength;
 	const char * VECFORMAT = { "Vector Magnitude: %5.2f - %5.2f" };
 	void InitLists();

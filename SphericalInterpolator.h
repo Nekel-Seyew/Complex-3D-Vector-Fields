@@ -7,5 +7,6 @@ protected:
 public:
 	SphericalInterpolator();
 	~SphericalInterpolator();
+	
 	float* Build(float [8][3], float[3]);
 };

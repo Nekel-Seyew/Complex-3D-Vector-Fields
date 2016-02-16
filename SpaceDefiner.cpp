@@ -12,10 +12,12 @@ SpaceDefiner::~SpaceDefiner()
 }
 
 //equation must be in terms of X
-std::vector<vector3d*>* SpaceDefiner::Define(std::string str, float start, float end, float num){
+std::vector<vector3d*>* SpaceDefiner::SpaceDefine(std::string str, float start, float end, float num){
 	std::vector<vector3d*>* vec = new std::vector<vector3d*>();
 	equation_factory eqrf;
 	equation* eqr = eqrf.vector_equation(str);
+//void SpaceDefiner::Define(char input[50], struct node nodes[NODE_MAX][NODE_MAX][NODE_MAX])
+//{
 
 	float* f = new float[3];
 

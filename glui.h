@@ -32,10 +32,10 @@
 class Arcball;
 
 /********** Do some basic defines *******/
-#ifndef false
-#define true 1
-#define false 0
-#endif
+//#ifndef false
+//#define true 1
+//#define false 0
+//#endif
 
 #ifndef Byte
 #define Byte unsigned char
