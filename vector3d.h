@@ -9,6 +9,9 @@ public:
 	float* rtz(); //cylindrical
 	float* rtp(); //spherical
 
+	float magnitude();
+	float magsqr();
+
 private:
 	int mode; //0-rect, 1-cylindrival, 2-spherical
 	float abc[3];

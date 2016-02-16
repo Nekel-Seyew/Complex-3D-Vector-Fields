@@ -87,3 +87,21 @@ float* vector3d::to_sph(){
 	return this->abc;
 }
 
+
+float vector3d::magnitude(){
+	if(mode == 0){
+		return sqrt((this->abc[0] * this->abc[0]) + (this->abc[1] * this->abc[1]) + (this->abc[2] * this->abc[2]));
+	}else{
+		return this->abc[0];
+	}
+}
+float vector3d::magsqr(){
+	if(mode == 0){
+		return ((this->abc[0] * this->abc[0]) + (this->abc[1] * this->abc[1]) + (this->abc[2] * this->abc[2]));
+	}else{
+		return this->abc[0] * this->abc[0];
+	}
+
+}
+
+
