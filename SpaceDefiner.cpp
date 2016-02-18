@@ -59,3 +59,25 @@ std::vector<vector3d*>* SpaceDefiner::uv_surface(std::string str, float u_start,
 	//return
 	return vec;
 }
+
+
+std::vector<vector3d*>* SpaceDefiner::prism(float x_length, float x_num, float y_length, float y_num, float z_length, float z_num){
+	//what we are returning
+	std::vector<vector3d*>* vec = new std::vector<vector3d*>();
+	
+	for(float x = (0 - x_length/2.0f); x <= (0 + x_length/2.0f); x += (x_length/x_num)){
+		for(float y = (0 - y_length/2.0f); y <= (0 + y_length/2.0f); y += (y_length/y_num)){
+			for(float z = (0 - z_length/2.0f); z <= (0 + z_length/2.0f); z += (z_length/z_num)){
+				vector3d* v = new vector3d(x,y,z);
+				vec->push_back(v);
+			}
+
+		}
+
+	}
+	
+	//return
+	return vec;
+}
+
+
