@@ -39,7 +39,7 @@ std::vector<vector3d*>* SpaceDefiner::uv_surface(std::string str, float u_start,
 	//what we are returning
 	std::vector<vector3d*>* vec = new std::vector<vector3d*>();
 	//make the equation dang namit
-	equation_factor eqrf;
+	equation_factory eqrf;
 	equation* eqr = eqrf.vector_equation(str);
 
 	//needed when we are making vectors
@@ -48,7 +48,7 @@ std::vector<vector3d*>* SpaceDefiner::uv_surface(std::string str, float u_start,
 	//this will fill the space with a series of points which collectively will cover the surface.
 	for(float uk = u_start; uk<u_end; uk += (u_end-u_start)/u_num){
 		for(float vk = v_start; vk<v_end; vk += (v_end-v_start)/v_num){
-			f = eqr->eval(uk,uv,0.0f,f);
+			f = eqr->eval(uk,vk,0.0f,f);
 			vector3d* surface_point = new vector3d(f[0], f[1], f[2]);
 			vec->push_back(surface_point); //add to the list
 			float mag = surface_point->magnitude();
