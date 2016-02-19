@@ -2,7 +2,11 @@
 
 //#include "color.h"
 //#include "vector3d.h"
-
+#include <Windows.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
+#include "glut.h"
+#include "glui.h"
 #define NODE_MAX 20
 
 class RenderingEngine {
