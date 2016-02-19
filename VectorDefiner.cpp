@@ -1,5 +1,6 @@
 #include "VectorDefiner.h"
 #include <algorithm>
+#include <cctype>
 
 #include <iostream>
 #include <fstream>
@@ -20,7 +21,7 @@ VectorDefiner::~VectorDefiner()
 
 void VectorDefiner::give_input(std::string str){
 	//supposedly removes whitespace from the string, effectively trimming it
-	str.erase(remove_if(str.begin(), str.end, isspace), str.end());
+	str.erase(std::remove_if(str.begin(), str.end(), isspace), str.end());
 	this->is_file = false;
 	switch(str[0]){
 		case 'a':
@@ -81,7 +82,7 @@ void VectorDefiner::give_input(std::string str){
 	}
 	
 	if(this->is_file){
-		this->filename = new string(str);
+		this->filename = new std::string(str);
 	}else{
 		equation_factory eqrf;
 		this->eqr = eqrf.vector_equation(str);
@@ -93,11 +94,11 @@ void VectorDefiner::populate(std::vector<vector3d*>* space){
 	if(this->is_file){
 		//I mean, Ideally, the file would be formatted as: x_space,y_space,z_space,x_vector,y_vector,z_vector\n
 		//I can deal with whitespace, actually
-		
-		string line;
-		ifstream csv(*(this->filename));
+		//std::string the_file = *(this->filename);	
+		std::string line;
+		std::ifstream csv(this->filename->c_str());
 		if(csv.is_open()){
-			while(getline(csv, line)){
+			while(std::getline(csv, line)){
 				//line has the data inside of it now. like a civilized language and library should
 				
 			}
