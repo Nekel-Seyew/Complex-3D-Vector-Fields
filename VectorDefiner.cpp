@@ -21,7 +21,8 @@ VectorDefiner::~VectorDefiner()
 
 void VectorDefiner::give_input(std::string str){
 	//supposedly removes whitespace from the string, effectively trimming it
-	str.erase(std::remove_if(str.begin(), str.end(), isspace), str.end());
+	std::string* mystr = new std::string(str);
+	mystr->erase(std::remove_if(mystr->begin(), mystr->end(), isspace), mystr->end());
 	this->is_file = false;
 	switch(str[0]){
 		case 'a':
@@ -82,7 +83,7 @@ void VectorDefiner::give_input(std::string str){
 	}
 	
 	if(this->is_file){
-		this->filename = new std::string(str);
+		this->filename = mystr;
 	}else{
 		equation_factory eqrf;
 		this->eqr = eqrf.vector_equation(str);
