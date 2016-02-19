@@ -10,6 +10,7 @@ VectorDefiner::VectorDefiner()
 {
 	this->eqr = NULL;
 	this->vectors = NULL;
+	this->is_file = false;
 }
 
 
@@ -85,6 +86,7 @@ void VectorDefiner::give_input(std::string str){
 	if(this->is_file){
 		this->filename = mystr;
 	}else{
+		delete mystr;
 		equation_factory eqrf;
 		this->eqr = eqrf.vector_equation(str);
 	}
