@@ -18,7 +18,7 @@ VectorDefiner::~VectorDefiner()
 void VectorDefiner::give_input(std::string str){
 	//supposedly removes whitespace from the string, effectively trimming it
 	str.erase(remove_if(str.begin(), str.end, isspace), str.end());
-	bool is_file = false;
+	this->is_file = false;
 	switch(str[0]){
 		case 'a':
 		case 'b':
@@ -74,10 +74,10 @@ void VectorDefiner::give_input(std::string str){
 		case 'Z':
 		case '~':
 		case '/':
-			is_file = true;
+			this->is_file = true;
 	}
 	
-	if(is_file){
+	if(this->is_file){
 		this->filename = new string(str);
 	}else{
 		equation_factory eqrf;
@@ -87,22 +87,23 @@ void VectorDefiner::give_input(std::string str){
 }
 
 void VectorDefiner::populate(std::vector<vector3d*>* space){
-	if(
-	float* f = new float[3];
-		
-	if(this->vectors != NULL){
-		delete this->vectors;
-	}
-	this->vectors = new std::vector<vector3d*>();
+	if(!this->is_file){
+		float* f = new float[3];
+			
+		if(this->vectors != NULL){
+			delete this->vectors;
+		}
+		this->vectors = new std::vector<vector3d*>();
+	
+		for(unsigned int i=0; i<space->size(); ++i){
+			float* temp = space->at(i)->xyz(); // get the spacial point
+			f = eqr->eval(temp[0],temp[1],temp[2],f); //eval field at that point
+			vector3d* vvv = new vector3d(f[0],f[1],f[2]); //make new vector to represent vector at that point in field
+			this->vectors->push_back(vvv); //add it to out list of vectors
+		}
 
-	for(unsigned int i=0; i<space->size(); ++i){
-		float* temp = space->at(i)->xyz(); // get the spacial point
-		f = eqr->eval(temp[0],temp[1],temp[2],f); //eval field at that point
-		vector3d* vvv = new vector3d(f[0],f[1],f[2]); //make new vector to represent vector at that point in field
-		this->vectors->push_back(vvv); //add it to out list of vectors
+		delete f;
 	}
-
-	delete f;
 }
 
 std::vector<vector3d*>* VectorDefiner::cull_vectors(float xmin, float xmax, float ymin, float ymax, float zmin, float zmax){

@@ -11,6 +11,7 @@ protected:
 	equation* eqr;
 	std::vector<vector3d*>* vectors;
 	std::string* filename;
+	bool is_file;
 public:
 	VectorDefiner();
 	~VectorDefiner();
