@@ -13,7 +13,7 @@
 
 
 #include "SpaceDefiner.h"
-//#include "VectorDefiner.h"
+#include "VectorDefiner.h"
 #include "RenderingEngine.h"
 #include "ControlWindow.h"
 #include "RenderWindow.h"
@@ -57,7 +57,10 @@ class Framework{
 protected:
 	SpaceDefiner *SDef;
 	char *SpaceInput = { "<1,1,1>" };
-	//VectorDefiner *VDef;
+	char *VectorInput = { "<1,1,1>" };
+	std::vector<vector3d*>* thePoints;
+	std::vector<vector3d*>* theVectors;
+	VectorDefiner *VDef;
 	//char *SpaceInput = { "Text here" };
 				// the glut id for the glui window
 	// fog parameters:
@@ -92,6 +95,7 @@ protected:
 	void Framework::MySliders(int);
 	
 public:
+
 	struct node Nodes[NODE_MAX][NODE_MAX][NODE_MAX];
 	int nodeXCount;
 	int nodeYCount;
@@ -99,7 +103,19 @@ public:
 
 	float minvec;
 	float maxvec;
-
+	float testMinvec;
+	float testMaxvec;
+	//This is the Isosurfaces
+	float numContours;
+	int UseXY;
+	int UseXZ;
+	int UseYZ;
+	struct node XYPlane[NODE_MAX][NODE_MAX];
+	struct node XZPlane[NODE_MAX][NODE_MAX];
+	struct node YZPlane[NODE_MAX][NODE_MAX];
+	float XYPlanesZval;
+	float  XZPlanesYval;
+	float XZPlanesZval;
 	float ArrowLength;
 	const char * VECFORMAT = { "Vector Magnitude: %5.2f - %5.2f" };
 	void InitLists();

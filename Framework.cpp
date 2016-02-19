@@ -9,6 +9,7 @@
 #pragma warning(disable:4996)
 #endif
 #include "Framework.h"
+#include "vector3d.h"
 
 void Arrow(float*, float*);
 
@@ -51,12 +52,10 @@ void Vector(float x, float y, float z, float *vxp, float *vyp, float *vzp) {
 
 void Framework::Init1(int argc, char ** argv) {
 	InitGraphics1();
-	//SDef = new SpaceDefiner;
-	//SDef->Define(SpaceInput, Nodes);
-	//VDef = new VectorDefiner;
-	//VDef->Define(SpaceInput, Nodes);
+
 	//temporary init. Should be in vector definer. remove with SQR above
-	minvec = 100;
+	
+	/*minvec = 100;
 	maxvec = 0;
 	for (int i = 0; i < nodeXCount; i++) {
 		for (int j = 0; j < nodeYCount; j++) {
@@ -77,10 +76,16 @@ void Framework::Init1(int argc, char ** argv) {
 			}
 		}
 	}
-
+	*/
 
 	SDef = new SpaceDefiner();
-	SDef->SpaceDefine(SpaceInput,0,1,100); //need a start, stop, and end steps
+	VDef = new VectorDefiner();
+	thePoints = SDef->prism(2., 10, 2., 10, 2., 10); //need a start, stop, and end steps
+	VDef->give_input(VectorInput);
+	VDef->populate(thePoints);
+	theVectors = VDef->cull_vectors(0.0, 10.0, 0.0, 10.0, 0.0, 10.0);
+	thePoints = VDef-> cull_space(thePoints, 0.0, 10.0, 0.0, 10.0, 0.0, 10.0);
+	//you call this when you have a space which you need to do stuff with. This will actually make all of the vectors. Expect this to be slow.
 	//glutDisplayFunc(DisplayFuncl);
 	//BuildClasses();
 }
@@ -161,8 +166,8 @@ void Framework::RestoreDefaults() {
 	
 }
 void Framework::Display() {
-	printf("At the Beginning of Display, Vector Min is %f\n", VectorLowHigh[0]);
-	printf("At the End of Display, Vector Max is %f\n", VectorLowHigh[1]);
+	//printf("At the Beginning of Display, Vector Min is %f\n", VectorLowHigh[0]);
+	//printf("At the End of Display, Vector Max is %f\n", VectorLowHigh[1]);
 
 	glutSetWindow(MainWindow);
 	//printf("DisplayStarted\n");
@@ -273,6 +278,22 @@ void Framework::Display() {
 	//Draw Points
 	if(usePoints){
 		glBegin(GL_POINTS);
+		for (int i = 0; i < thePoints->size(); i++) {
+			float hsv[3], rgb[3];
+			// finally draw the point if it passes all the tests
+			hsv[0] = 240. - 240.* (theVectors->at(i)->magnitude() - 0.0) / (1.0 - 0.0); //These are hardcoded for now - put them on a slider
+			//These are alternative Color Schemes - Fun to Experiment with
+			//hsv[0] = 240.- 240.* (Nodes[i][j][k].vecLength - vecmax)/(vecmax - vecmin);
+			//hsv[0] = 240. - 240.* (vecmax - Nodes[i][j][k].t) / (vecmax - vecmin);
+			//hsv[0] = 240. - 240.* (TEMPMIN - Nodes[i][j][k].t) / (TEMPMAX - TEMPMIN);
+			hsv[1] = 1.;
+			hsv[2] = 1.;
+			color::HsvRgb(hsv, rgb);
+			glColor3fv(rgb);
+			float *vec = thePoints->at(i)->xyz();
+			glVertex3f(vec[0],vec[1],vec[2]);
+		}
+		/*
 		for (int i = 0; i < nodeXCount; i++) {
 			for (int j = 0; j < nodeYCount; j++) {
 				for (int k = 0; k < nodeZCount; k++) {
@@ -290,12 +311,10 @@ void Framework::Display() {
 					glVertex3f(Nodes[i][j][k].x, Nodes[i][j][k].y, Nodes[i][j][k].z);
 				}
 			}
-		}
+		}*/
 		glEnd();
 	}
-
-	
-
+/*
 	if (useArrows) {
 		for (int i = 0; i < nodeXCount; i++) {
 			for (int j = 0; j < nodeYCount; j++) {
@@ -329,6 +348,18 @@ void Framework::Display() {
 			}
 		}
 	}
+	if (useIsosurfaces) {
+		float Sstar = maxvec - minvec / 2;
+		float SMax = maxvec;
+		int numS = numContours;
+		float scale = 2.0 / numContours;
+		float hsv[3];
+		float rgb[3];
+		glShadeModel(GL_SMOOTH);
+		glBegin(GL_LINES);
+		
+	}
+*/
 	//printf("DisplayDrewSomething\n");
 	// draw some gratuitous text that just rotates on top of the scene:
 
@@ -356,11 +387,6 @@ void Framework::Display() {
 	glColor3f(1., 1., 1.);
 	DoRasterString(5., 5., 0., "Team TARDIS");
 
-
-	
-
-	
-
 	// swap the double-buffered framebuffers:
 
 	glutSwapBuffers();
@@ -368,9 +394,9 @@ void Framework::Display() {
 
 	// be sure the graphics buffer has been sent:
 	// note: be sure to use glFlush( ) here, not glFinish( ) !
-
 	glFlush();
 }
+
 void Framework::InitGraphics1() {
 	// setup the display mode:
 	// ( *must* be done before call to glutCreateWindow( ) )
