@@ -1,6 +1,9 @@
 #include "VectorDefiner.h"
 #include <algorithm>
 
+#include <iostream>
+#include <fstream>
+
 //yes
 VectorDefiner::VectorDefiner()
 {
@@ -87,7 +90,20 @@ void VectorDefiner::give_input(std::string str){
 }
 
 void VectorDefiner::populate(std::vector<vector3d*>* space){
-	if(!this->is_file){
+	if(this->is_file){
+		//I mean, Ideally, the file would be formatted as: x_space,y_space,z_space,x_vector,y_vector,z_vector\n
+		//I can deal with whitespace, actually
+		
+		string line;
+		ifstream csv(*(this->filename));
+		if(csv.is_open()){
+			while(getline(csv, line)){
+				//line has the data inside of it now. like a civilized language and library should
+				
+			}
+			csv.close();//be polite
+		}
+	}else{
 		float* f = new float[3];
 			
 		if(this->vectors != NULL){
@@ -124,7 +140,7 @@ std::vector<vector3d*>* VectorDefiner::cull_vectors(float xmin, float xmax, floa
 	return vec;
 }
 
-std::vector<vector3d*>* cull_space(std::vector<vector3d*>* space, float xmin, float xmax, float ymin, float ymax, float zmin, float zmax){
+std::vector<vector3d*>* VectorDefiner::cull_space(std::vector<vector3d*>* space, float xmin, float xmax, float ymin, float ymax, float zmin, float zmax){
 	std::vector<vector3d*>* vec = new std::vector<vector3d*>();
 
 	for(unsigned int i=0; i<this->vectors->size(); ++i){
