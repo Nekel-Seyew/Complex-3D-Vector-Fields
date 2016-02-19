@@ -1,4 +1,6 @@
 #include "VectorDefiner.h"
+#include <algorithm>
+
 //yes
 VectorDefiner::VectorDefiner()
 {
@@ -13,21 +15,88 @@ VectorDefiner::~VectorDefiner()
 	delete this->vectors;
 }
 
-void VectorDefiner::populate(std::vector<vector3d*>* list, equation* eqr){
-	float* f = new float[3];
-	
-	if(this->eqr != NULL){
-		delete this->eqr;
+void VectorDefiner::give_input(std::string str){
+	//supposedly removes whitespace from the string, effectively trimming it
+	str.erase(remove_if(str.begin(), str.end, isspace), str.end());
+	bool is_file = false;
+	switch(str[0]){
+		case 'a':
+		case 'b':
+		case 'c':
+		case 'd':
+		case 'e':
+		case 'f':
+		case 'g':
+		case 'h':
+		case 'i':
+		case 'j':
+		case 'k':
+		case 'l':
+		case 'm':
+		case 'n':
+		case 'o':
+		case 'p':
+		case 'q':
+		case 'r':
+		case 's':
+		case 't':
+		case 'u':
+		case 'v':
+		case 'w':
+		case 'x':
+		case 'y':
+		case 'z':
+		case 'A':
+		case 'B':
+		case 'C':
+		case 'D':
+		case 'E':
+		case 'F':
+		case 'G':
+		case 'H':
+		case 'I':
+		case 'J':
+		case 'K':
+		case 'L':
+		case 'M':
+		case 'N':
+		case 'O':
+		case 'P':
+		case 'Q':
+		case 'R':
+		case 'S':
+		case 'T':
+		case 'U':
+		case 'V':
+		case 'W':
+		case 'X':
+		case 'Y':
+		case 'Z':
+		case '~':
+		case '/':
+			is_file = true;
 	}
-	this->eqr = eqr;
+	
+	if(is_file){
+		this->filename = new string(str);
+	}else{
+		equation_factory eqrf;
+		this->eqr = eqrf.vector_equation(str);
+	}
 
+}
+
+void VectorDefiner::populate(std::vector<vector3d*>* space){
+	if(
+	float* f = new float[3];
+		
 	if(this->vectors != NULL){
 		delete this->vectors;
 	}
 	this->vectors = new std::vector<vector3d*>();
 
-	for(unsigned int i=0; i<list->size(); ++i){
-		float* temp = list->at(i)->xyz(); // get the spacial point
+	for(unsigned int i=0; i<space->size(); ++i){
+		float* temp = space->at(i)->xyz(); // get the spacial point
 		f = eqr->eval(temp[0],temp[1],temp[2],f); //eval field at that point
 		vector3d* vvv = new vector3d(f[0],f[1],f[2]); //make new vector to represent vector at that point in field
 		this->vectors->push_back(vvv); //add it to out list of vectors
@@ -36,7 +105,7 @@ void VectorDefiner::populate(std::vector<vector3d*>* list, equation* eqr){
 	delete f;
 }
 
-std::vector<vector3d*>* VectorDefiner::define(float xmin, float xmax, float ymin, float ymax, float zmin, float zmax){
+std::vector<vector3d*>* VectorDefiner::cull_vectors(float xmin, float xmax, float ymin, float ymax, float zmin, float zmax){
 	std::vector<vector3d*>* vec = new std::vector<vector3d*>();
 
 	for(unsigned int i=0; i<this->vectors->size(); ++i){
@@ -51,6 +120,24 @@ std::vector<vector3d*>* VectorDefiner::define(float xmin, float xmax, float ymin
 		}
 	}
 
+	return vec;
+}
+
+std::vector<vector3d*>* cull_space(std::vector<vector3d*>* space, float xmin, float xmax, float ymin, float ymax, float zmin, float zmax){
+	std::vector<vector3d*>* vec = new std::vector<vector3d*>();
+
+	for(unsigned int i=0; i<this->vectors->size(); ++i){
+		vector3d* v = this->vectors->at(i);
+		vector3d* space_v = space->at(i);
+		float* f = v->xyz();
+		if(xmin < f[0] && f[0] < xmax){
+			if(ymin < f[1] && f[1] < ymax){
+				if(zmin < f[2] && f[2] < zmax){
+					vec->push_back(space_v); //vector is in bounds, yay!
+				}
+			}
+		}
+	}
 	return vec;
 }
 
