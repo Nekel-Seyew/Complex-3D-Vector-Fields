@@ -314,6 +314,34 @@ void Framework::Display() {
 		}*/
 		glEnd();
 	}
+	if (useArrows) {
+		for (int i = 0; i < thePoints->size(); i++) {
+			if ((theVectors->at(i)->magnitude()  < spinVecMin) || (theVectors->at(i)->magnitude() > spinVecMax)) {
+				continue;
+			}
+			float hsv[3], rgb[3];
+			// finally draw the point if it passes all the tests
+			hsv[0] = 240. - 240.* (theVectors->at(i)->magnitude() - 0.0) / (1.0 - 0.0); //These are hardcoded for now - put them on a slider or get them
+			//These are alternative Color Schemes - Fun to Experiment with
+			//hsv[0] = 240.- 240.* (Nodes[i][j][k].vecLength - vecmax)/(vecmax - vecmin);
+			//hsv[0] = 240. - 240.* (vecmax - Nodes[i][j][k].t) / (vecmax - vecmin);
+			//hsv[0] = 240. - 240.* (TEMPMIN - Nodes[i][j][k].t) / (TEMPMAX - TEMPMIN);
+			hsv[1] = 1.;
+			hsv[2] = 1.;
+			color::HsvRgb(hsv, rgb);
+			glColor3fv(rgb);
+			float tail[3], head[3];
+			float *xyz = thePoints->at(i)->xyz();
+			float *veccompxyz = theVectors->at(i)->xyz();
+			tail[0] = xyz[0]- (veccompxyz[0] * ArrowLength) / 2.0;;
+			tail[1] = xyz[1] - (veccompxyz[1] * ArrowLength) / 2.0;
+			tail[2] = xyz[2] - (veccompxyz[2] * ArrowLength) / 2.0;
+			head[0] = xyz[0] + (veccompxyz[0] * ArrowLength) / 2.0;
+			head[1] = xyz[1] + (veccompxyz[1] * ArrowLength) / 2.0;
+			head[2] = xyz[2] + (veccompxyz[2] * ArrowLength) / 2.0;
+			Arrow(tail, head);
+		}
+	}
 /*
 	if (useArrows) {
 		for (int i = 0; i < nodeXCount; i++) {
