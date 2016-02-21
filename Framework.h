@@ -57,7 +57,7 @@ class Framework{
 protected:
 	SpaceDefiner *SDef;
 	char *SpaceInput = { "<1,1,1>" };
-	char *VectorInput = { "<1,2,1>" };
+	char *VectorInput = { "<Y*Z*(Y*Y + Z*Z), X*Z*(X*X + Z*Z), Y*X*(Y*Y + X* X)>" };
 	std::vector<vector3d*>* thePoints;
 	std::vector<vector3d*>* theVectors;
 	VectorDefiner *VDef;

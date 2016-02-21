@@ -83,9 +83,8 @@ void Framework::Init1(int argc, char ** argv) {
 	thePoints = SDef->prism(2., 10, 2., 10, 2., 10); //need a start, stop, and end steps
 	VDef->give_input(VectorInput);
 	VDef->populate(thePoints);
-	theVectors = VDef->cull_vectors(0.0, 10.0, 0.0, 10.0, 0.0, 10.0);
-	thePoints = VDef-> cull_space(thePoints, 0.0, 10.0, 0.0, 10.0, 0.0, 10.0);
-	//you call this when you have a space which you need to do stuff with. This will actually make all of the vectors. Expect this to be slow.
+	theVectors = VDef->cull_vectors(-10.0, 10.0, -10.0, 10.0, -10.0, 10.0);
+	thePoints = VDef-> cull_space(thePoints, -10.0, 10.0, -10.0, 10.0, -10.0, 10.0);
 	//glutDisplayFunc(DisplayFuncl);
 	//BuildClasses();
 }
@@ -281,7 +280,7 @@ void Framework::Display() {
 		for (int i = 0; i < thePoints->size(); i++) {
 			float hsv[3], rgb[3];
 			// finally draw the point if it passes all the tests
-			hsv[0] = 240. - 240.* (theVectors->at(i)->magnitude() - 0.0) / (1.0 - 0.0); //These are hardcoded for now - put them on a slider
+			hsv[0] = 240. - 240.* (theVectors->at(i)->magnitude() - 2.0) / (2.0 - -2.0); //These are hardcoded for now - put them on a slider
 			//These are alternative Color Schemes - Fun to Experiment with
 			//hsv[0] = 240.- 240.* (Nodes[i][j][k].vecLength - vecmax)/(vecmax - vecmin);
 			//hsv[0] = 240. - 240.* (vecmax - Nodes[i][j][k].t) / (vecmax - vecmin);
@@ -321,7 +320,7 @@ void Framework::Display() {
 			}
 			float hsv[3], rgb[3];
 			// finally draw the point if it passes all the tests
-			hsv[0] = 240. - 240.* (theVectors->at(i)->magnitude() - 0.0) / (1.0 - 0.0); //These are hardcoded for now - put them on a slider or get them
+			hsv[0] = 240. - 240.* (theVectors->at(i)->magnitude() - 10.0) / (10 - -10.0); //These are hardcoded for now - put them on a slider or get them
 			//These are alternative Color Schemes - Fun to Experiment with
 			//hsv[0] = 240.- 240.* (Nodes[i][j][k].vecLength - vecmax)/(vecmax - vecmin);
 			//hsv[0] = 240. - 240.* (vecmax - Nodes[i][j][k].t) / (vecmax - vecmin);
