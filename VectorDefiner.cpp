@@ -149,23 +149,25 @@ std::vector<vector3d*>* VectorDefiner::cull_vectors(float xmin, float xmax, floa
 			if(ymin < f[1] && f[1] < ymax){
 				if(zmin < f[2] && f[2] < zmax){
 					vec->push_back(v); //vector is in bounds, yay!
-					//find min and max
-					if(mmax == NULL || mmax->magnitude() < v->magnitude()){
-						mmax = v;
-					}
-					if(mmin == NULL || mmin->magnitude() > v->magnitude()){
-						mmin = v;
-					}
 				}
 			}
 		}
+		//find min and max
+		if(mmax == NULL || mmax->magnitude() < v->magnitude()){
+			mmax = v;
+		}
+		if(mmin == NULL || mmin->magnitude() > v->magnitude()){
+			mmin = v;
+		}
 	}
+	//set up the cache
 	this->min = mmin;
 	this->max = mmax;
 	if(this->culled_vectors != NULL) {
 		delete this->culled_vectors;
 	}
 	this->culled_vectors = vec;
+	//return
 	return vec;
 }
 
@@ -197,10 +199,10 @@ std::vector<vector3d*>* get_cull_vectors_cache(){
 std::vector<vector3d*>* get_cull_space_cache(){
 	return this->culled_space;
 }
-vector3d* get_cull_vector_cache_min(){
+vector3d* get_vector_cache_min(){
 	return this->min;
 }
-vector3d* get_cull_vector_cache_max(){
+vector3d* get_vector_cache_max(){
 	return this->max;
 }
 

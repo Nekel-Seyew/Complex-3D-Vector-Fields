@@ -34,7 +34,7 @@ public:
 
 	std::vector<vector3d*>* get_cull_vectors_cache();
 	std::vector<vector3d*>* get_cull_space_cache();
-	vector3d* get_cull_vector_cache_min();
-	vector3d* get_cull_vector_cache_max();
+	vector3d* get_vector_cache_min();
+	vector3d* get_vector_cache_max();
 
 };
