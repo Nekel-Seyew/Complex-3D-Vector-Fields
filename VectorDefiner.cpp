@@ -11,11 +11,21 @@ VectorDefiner::VectorDefiner()
 	this->eqr = NULL;
 	this->vectors = NULL;
 	this->is_file = false;
+	this->filename = NULL;
+	this->culled_vectors = NULL;
+	this->vulled_space = NULL;
+	this->min = NULL;
+	this->max = NULL;
 }
 
 
 VectorDefiner::~VectorDefiner()
 {
+	delete this->culled_vectors;
+	delete this->culled_space;
+	delete this->filename;
+	delete this->min;
+	delete this->max;
 	delete this->eqr;
 	delete this->vectors;
 }
@@ -129,6 +139,9 @@ void VectorDefiner::populate(std::vector<vector3d*>* space){
 std::vector<vector3d*>* VectorDefiner::cull_vectors(float xmin, float xmax, float ymin, float ymax, float zmin, float zmax){
 	std::vector<vector3d*>* vec = new std::vector<vector3d*>();
 
+	vector3d* mmax = NULL;
+	vector3d* mmin = NULL;
+
 	for(unsigned int i=0; i<this->vectors->size(); ++i){
 		vector3d* v = this->vectors->at(i);
 		float* f = v->xyz();
@@ -136,11 +149,23 @@ std::vector<vector3d*>* VectorDefiner::cull_vectors(float xmin, float xmax, floa
 			if(ymin < f[1] && f[1] < ymax){
 				if(zmin < f[2] && f[2] < zmax){
 					vec->push_back(v); //vector is in bounds, yay!
+					//find min and max
+					if(mmax == NULL || mmax->magnitude() < v->magnitude()){
+						mmax = v;
+					}
+					if(mmin == NULL || mmin->magnitude() > v->magnitude()){
+						mmin = v;
+					}
 				}
 			}
 		}
 	}
-
+	this->min = mmin;
+	this->max = mmax;
+	if(this->culled_vectors != NULL) {
+		delete this->culled_vectors;
+	}
+	this->culled_vectors = vec;
 	return vec;
 }
 
@@ -159,8 +184,28 @@ std::vector<vector3d*>* VectorDefiner::cull_space(std::vector<vector3d*>* space,
 			}
 		}
 	}
+	if(this->culled_space != NULL){
+		delete this->culled_space;
+	}
+	this->culled_space = vec;
 	return vec;
 }
+
+std::vector<vector3d*>* get_cull_vectors_cache(){
+	return this->culled_vectors;
+}
+std::vector<vector3d*>* get_cull_space_cache(){
+	return this->culled_space;
+}
+vector3d* get_cull_vector_cache_min(){
+	return this->min;
+}
+vector3d* get_cull_vector_cache_max(){
+	return this->max;
+}
+
+
+
 
 /*void VectorDefiner::Define(char input[50], struct node nodes[NODE_MAX][NODE_MAX][NODE_MAX])
 {
