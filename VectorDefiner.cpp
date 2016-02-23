@@ -237,21 +237,21 @@ std::vector<vector3d*>* VectorDefiner::cull_space(float xmin, float xmax, float 
 	return vec;
 }
 
-inline std::vector<vector3d*>* VectorDefiner::get_cull_vectors_cache(){
+std::vector<vector3d*>* VectorDefiner::get_cull_vectors_cache(){
 	return this->culled_vectors;
 }
-inline std::vector<vector3d*>* VectorDefiner::get_cull_space_cache(){
+std::vector<vector3d*>* VectorDefiner::get_cull_space_cache(){
 	return this->culled_space;
 }
-inline vector3d* VectorDefiner::get_vector_cull_min(){
+vector3d* VectorDefiner::get_vector_cull_min(){
 	return this->cull_min;
 }
-inline vector3d* VectorDefiner::get_vector_cull_max(){
+vector3d* VectorDefiner::get_vector_cull_max(){
 	return this->cull_max;
 }
-inline vector3d* VectorDefiner::get_vector_min() {
+vector3d* VectorDefiner::get_vector_min() {
 	return this->min;
 }
-inline vector3d* VectorDefiner::get_vector_max() {
+vector3d* VectorDefiner::get_vector_max() {
 	return this->max;
 }
