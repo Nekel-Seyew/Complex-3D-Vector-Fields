@@ -282,6 +282,7 @@ void Framework::Display() {
 	//Draw Points
 	if(usePoints){
 		glBegin(GL_POINTS);
+		srand(1234);
 		for (int i = 0; i < thePoints->size(); i++) {
 			float hsv[3], rgb[3];
 			// finally draw the point if it passes all the tests
