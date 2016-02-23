@@ -207,7 +207,7 @@ void InitGlui() {
 	RadLabel2 = TestGlui->add_statictext_to_panel(ArrowSettings, radstr);
 	*/
 	spinArrowLength = TestGlui->add_spinner_to_panel(ArrowSettings, "Arrow Size", GLUI_SPINNER_FLOAT, &Framework::instance()->ArrowLength);
-	spinArrowLength ->set_float_limits(0.0, 1.0);
+	spinArrowLength ->set_float_limits(0.0, 5.0);
 	spinArrowLength ->set_speed(0.1);
 
 	spinMinVector = TestGlui->add_spinner_to_panel(ArrowSettings, "Vector Magnitude Min", GLUI_SPINNER_FLOAT, &Framework::instance()->spinVecMin);
@@ -216,6 +216,8 @@ void InitGlui() {
 	spinMaxVector = TestGlui->add_spinner_to_panel(ArrowSettings, "Vector Magnitude Max", GLUI_SPINNER_FLOAT, &Framework::instance()->spinVecMax);
 	spinMaxVector->set_float_limits(Framework::instance()->spinVecMin, Framework::instance()->VECMAX);
 	spinMaxVector->set_speed(0.1);
+
+	TestGlui->add_checkbox_to_panel(PointsSettings, "Use Jitter", &Framework::instance()->useJitter);
 
 	/*RadSlider = TestGlui->add_slider_to_panel(PointsSettings, true, GLUI_HSLIDER_FLOAT, RadLowHigh, RADID, (GLUI_Update_CB)MySliders);
 	RadSlider->set_float_limits(RADIUSMIN, RADIUSMAX);

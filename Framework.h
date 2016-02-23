@@ -154,6 +154,7 @@ public:
 	int useAnimation;
 	int useIsosurfaces;
 	int useStrokes;
+	int useJitter;
 	unsigned int NumPoints;
 	float spinVecMin;
 	float spinVecMax;

@@ -85,6 +85,8 @@ void Framework::Init1(int argc, char ** argv) {
 	VDef->populate(thePoints);
 	theVectors = VDef->cull_vectors(-10.0, 10.0, -10.0, 10.0, -10.0, 10.0);
 	thePoints = VDef-> cull_space(thePoints, -10.0, 10.0, -10.0, 10.0, -10.0, 10.0);
+	//Only do this once for each specified list if you want to access the cullspace cullvector again use the corresponding cache returners
+	srand(time(NULL));
 	//glutDisplayFunc(DisplayFuncl);
 	//BuildClasses();
 }
@@ -148,8 +150,8 @@ void Framework::RestoreDefaults() {
 	RotMatrix[2][0] = RotMatrix[2][1] = RotMatrix[2][3] = 0.;
 	RotMatrix[3][0] = RotMatrix[3][1] = RotMatrix[3][3] = 0.;
 	RotMatrix[0][0] = RotMatrix[1][1] = RotMatrix[2][2] = RotMatrix[3][3] = 1.;
-	VECMIN = 1.f;
-	VECMAX = 10.f;
+	VECMIN = 0.0f;
+	VECMAX = 20.f;
 	VectorLowHigh[0] = VECMIN;
 	VectorLowHigh[1] = VECMAX;
 	ArrowLength = 1.0;
@@ -159,6 +161,7 @@ void Framework::RestoreDefaults() {
 	useStrokes = 0;
 	useAnimation = 0;
 	useIsosurfaces = 0;
+	useJitter = 1;
 	NumPoints = 15;
 	spinVecMax = VECMAX;
 	spinVecMin = VECMIN;
@@ -167,6 +170,8 @@ void Framework::RestoreDefaults() {
 void Framework::Display() {
 	//printf("At the Beginning of Display, Vector Min is %f\n", VectorLowHigh[0]);
 	//printf("At the End of Display, Vector Max is %f\n", VectorLowHigh[1]);
+
+	
 
 	glutSetWindow(MainWindow);
 	//printf("DisplayStarted\n");
@@ -280,7 +285,7 @@ void Framework::Display() {
 		for (int i = 0; i < thePoints->size(); i++) {
 			float hsv[3], rgb[3];
 			// finally draw the point if it passes all the tests
-			hsv[0] = 240. - 240.* (theVectors->at(i)->magnitude() - 2.0) / (2.0 - -2.0); //These are hardcoded for now - put them on a slider
+			hsv[0] = 240. - 240.* (theVectors->at(i)->magnitude() - VDef->get_vector_cache_min()->magnitude()) / (VDef->get_vector_cache_max()->magnitude() - VDef->get_vector_cache_min()->magnitude()); //These are hardcoded for now - put them on a slider
 			//These are alternative Color Schemes - Fun to Experiment with
 			//hsv[0] = 240.- 240.* (Nodes[i][j][k].vecLength - vecmax)/(vecmax - vecmin);
 			//hsv[0] = 240. - 240.* (vecmax - Nodes[i][j][k].t) / (vecmax - vecmin);
@@ -290,27 +295,15 @@ void Framework::Display() {
 			color::HsvRgb(hsv, rgb);
 			glColor3fv(rgb);
 			float *vec = thePoints->at(i)->xyz();
-			glVertex3f(vec[0],vec[1],vec[2]);
-		}
-		/*
-		for (int i = 0; i < nodeXCount; i++) {
-			for (int j = 0; j < nodeYCount; j++) {
-				for (int k = 0; k < nodeZCount; k++) {
-					float hsv[3], rgb[3];
-					// finally draw the point if it passes all the tests
-					hsv[0] = 240. - 240.* (Nodes[i][j][k].vecLength - minvec) / (maxvec - minvec);
-					//These are alternative Color Schemes - Fun to Experiment with
-					//hsv[0] = 240.- 240.* (Nodes[i][j][k].vecLength - vecmax)/(vecmax - vecmin);
-					//hsv[0] = 240. - 240.* (vecmax - Nodes[i][j][k].t) / (vecmax - vecmin);
-					//hsv[0] = 240. - 240.* (TEMPMIN - Nodes[i][j][k].t) / (TEMPMAX - TEMPMIN);
-					hsv[1] = 1.;
-					hsv[2] = 1.;
-					color::HsvRgb(hsv, rgb);
-					glColor3fv(rgb);
-					glVertex3f(Nodes[i][j][k].x, Nodes[i][j][k].y, Nodes[i][j][k].z);
-				}
+			if (useJitter) {
+				glVertex3f(vec[0] + ((rand() % 10 -5 ) / 300.), vec[1] + ((rand() % 10 -5) /300.), vec[2] + ((rand() % 10 -5) /300.));
+				//printf("Jitter Jitter\n");
 			}
-		}*/
+			else {
+				//printf("No Jitter\n");
+				glVertex3f(vec[0], vec[1], vec[2]);
+			}
+		}
 		glEnd();
 	}
 	if (useArrows) {
@@ -320,7 +313,7 @@ void Framework::Display() {
 			}
 			float hsv[3], rgb[3];
 			// finally draw the point if it passes all the tests
-			hsv[0] = 240. - 240.* (theVectors->at(i)->magnitude() - 10.0) / (10 - -10.0); //These are hardcoded for now - put them on a slider or get them
+			hsv[0] = 240. - 240.* (theVectors->at(i)->magnitude() - VDef->get_vector_cache_min()->magnitude()) / (VDef->get_vector_cache_max()->magnitude() - VDef->get_vector_cache_min()->magnitude());
 			//These are alternative Color Schemes - Fun to Experiment with
 			//hsv[0] = 240.- 240.* (Nodes[i][j][k].vecLength - vecmax)/(vecmax - vecmin);
 			//hsv[0] = 240. - 240.* (vecmax - Nodes[i][j][k].t) / (vecmax - vecmin);
