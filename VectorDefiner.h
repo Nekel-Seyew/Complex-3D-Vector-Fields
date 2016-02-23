@@ -39,11 +39,11 @@ public:
 	std::vector<vector3d*>* cull_vectors(float xmin, float xmax, float ymin, float ymax, float zmin, float zmax);
 	std::vector<vector3d*>* cull_space(float xmin, float xmax, float ymin, float ymax, float zmin, float zmax);
 
-	inline std::vector<vector3d*>* get_cull_vectors_cache();
-	inline std::vector<vector3d*>* get_cull_space_cache();
-	inline vector3d* get_vector_cull_min();
-	inline vector3d* get_vector_cull_max();
-	inline vector3d* get_vector_min();
-	inline vector3d* get_vector_max();
+	std::vector<vector3d*>* get_cull_vectors_cache();
+	std::vector<vector3d*>* get_cull_space_cache();
+	vector3d* get_vector_cull_min();
+	vector3d* get_vector_cull_max();
+	vector3d* get_vector_min();
+	vector3d* get_vector_max();
 
 };
