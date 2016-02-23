@@ -84,7 +84,7 @@ void Framework::Init1(int argc, char ** argv) {
 	VDef->give_input(VectorInput);
 	VDef->populate(thePoints);
 	theVectors = VDef->cull_vectors(-10.0, 10.0, -10.0, 10.0, -10.0, 10.0);
-	thePoints = VDef-> cull_space(thePoints, -10.0, 10.0, -10.0, 10.0, -10.0, 10.0);
+	thePoints = VDef-> cull_space(-10.0, 10.0, -10.0, 10.0, -10.0, 10.0);
 	//Only do this once for each specified list if you want to access the cullspace cullvector again use the corresponding cache returners
 	srand(time(NULL));
 	//glutDisplayFunc(DisplayFuncl);
@@ -285,7 +285,7 @@ void Framework::Display() {
 		for (int i = 0; i < thePoints->size(); i++) {
 			float hsv[3], rgb[3];
 			// finally draw the point if it passes all the tests
-			hsv[0] = 240. - 240.* (theVectors->at(i)->magnitude() - VDef->get_vector_cache_min()->magnitude()) / (VDef->get_vector_cache_max()->magnitude() - VDef->get_vector_cache_min()->magnitude()); //These are hardcoded for now - put them on a slider
+			hsv[0] = 240. - 240.* (theVectors->at(i)->magnitude() - VDef->get_vector_cull_min()->magnitude()) / (VDef->get_vector_cull_max()->magnitude() - VDef->get_vector_cull_min()->magnitude()); //These are hardcoded for now - put them on a slider
 			//These are alternative Color Schemes - Fun to Experiment with
 			//hsv[0] = 240.- 240.* (Nodes[i][j][k].vecLength - vecmax)/(vecmax - vecmin);
 			//hsv[0] = 240. - 240.* (vecmax - Nodes[i][j][k].t) / (vecmax - vecmin);
@@ -313,7 +313,7 @@ void Framework::Display() {
 			}
 			float hsv[3], rgb[3];
 			// finally draw the point if it passes all the tests
-			hsv[0] = 240. - 240.* (theVectors->at(i)->magnitude() - VDef->get_vector_cache_min()->magnitude()) / (VDef->get_vector_cache_max()->magnitude() - VDef->get_vector_cache_min()->magnitude());
+			hsv[0] = 240. - 240.* (theVectors->at(i)->magnitude() - VDef->get_vector_cull_min()->magnitude()) / (VDef->get_vector_cull_max()->magnitude() - VDef->get_vector_cull_min()->magnitude());
 			//These are alternative Color Schemes - Fun to Experiment with
 			//hsv[0] = 240.- 240.* (Nodes[i][j][k].vecLength - vecmax)/(vecmax - vecmin);
 			//hsv[0] = 240. - 240.* (vecmax - Nodes[i][j][k].t) / (vecmax - vecmin);
