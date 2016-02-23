@@ -13,7 +13,7 @@ VectorDefiner::VectorDefiner()
 	this->is_file = false;
 	this->filename = NULL;
 	this->culled_vectors = NULL;
-	this->vulled_space = NULL;
+	this->culled_space = NULL;
 	this->min = NULL;
 	this->max = NULL;
 }
@@ -193,16 +193,16 @@ std::vector<vector3d*>* VectorDefiner::cull_space(std::vector<vector3d*>* space,
 	return vec;
 }
 
-std::vector<vector3d*>* get_cull_vectors_cache(){
+std::vector<vector3d*>* VectorDefiner::get_cull_vectors_cache(){
 	return this->culled_vectors;
 }
-std::vector<vector3d*>* get_cull_space_cache(){
+std::vector<vector3d*>* VectorDefiner::get_cull_space_cache(){
 	return this->culled_space;
 }
-vector3d* get_vector_cache_min(){
+vector3d* VectorDefiner::get_vector_cache_min(){
 	return this->min;
 }
-vector3d* get_vector_cache_max(){
+vector3d* VectorDefiner::get_vector_cache_max(){
 	return this->max;
 }
 
