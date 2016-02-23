@@ -205,7 +205,7 @@ std::vector<vector3d*>* VectorDefiner::cull_vectors(float xmin, float xmax, floa
 	this->min = mmin;
 	this->max = mmax;
 	this->cull_max = cmax;
-	this->cull_max = cmin;
+	this->cull_min = cmin;
 	//NOTE, I AM DELETING DATA
 	if(this->culled_vectors != NULL) {
 		delete this->culled_vectors;
