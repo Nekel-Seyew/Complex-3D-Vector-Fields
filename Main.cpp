@@ -56,9 +56,13 @@ void MySliders(int numSlide) {
 }
 void MyButtons(int button) {
 	switch (button) {
+	case(0) :
+		Framework::instance()->Init1();
+		break;
 	case(1) :
 		printf("Entering Input\n");
 		Framework::instance()->VectorInput= Framework::instance()->VectorDefinerString;
+		Framework::instance()->SpaceInput = Framework::instance()->SpaceDefinerString;
 		Framework::instance()->Init1();
 		break;
 	case(2) :
@@ -108,6 +112,7 @@ void InitGlui() {
 	TestGlui = GLUI_Master.create_glui((char *)Framework::instance()->GLUITITLE);
 	TestGlui->add_statictext((char *)Framework::instance()->GLUITITLE);
 	UserInput = TestGlui->add_panel("User Input Options");
+	TestGlui->add_checkbox_to_panel(UserInput, "Use Prism Space Definer", &Framework::instance()->usePrism);
 	Framework::instance()->edittext = TestGlui->add_edittext_to_panel(UserInput, "Space Definer Equation:", GLUI_EDITTEXT_TEXT, Framework::instance()->SpaceDefinerString);
 	Framework::instance()->edittext->set_w(400);
 	Framework::instance()->edittext2 = TestGlui->add_edittext_to_panel(UserInput,"Vector Definer Equation:", GLUI_EDITTEXT_TEXT, Framework::instance()->VectorDefinerString);
@@ -117,6 +122,7 @@ void InitGlui() {
 	spinNumPoints = TestGlui->add_spinner_to_panel(UserInput, "NumPoints", GLUI_SPINNER_INT, &Framework::instance()->NumPoints);
 	spinNumPoints->set_float_limits(5.0, 30.0);
 	spinNumPoints->set_speed(0.1);
+	TestGlui->add_button_to_panel(UserInput, "Redraw", 0, ((GLUI_Update_CB)MyButtons));
 	TestGlui->add_button_to_panel(UserInput, "Enter", 1, ((GLUI_Update_CB)MyButtons));
 	
 

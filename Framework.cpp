@@ -54,7 +54,12 @@ void Framework::Init1() {
 	
 	SDef = new SpaceDefiner();
 	VDef = new VectorDefiner();
-	thePoints = SDef->prism(2., 10, 2., 10, 2., 10); //need a start, stop, and end steps
+	if (usePrism) {
+		thePoints = SDef->prism(2., 10, 2., 10, 2., 10); //need a start, stop, and end steps
+	}
+	else {
+		thePoints = SDef->uv_surface(SpaceInput, 0., 1.,0.,1., 30., 30.);
+	}
 	VDef->give_input(VectorInput);
 	VDef->populate(thePoints);
 	theVectors = VDef->cull_vectors(-10.0, 10.0, -10.0, 10.0, -10.0, 10.0);
@@ -138,6 +143,7 @@ void Framework::RestoreDefaults() {
 	useAnimation = 0;
 	useIsosurfaces = 0;
 	useJitter = 1;
+	usePrism = 1;
 	NumPoints = 15;
 	spinVecMax = VECMAX;
 	spinVecMin = VECMIN;

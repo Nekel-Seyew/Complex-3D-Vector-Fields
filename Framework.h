@@ -96,7 +96,7 @@ protected:
 public:
 	void InitGraphics1();
 	void InitGraphics2();
-	char *SpaceInput = { "<1,1,1>" };
+	char *SpaceInput = { "<(cos(2 * 3.14159265359 * X) * sin(3.14159265359 * Y) * 1), (sin(2 * 3.14159265359 * X) * sin(3.14159265359 * Y) * 1), (cos(3.14159265359 * Y) * 1)>" };
 	char *VectorInput = { "<Y*Z*(Y*Y + Z*Z), X*Z*(X*X + Z*Z), Y*X*(Y*Y + X* X)>" };
 	struct node Nodes[NODE_MAX][NODE_MAX][NODE_MAX];
 	int nodeXCount;
@@ -157,6 +157,7 @@ public:
 	int useIsosurfaces;
 	int useStrokes;
 	int useJitter;
+	int usePrism;
 	unsigned int NumPoints;
 	float spinVecMin;
 	float spinVecMax;
