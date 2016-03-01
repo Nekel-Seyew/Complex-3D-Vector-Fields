@@ -61,6 +61,8 @@ protected:
 	std::vector<vector3d*>* thePoints;
 	std::vector<vector3d*>* theVectors;
 	VectorDefiner *VDef;
+	equation_factory * theEquation;
+	equation * VectorEquation;
 	//char *SpaceInput = { "Text here" };
 				// the glut id for the glui window
 	// fog parameters:
@@ -162,9 +164,11 @@ public:
 	void Display();
 	void Init1(int, char **);
 	void Init2();
-	
+	vector3d * VectorAtLocation(float, float, float);
+	vector3d * Framework::VectorAdvect(vector3d *);
 	void Framework::RestoreDefaults();
-
+	void Framework::Streamline(float, float, float);
+	int visitstream; 
 	//virtual void Update(void);
 	//virtual void Draw(void);
 
