@@ -8,5 +8,5 @@ public:
 	SphericalInterpolator();
 	~SphericalInterpolator();
 	
-	float* Build(float [8][3], float[3]);
+	static float* Interpolate(float [8][3], float[3]);
 };

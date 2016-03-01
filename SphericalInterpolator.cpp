@@ -11,8 +11,9 @@ SphericalInterpolator::~SphericalInterpolator()
 
 }
 
+//is static
 //the vectors must be in the order of xyz 000,100,010,001,101,011,110,111
-float* SphericalInterpolator::Build(float vectorInput[8][3], float relativePos[3])
+float* SphericalInterpolator::Interpolate(float vectorInput[8][3], float relativePos[3])
 {
 	float* vectorFinal = new float[3];
 	int i;

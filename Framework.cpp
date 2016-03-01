@@ -84,7 +84,11 @@ void Framework::Init1(int argc, char ** argv) {
 	VDef->give_input(VectorInput);
 	VDef->populate(thePoints);
 	theVectors = VDef->cull_vectors(-10.0, 10.0, -10.0, 10.0, -10.0, 10.0);
-	thePoints = VDef-> cull_space(thePoints, -10.0, 10.0, -10.0, 10.0, -10.0, 10.0);
+	thePoints = VDef-> cull_space(-10.0, 10.0, -10.0, 10.0, -10.0, 10.0);
+	theEquation = new equation_factory();
+	VectorEquation = theEquation->vector_equation(VectorInput);
+	//Only do this once for each specified list if you want to access the cullspace cullvector again use the corresponding cache returners
+	srand(time(NULL));
 	//glutDisplayFunc(DisplayFuncl);
 	//BuildClasses();
 }
@@ -148,8 +152,8 @@ void Framework::RestoreDefaults() {
 	RotMatrix[2][0] = RotMatrix[2][1] = RotMatrix[2][3] = 0.;
 	RotMatrix[3][0] = RotMatrix[3][1] = RotMatrix[3][3] = 0.;
 	RotMatrix[0][0] = RotMatrix[1][1] = RotMatrix[2][2] = RotMatrix[3][3] = 1.;
-	VECMIN = 1.f;
-	VECMAX = 10.f;
+	VECMIN = 0.0f;
+	VECMAX = 20.f;
 	VectorLowHigh[0] = VECMIN;
 	VectorLowHigh[1] = VECMAX;
 	ArrowLength = 1.0;
@@ -159,14 +163,17 @@ void Framework::RestoreDefaults() {
 	useStrokes = 0;
 	useAnimation = 0;
 	useIsosurfaces = 0;
+	useJitter = 1;
 	NumPoints = 15;
 	spinVecMax = VECMAX;
 	spinVecMin = VECMIN;
-	
+	visitstream = 0;
 }
 void Framework::Display() {
 	//printf("At the Beginning of Display, Vector Min is %f\n", VectorLowHigh[0]);
 	//printf("At the End of Display, Vector Max is %f\n", VectorLowHigh[1]);
+
+	
 
 	glutSetWindow(MainWindow);
 	//printf("DisplayStarted\n");
@@ -277,10 +284,11 @@ void Framework::Display() {
 	//Draw Points
 	if(usePoints){
 		glBegin(GL_POINTS);
+		srand(1234);
 		for (int i = 0; i < thePoints->size(); i++) {
 			float hsv[3], rgb[3];
 			// finally draw the point if it passes all the tests
-			hsv[0] = 240. - 240.* (theVectors->at(i)->magnitude() - 2.0) / (2.0 - -2.0); //These are hardcoded for now - put them on a slider
+			hsv[0] = 240. - 240.* (theVectors->at(i)->magnitude() - VDef->get_vector_cull_min()->magnitude()) / (VDef->get_vector_cull_max()->magnitude() - VDef->get_vector_cull_min()->magnitude()); //These are hardcoded for now - put them on a slider
 			//These are alternative Color Schemes - Fun to Experiment with
 			//hsv[0] = 240.- 240.* (Nodes[i][j][k].vecLength - vecmax)/(vecmax - vecmin);
 			//hsv[0] = 240. - 240.* (vecmax - Nodes[i][j][k].t) / (vecmax - vecmin);
@@ -290,27 +298,15 @@ void Framework::Display() {
 			color::HsvRgb(hsv, rgb);
 			glColor3fv(rgb);
 			float *vec = thePoints->at(i)->xyz();
-			glVertex3f(vec[0],vec[1],vec[2]);
-		}
-		/*
-		for (int i = 0; i < nodeXCount; i++) {
-			for (int j = 0; j < nodeYCount; j++) {
-				for (int k = 0; k < nodeZCount; k++) {
-					float hsv[3], rgb[3];
-					// finally draw the point if it passes all the tests
-					hsv[0] = 240. - 240.* (Nodes[i][j][k].vecLength - minvec) / (maxvec - minvec);
-					//These are alternative Color Schemes - Fun to Experiment with
-					//hsv[0] = 240.- 240.* (Nodes[i][j][k].vecLength - vecmax)/(vecmax - vecmin);
-					//hsv[0] = 240. - 240.* (vecmax - Nodes[i][j][k].t) / (vecmax - vecmin);
-					//hsv[0] = 240. - 240.* (TEMPMIN - Nodes[i][j][k].t) / (TEMPMAX - TEMPMIN);
-					hsv[1] = 1.;
-					hsv[2] = 1.;
-					color::HsvRgb(hsv, rgb);
-					glColor3fv(rgb);
-					glVertex3f(Nodes[i][j][k].x, Nodes[i][j][k].y, Nodes[i][j][k].z);
-				}
+			if (useJitter) {
+				glVertex3f(vec[0] + ((rand() % 10 -5 ) / 300.), vec[1] + ((rand() % 10 -5) /300.), vec[2] + ((rand() % 10 -5) /300.));
+				//printf("Jitter Jitter\n");
 			}
-		}*/
+			else {
+				//printf("No Jitter\n");
+				glVertex3f(vec[0], vec[1], vec[2]);
+			}
+		}
 		glEnd();
 	}
 	if (useArrows) {
@@ -320,7 +316,7 @@ void Framework::Display() {
 			}
 			float hsv[3], rgb[3];
 			// finally draw the point if it passes all the tests
-			hsv[0] = 240. - 240.* (theVectors->at(i)->magnitude() - 10.0) / (10 - -10.0); //These are hardcoded for now - put them on a slider or get them
+			hsv[0] = 240. - 240.* (theVectors->at(i)->magnitude() - VDef->get_vector_cull_min()->magnitude()) / (VDef->get_vector_cull_max()->magnitude() - VDef->get_vector_cull_min()->magnitude());
 			//These are alternative Color Schemes - Fun to Experiment with
 			//hsv[0] = 240.- 240.* (Nodes[i][j][k].vecLength - vecmax)/(vecmax - vecmin);
 			//hsv[0] = 240. - 240.* (vecmax - Nodes[i][j][k].t) / (vecmax - vecmin);
@@ -375,6 +371,31 @@ void Framework::Display() {
 			}
 		}
 	}
+	*/
+	if (useStreamlines) {
+		float xval;
+		float yval;
+		float zval;
+		int N = 5;
+		float streamstep = 2.0 / ((float)N - 1.0);
+		xval = -1.0; //assumes contained from -1 to 1
+		for (int i = 0; i < N; i++) {
+			yval = -1.0;
+			for (int j = 0; j < N; j++) {
+				zval = -1.0;
+				for (int k = 0; k < N; k++) {
+					float x, y, z;
+					x = xval;
+					y = yval;
+					z = zval;
+					Streamline(x, y, z);
+					zval += streamstep;
+				}
+				yval += streamstep;
+			}
+			xval += streamstep;
+		}
+	}
 	if (useIsosurfaces) {
 		float Sstar = maxvec - minvec / 2;
 		float SMax = maxvec;
@@ -386,7 +407,7 @@ void Framework::Display() {
 		glBegin(GL_LINES);
 		
 	}
-*/
+
 	//printf("DisplayDrewSomething\n");
 	// draw some gratuitous text that just rotates on top of the scene:
 
@@ -522,78 +543,6 @@ void Framework::InitGraphics2() {
 	// let glui take care of it in InitGlui( )
 }
 
-/*
-void Framework::InitGlui() {
-	const char * VECFORMAT = { "Speed: %5.2f - %5.2f" };
-	GLUI_Panel *panel;
-	GLUI_Rollout *settings;
-	GLUI_Panel *probePanel;
-	GLUI_RadioGroup *group;
-	GLUI_Rotation *rot;
-	GLUI_Rotation *rot2;
-	GLUI_Rotation *rot3;
-	GLUI_Translation *trans, *scale;
-	char tempstr[128];
-	char xstr[128];
-	char ystr[128];
-	char zstr[128];
-	char radstr[128];
-	char gradstr[128];
-	char vecstr[128];
-	// setup the glui window:
-
-	glutInitWindowPosition(INIT_WINDOW_SIZE + 50, 0);
-	Glui = GLUI_Master.create_glui((char *)GLUITITLE);
-	Glui->add_statictext((char *)GLUITITLE);
-	VectorSlider = Glui->add_slider(true, GLUI_HSLIDER_FLOAT, VectorLowHigh , 1, (GLUI_Update_CB)MySliders);
-	edittext = Glui-> add_edittext("Space Definer Equation:", GLUI_EDITTEXT_TEXT, SpaceDefinerString);
-	edittext->set_w(400);
-	edittext2 = Glui-> add_edittext("Vector Definer Equation:", GLUI_EDITTEXT_TEXT, VectorDefinerString);
-	edittext2->set_w(400);
-	edittext3 = Glui-> add_edittext("Vector Field Data File:", GLUI_EDITTEXT_TEXT, VectorDefinerString);
-	edittext3->set_w(400);
-	Glui->add_separator();
-	settings = Glui->add_rollout("Visual Settings", 0);
-	Glui->add_checkbox_to_panel(settings, "Axes", &AxesOn);
-
-	Glui->add_checkbox_to_panel(settings, "Perspective", &WhichProjection);
-
-	Glui->add_checkbox_to_panel(settings, "Intensity Depth Cue", &DepthCueOn);
-	Glui->add_separator();
-	panel = Glui->add_panel("Object Transformation");
-	Glui->add_column_to_panel(panel, 0);
-	rot2 = Glui->add_rotation_to_panel(panel, "Rotation", (float *)RotMatrix);
-
-	// allow the object to be spun via the glui rotation widget:
-
-	rot2 ->set_spin(1.0);
-	rot2->reset();
-	Glui->add_column_to_panel(panel, 0);
-	scale = Glui->add_translation_to_panel(panel, "Scale", GLUI_TRANSLATION_Y, &Scale2);
-	scale->set_speed(0.005f);
-
-	Glui->add_column_to_panel(panel, 0);
-	trans = Glui->add_translation_to_panel(panel, "Trans XY", GLUI_TRANSLATION_XY, &TransXYZ[0]);
-	trans->set_speed(0.05f);
-
-	Glui->add_column_to_panel(panel, 0);
-	trans = Glui->add_translation_to_panel(panel, "Trans Z", GLUI_TRANSLATION_Z, &TransXYZ[2]);
-	trans->set_speed(0.05f);
-
-	
-	VectorSlider->set_float_limits(VECMIN, VECMAX);
-	VectorSlider->set_w(200);		// good slider width
-	sprintf(vecstr, VECFORMAT, VectorLowHigh[0], VectorLowHigh[1]);
-	VectorLabel = Glui->add_statictext(vecstr);
-	
-	Glui->set_main_gfx_window(MainWindow);
-
-
-	// set the graphics window's idle function if needed:
-
-	GLUI_Master.set_glutIdleFunc(NULL);
-}
-*/
 void Framework::InitLists() {
 	AxesList = glGenLists(1);
 	glNewList(AxesList, GL_COMPILE);
@@ -617,29 +566,80 @@ Framework::Keyboard(unsigned char c, int x, int y)
 	glutSetWindow(MainWindow);
 	glutPostRedisplay();
 }
-void Framework::MySliders(int id)
-{
-	const char * VECFORMAT = { "Speed: %5.2f - %5.2f" };
-	char tempstr[128];
-	char xstr[128];
-	char ystr[128];
-	char zstr[128];
-	char radstr[128];
-	char gradstr[128];
-	char vecstr[128];
-
-	switch (id)
-	{
-
-	case 1:
-		sprintf(vecstr, VECFORMAT, VectorLowHigh[0], VectorLowHigh[1]);
-		VectorLabel->set_text(vecstr);
-		break;
-	}
-	glutSetWindow(MainWindow);
-	glutPostRedisplay();
+vector3d * Framework::VectorAtLocation(float xCord, float yCord, float zCord) {
+	float vectorP[3];
+	VectorEquation->eval(xCord, yCord, zCord, vectorP);
+	vector3d * returnVec = new vector3d(vectorP[0], vectorP[1], vectorP[2]);
+	//printf("The values of the returnVec are %f, %f, %f\n", returnVec->xyz()[0], returnVec->xyz()[1], returnVec->xyz()[2]);
+	return returnVec;
 }
-
+void Framework::Streamline(float x, float y, float z)
+{
+	visitstream++;
+	//printf("Visit Stream is %d\n", visitstream);
+	glLineWidth(2.);
+	glColor3f(0.0, 0.75, 0.75);
+	glPointSize(4);
+	glBegin(GL_POINTS);
+		glVertex3f(x, y, z);
+	glEnd();
+	vector3d * OriginalXYZ = new vector3d(x, y, z);
+	glBegin(GL_LINE_STRIP);
+	for (int m = 0; m < 100; m++)//change to MAXITERATIONS m = 100
+	{
+		float * coordsxyz = OriginalXYZ->xyz();
+		if (coordsxyz[0] < -2.0 || coordsxyz[0] > 2.0) break; //Eventually we want to tie this into the min and max for space? Kyle is there a way to do this?
+		if (coordsxyz[1] < -2.0 || coordsxyz[1] > 2.0) break;
+		if (coordsxyz[2] < -2.0 || coordsxyz[2]> 2.0) break;
+		
+		//glVertex3f(x, y, z);
+		glVertex3f(coordsxyz[0], coordsxyz[1], coordsxyz[2]);
+		//printf("Printing out a streamlinevertex %8.2f %8.2f %8.2f\n", x, y, z );
+		vector3d * vectorStream = VectorAtLocation(x, y, z);
+		float *Svec = vectorStream->xyz();
+		if (sqrt(SQR(Svec[0]) + SQR(Svec[1]) + SQR(Svec[2])) < 0.000001) {
+			//printf("Too small!\n");
+			break; }//what should I make SOME_TOLERANCE? needs more tolerance around 0.00001
+		OriginalXYZ = VectorAdvect(OriginalXYZ);
+		//printf("Printing out a streamlinevertex %8.2f %8.2f %8.2f\n", x, y, z);
+	}
+	glEnd();
+}
+vector3d * Framework::VectorAdvect(vector3d * inputVector) {
+	float TimeStep = 0.1;
+	float xa, ya, za;
+	float xb, yb, zb;
+	float vxa, vya, vza;
+	float vxb, vyb, vzb;
+	float vx, vy, vz;
+	float xc, yc, zc;
+	float *vec = inputVector->xyz();
+	xa = vec[0];
+	ya = vec[1];
+	za = vec[2];
+	vector3d * firstOutputVector = VectorAtLocation(xa, ya, za);
+	
+	float *firstvec = firstOutputVector->xyz();
+	vxa = firstvec[0];
+	vya = firstvec[1];
+	vza = firstvec[2];
+	xb = xa + TimeStep * vxa;
+	yb = ya + TimeStep * vya;
+	zb = za + TimeStep * vza;
+	vector3d * secondOutputVector = VectorAtLocation(xb, yb, zb);
+	float *secondvec = secondOutputVector->xyz();
+	vxb = secondvec[0];
+	vyb = secondvec[1];
+	vzb = secondvec[2];
+	vx = (vxa + vxb) / 2.;
+	vy = (vya + vyb) / 2.;
+	vz = (vza + vzb) / 2.;
+	xc = xa + TimeStep * vx;
+	yc = ya + TimeStep * vy;
+	zc = za + TimeStep * vz;
+	vector3d* vectorReturn = new vector3d(xc, yc, zc);
+	return vectorReturn;
+}
 void Framework::Axes(float length) {
 	// the stroke characters 'X' 'Y' 'Z' :
 
