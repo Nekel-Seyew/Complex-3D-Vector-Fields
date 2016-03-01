@@ -58,6 +58,8 @@ void MyButtons(int button) {
 	switch (button) {
 	case(1) :
 		printf("Entering Input\n");
+		Framework::instance()->VectorInput= Framework::instance()->VectorDefinerString;
+		Framework::instance()->Init1();
 		break;
 	case(2) :
 		printf(".obj file saved");
@@ -252,7 +254,8 @@ int main(int argc, char ** argv) {
 	//just here for compile checks. Remove when you want things to run
 	//Framework * myFramework = new Framework(argc, argv);
 	glutInit(&argc, argv);
-    Framework::instance()->Init1(argc, argv);
+	Framework::instance()->InitGraphics1();
+    Framework::instance()->Init1();
 	glutDisplayFunc(DisplayFuncl);
 	glutKeyboardFunc(KeyboardFuncl);
 	Framework::instance()->Init2();

@@ -56,8 +56,6 @@ struct node {
 class Framework{
 protected:
 	SpaceDefiner *SDef;
-	char *SpaceInput = { "<1,1,1>" };
-	char *VectorInput = { "<Y*Z*(Y*Y + Z*Z), X*Z*(X*X + Z*Z), Y*X*(Y*Y + X* X)>" };
 	std::vector<vector3d*>* thePoints;
 	std::vector<vector3d*>* theVectors;
 	VectorDefiner *VDef;
@@ -91,13 +89,15 @@ protected:
 	
 	void Axes(float);
 	void DoRasterString(float, float, float, char *);
-	void InitGraphics1();
-	void InitGraphics2();
+	
 	//void Framework::control_cb(int );
 	void Framework::MySliders(int);
 	
 public:
-
+	void InitGraphics1();
+	void InitGraphics2();
+	char *SpaceInput = { "<1,1,1>" };
+	char *VectorInput = { "<Y*Z*(Y*Y + Z*Z), X*Z*(X*X + Z*Z), Y*X*(Y*Y + X* X)>" };
 	struct node Nodes[NODE_MAX][NODE_MAX][NODE_MAX];
 	int nodeXCount;
 	int nodeYCount;
@@ -162,7 +162,7 @@ public:
 	float spinVecMax;
 	void Keyboard(unsigned char, int , int );
 	void Display();
-	void Init1(int, char **);
+	void Init1();
 	void Init2();
 	vector3d * VectorAtLocation(float, float, float);
 	vector3d * Framework::VectorAdvect(vector3d *);
