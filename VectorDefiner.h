@@ -46,4 +46,5 @@ public:
 	vector3d* get_vector_min();
 	vector3d* get_vector_max();
 
+
 };
