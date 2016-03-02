@@ -52,8 +52,7 @@ void Vector(float x, float y, float z, float *vxp, float *vyp, float *vzp) {
 
 void Framework::Init1() {
 	
-	SDef = new SpaceDefiner();
-	VDef = new VectorDefiner();
+	
 	if (usePrism) {
 		thePoints = SDef->prism(2., 10, 2., 10, 2., 10); //need a start, stop, and end steps
 	}
@@ -398,6 +397,79 @@ void Framework::Display() {
 		glColor3f(0.75, 0.5, 0.0);
 		glVertex3f(ProbeXVal, ProbeYVal, ProbeZVal);
 		glEnd();
+		float xvalues[10];
+		float yvalues[10];
+		float zvalues[10];
+		float xnextvalues[10];
+		float ynextvalues[10];
+		float znextvalues[10];
+
+		for (int l = 0; l < 10; l++) {
+			xvalues[l] = ProbeXVal + 0.01*(l);
+			yvalues[l] = ProbeYVal;
+			zvalues[l] = ProbeZVal;
+		}
+
+		for (int l = 0; l < 10; l++) {
+			xnextvalues[l] = ProbeXVal + 0.01*(l);
+			ynextvalues[l] = ProbeYVal;
+			znextvalues[l] = ProbeZVal;
+			vector3d * NextVector = new vector3d(xnextvalues[l], ynextvalues[l], znextvalues[l]);
+			NextVector = VectorAdvect(NextVector); //change this line
+			float  * newValues  = NextVector->xyz();
+			xnextvalues[l] = newValues[0];
+			ynextvalues[l] = newValues[1];
+			znextvalues[l] = newValues[2];
+			free(NextVector);
+		}
+		glPointSize(8);
+		glShadeModel(GL_SMOOTH);
+		glBegin(GL_QUADS);
+		glColor3f(0.0, 0.5, 0.0);
+		for (int n = 0; n < 100; n++) {
+			if ((xnextvalues[0] > 1.0 || xnextvalues[0] < -1.0) || (xnextvalues[1] > 1.0 || xnextvalues[1] < -1.0) || (xnextvalues[2] > 1.0 || xnextvalues[2] < -1.0) || (xnextvalues[3] > 1.0 || xnextvalues[3] < -1.0) || (xnextvalues[4] > 1.0 || xnextvalues[4] < -1.0)) {
+				break;
+			}
+			if ((xnextvalues[5] > 1.0 || xnextvalues[5] < -1.0) || (xnextvalues[6] > 1.0 || xnextvalues[6] < -1.0) || (xnextvalues[7] > 1.0 || xnextvalues[7] < -1.0) || (xnextvalues[8] > 1.0 || xnextvalues[8] < -1.0) || (xnextvalues[9] > 1.0 || xnextvalues[9] < -1.0)) {
+				break;
+			}
+			if ((ynextvalues[0] > 1.0 || ynextvalues[0] < -1.0) || (ynextvalues[1] > 1.0 || ynextvalues[1] < -1.0) || (ynextvalues[2] > 1.0 || ynextvalues[2] < -1.0) || (ynextvalues[3] > 1.0 || ynextvalues[3] < -1.0) || (ynextvalues[4] > 1.0 || ynextvalues[4] < -1.0)) {
+				break;
+			}
+			if ((ynextvalues[5] > 1.0 || ynextvalues[5] < -1.0) || (ynextvalues[6] > 1.0 || ynextvalues[6] < -1.0) || (ynextvalues[7] > 1.0 || ynextvalues[7] < -1.0) || (ynextvalues[8] > 1.0 || ynextvalues[8] < -1.0) || (ynextvalues[9] > 1.0 || ynextvalues[9] < -1.0)) {
+				break;
+			}
+			if ((zvalues[0] > 1.0 || zvalues[0] < -1.0) || (zvalues[1] > 1.0 || zvalues[1] < -1.0) || (zvalues[2] > 1.0 || zvalues[2] < -1.0) || (zvalues[3] > 1.0 || zvalues[3] < -1.0) || (zvalues[4] > 1.0 || zvalues[4] < -1.0)) {
+				break;
+			}
+			if ((znextvalues[5] > 1.0 || znextvalues[5] < -1.0) || (znextvalues[6] > 1.0 || znextvalues[6] < -1.0) || (znextvalues[7] > 1.0 || znextvalues[7] < -1.0) || (znextvalues[8] > 1.0 || znextvalues[8] < -1.0) || (znextvalues[9] > 1.0 || znextvalues[9] < -1.0)) {
+				break;
+			}
+			//draw the quads
+			for (int q = 0; q < 9; q++) {
+				glVertex3f(xvalues[q], yvalues[q], zvalues[q]);
+				glVertex3f(xnextvalues[q], ynextvalues[q], znextvalues[q]);
+				glVertex3f(xnextvalues[q + 1], ynextvalues[q + 1], znextvalues[q + 1]);
+				glVertex3f(xvalues[q + 1], yvalues[q + 1], zvalues[q + 1]);
+			}
+			//set = to next
+			for (int p = 0; p < 10; p++) {
+				xvalues[p] = xnextvalues[p];
+				yvalues[p] = ynextvalues[p];
+				zvalues[p] = znextvalues[p];
+			}
+			//advect next
+			for (int p = 0; p < 10; p++) {
+				vector3d * NextVector = new vector3d(xnextvalues[p], ynextvalues[p], znextvalues[p]);
+				NextVector = VectorAdvect(NextVector); //change this line
+				float  * newValues = NextVector->xyz();
+				xnextvalues[p] = newValues[0];
+				ynextvalues[p] = newValues[1];
+				znextvalues[p] = newValues[2];
+				free(NextVector);
+			}
+		}
+		glEnd();
 
 	}
 	if (useIsosurfaces) {
@@ -473,8 +545,9 @@ void Framework::InitGraphics1() {
 	glClearColor(BACKCOLOR[0], BACKCOLOR[1], BACKCOLOR[2], BACKCOLOR[3]);
 
 	glutSetWindow(MainWindow);
-	
-
+	//Creating the Space and Vector Definers - Perhaps this should be it's own function 
+	SDef = new SpaceDefiner();
+	VDef = new VectorDefiner();
 }
 
 void Framework::InitGraphics2() {
