@@ -33,14 +33,14 @@ void MySliders(int numSlide) {
 	printf("In Callback, Value of RadLowHigh[0] is %f, RadLowHigh[1] is %f,  VecTest[0] is %f, VecTest[1] is %f\n", TRadLowHigh[0], TRadLowHigh[1], VecTest[0], VecTest[1]);
 	switch (numSlide)
 	{
-	case(VecId):
+	case(VecId) :
 		printf("Before: Vector Min is %f\n", Framework::instance()->VectorLowHigh[0]);
 		printf("Before: Vector Max is %f\n", Framework::instance()->VectorLowHigh[1]);
 		sprintf(tempstr, Framework::instance()->VECFORMAT, Framework::instance()->VectorLowHigh[0], Framework::instance()->VectorLowHigh[1]);
 		Framework::instance()->VectorLabel->set_text(tempstr);
 		printf("Vector Min is %f\n", Framework::instance()->VectorLowHigh[0]);
 		printf("Vector Max is %f\n", Framework::instance()->VectorLowHigh[1]);
-		break; 
+		break;
 	case(RADID) :
 		printf("In RADID, Value of RadLowHigh[0] is %f, RadLowHigh[1] is %f,  VecTest[0] is %f, VecTest[1] is %f\n", TRadLowHigh[0], TRadLowHigh[1], VecTest[0], VecTest[1]);
 		TRadLowHigh[0] = VecTest[0];
@@ -48,16 +48,26 @@ void MySliders(int numSlide) {
 		sprintf(radstr, TRADIUSFORMAT, TRadLowHigh[0], TRadLowHigh[1]);
 		TRadLabel->set_text(radstr);
 		printf("After RadLowHigh and VecTest Set, Value of RadLowHigh[0] is %f, RadLowHigh[1] is %f,  VecTest[0] is %f, VecTest[1] is %f\n", TRadLowHigh[0], TRadLowHigh[1], VecTest[0], VecTest[1]);
-//		RadLabel2->set_text(radstr);
+		//		RadLabel2->set_text(radstr);
 		break;
 	}
-	glutSetWindow(Framework::instance()-> MainWindow);
+	glutSetWindow(Framework::instance()->MainWindow);
 	glutPostRedisplay();
 }
 void MyButtons(int button) {
 	switch (button) {
+	case(0) :
+		Framework::instance()->Init1();
+		break;
 	case(1) :
 		printf("Entering Input\n");
+		if ((int)strlen(Framework::instance()->VectorDefinerString) != 0) {
+			Framework::instance()->VectorInput = Framework::instance()->VectorDefinerString;
+		}
+		if ((int)strlen(Framework::instance()->SpaceDefinerString) != 0) {
+			Framework::instance()->SpaceInput = Framework::instance()->SpaceDefinerString;
+		}
+		Framework::instance()->Init1();
 		break;
 	case(2) :
 		printf(".obj file saved");
@@ -82,6 +92,7 @@ void InitGlui() {
 	GLUI_Panel * CustomSettings;
 	GLUI_Panel * OculusSettings;
 	GLUI_Rollout * OculusRollout;
+	GLUI_Rollout * ReadInFileRollout;
 	GLUI_Panel * ObjFileSettings;
 	GLUI_RadioGroup * group;
 	GLUI_Rotation *rot;
@@ -106,15 +117,18 @@ void InitGlui() {
 	TestGlui = GLUI_Master.create_glui((char *)Framework::instance()->GLUITITLE);
 	TestGlui->add_statictext((char *)Framework::instance()->GLUITITLE);
 	UserInput = TestGlui->add_panel("User Input Options");
+	TestGlui->add_checkbox_to_panel(UserInput, "Use Prism Space Definer", &Framework::instance()->usePrism);
 	Framework::instance()->edittext = TestGlui->add_edittext_to_panel(UserInput, "Space Definer Equation:", GLUI_EDITTEXT_TEXT, Framework::instance()->SpaceDefinerString);
 	Framework::instance()->edittext->set_w(400);
 	Framework::instance()->edittext2 = TestGlui->add_edittext_to_panel(UserInput,"Vector Definer Equation:", GLUI_EDITTEXT_TEXT, Framework::instance()->VectorDefinerString);
 	Framework::instance()->edittext2->set_w(400);
-	Framework::instance()->edittext3 = TestGlui->add_edittext_to_panel(UserInput, "Vector Field Data File:  ", GLUI_EDITTEXT_TEXT, Framework::instance()->VectorDefinerString);
+	ReadInFileRollout = TestGlui->add_rollout_to_panel(UserInput, "Vector Field Data File Name (Crash Warning)", 0);
+	Framework::instance()->edittext3 = TestGlui->add_edittext_to_panel(ReadInFileRollout, "Vector Field Data File:  ", GLUI_EDITTEXT_TEXT, Framework::instance()->VectorDefinerString);
 	Framework::instance()->edittext3->set_w(400);
 	spinNumPoints = TestGlui->add_spinner_to_panel(UserInput, "NumPoints", GLUI_SPINNER_INT, &Framework::instance()->NumPoints);
 	spinNumPoints->set_float_limits(5.0, 30.0);
 	spinNumPoints->set_speed(0.1);
+	TestGlui->add_button_to_panel(UserInput, "Redraw", 0, ((GLUI_Update_CB)MyButtons));
 	TestGlui->add_button_to_panel(UserInput, "Enter", 1, ((GLUI_Update_CB)MyButtons));
 	
 
@@ -252,7 +266,8 @@ int main(int argc, char ** argv) {
 	//just here for compile checks. Remove when you want things to run
 	//Framework * myFramework = new Framework(argc, argv);
 	glutInit(&argc, argv);
-    Framework::instance()->Init1(argc, argv);
+	Framework::instance()->InitGraphics1();
+    Framework::instance()->Init1();
 	glutDisplayFunc(DisplayFuncl);
 	glutKeyboardFunc(KeyboardFuncl);
 	Framework::instance()->Init2();

@@ -50,37 +50,16 @@ void Vector(float x, float y, float z, float *vxp, float *vyp, float *vzp) {
 
 }
 
-void Framework::Init1(int argc, char ** argv) {
-	InitGraphics1();
-
-	//temporary init. Should be in vector definer. remove with SQR above
+void Framework::Init1() {
 	
-	/*minvec = 100;
-	maxvec = 0;
-	for (int i = 0; i < nodeXCount; i++) {
-		for (int j = 0; j < nodeYCount; j++) {
-			for (int k = 0; k < nodeZCount; k++) {
-				Nodes[i][j][k].x = -1. + 2. * (float)i / (float)(nodeXCount - 1);
-				Nodes[i][j][k].y = -1. + 2. * (float)j / (float)(nodeYCount - 1);
-				Nodes[i][j][k].z = -1. + 2. * (float)k / (float)(nodeZCount - 1);
-				Nodes[i][j][k].rad = (sqrt(SQR((float)Nodes[i][j][k].x) + SQR((float)Nodes[i][j][k].y) + SQR((float)Nodes[i][j][k].z)));
-				Nodes[i][j][k].colorval = 0.1 + (0.9)* Nodes[i][j][k].rad;
-				Vector(Nodes[i][j][k].x, Nodes[i][j][k].y, Nodes[i][j][k].z, &Nodes[i][j][k].vx, &Nodes[i][j][k].vy, &Nodes[i][j][k].vz);
-				Nodes[i][j][k].vecLength = sqrt(SQR(Nodes[i][j][k].vx) + SQR(Nodes[i][j][k].vy) + SQR(Nodes[i][j][k].vz));
-				if (Nodes[i][j][k].vecLength < minvec) {
-					minvec = Nodes[i][j][k].vecLength;
-				}
-				if (Nodes[i][j][k].vecLength > maxvec) {
-					maxvec = Nodes[i][j][k].vecLength;
-				}
-			}
-		}
-	}
-	*/
-
 	SDef = new SpaceDefiner();
 	VDef = new VectorDefiner();
-	thePoints = SDef->prism(2., 10, 2., 10, 2., 10); //need a start, stop, and end steps
+	if (usePrism) {
+		thePoints = SDef->prism(2., 10, 2., 10, 2., 10); //need a start, stop, and end steps
+	}
+	else {
+		thePoints = SDef->uv_surface(SpaceInput, 0., 1.,0.,1., 30., 30.);
+	}
 	VDef->give_input(VectorInput);
 	VDef->populate(thePoints);
 	theVectors = VDef->cull_vectors(-10.0, 10.0, -10.0, 10.0, -10.0, 10.0);
@@ -164,6 +143,7 @@ void Framework::RestoreDefaults() {
 	useAnimation = 0;
 	useIsosurfaces = 0;
 	useJitter = 1;
+	usePrism = 1;
 	NumPoints = 15;
 	spinVecMax = VECMAX;
 	spinVecMin = VECMIN;
@@ -288,8 +268,13 @@ void Framework::Display() {
 		for (int i = 0; i < thePoints->size(); i++) {
 			float hsv[3], rgb[3];
 			// finally draw the point if it passes all the tests
-			hsv[0] = 240. - 240.* (theVectors->at(i)->magnitude() - VDef->get_vector_cull_min()->magnitude()) / (VDef->get_vector_cull_max()->magnitude() - VDef->get_vector_cull_min()->magnitude()); //These are hardcoded for now - put them on a slider
-			//These are alternative Color Schemes - Fun to Experiment with
+			float divisor = (VDef->get_vector_cull_max()->magnitude() - VDef->get_vector_cull_min()->magnitude());
+			if (divisor == 0) {
+				hsv[0] = 240. - 240.* ((theVectors->at(i)->magnitude() - VDef->get_vector_cull_min()->magnitude()) / 1.);
+			}
+			else {
+				hsv[0] = 240. - 240.* ((theVectors->at(i)->magnitude() - VDef->get_vector_cull_min()->magnitude()) / divisor);
+			}
 			//hsv[0] = 240.- 240.* (Nodes[i][j][k].vecLength - vecmax)/(vecmax - vecmin);
 			//hsv[0] = 240. - 240.* (vecmax - Nodes[i][j][k].t) / (vecmax - vecmin);
 			//hsv[0] = 240. - 240.* (TEMPMIN - Nodes[i][j][k].t) / (TEMPMAX - TEMPMIN);
@@ -316,7 +301,13 @@ void Framework::Display() {
 			}
 			float hsv[3], rgb[3];
 			// finally draw the point if it passes all the tests
-			hsv[0] = 240. - 240.* (theVectors->at(i)->magnitude() - VDef->get_vector_cull_min()->magnitude()) / (VDef->get_vector_cull_max()->magnitude() - VDef->get_vector_cull_min()->magnitude());
+			float divisor = (VDef->get_vector_cull_max()->magnitude() - VDef->get_vector_cull_min()->magnitude());
+			if (divisor == 0) {
+				hsv[0] = 240. - 240.* ((theVectors->at(i)->magnitude() - VDef->get_vector_cull_min()->magnitude()) / 1.);
+			}
+			else {
+				hsv[0] = 240. - 240.* ((theVectors->at(i)->magnitude() - VDef->get_vector_cull_min()->magnitude()) / divisor);
+			}
 			//These are alternative Color Schemes - Fun to Experiment with
 			//hsv[0] = 240.- 240.* (Nodes[i][j][k].vecLength - vecmax)/(vecmax - vecmin);
 			//hsv[0] = 240. - 240.* (vecmax - Nodes[i][j][k].t) / (vecmax - vecmin);
