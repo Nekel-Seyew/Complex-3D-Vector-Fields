@@ -102,7 +102,7 @@ public:
 	int nodeXCount;
 	int nodeYCount;
 	int nodeZCount;
-
+	float ProbeXVal, ProbeYVal, ProbeZVal;
 	float minvec;
 	float maxvec;
 	float testMinvec;
@@ -157,6 +157,7 @@ public:
 	int useIsosurfaces;
 	int useStrokes;
 	int useJitter;
+	int useProbe;
 	int usePrism;
 	unsigned int NumPoints;
 	float spinVecMin;

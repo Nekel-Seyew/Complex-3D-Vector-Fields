@@ -104,6 +104,9 @@ void InitGlui() {
 	GLUI_Spinner * spinMinVector;
 	GLUI_Spinner * spinMaxVector;
 	GLUI_Spinner * spinNumContours;
+	GLUI_Spinner * ProbeX;
+	GLUI_Spinner * ProbeY;
+	GLUI_Spinner * ProbeZ;
 	char tempstr[128];
 	char xstr[128];
 	char ystr[128];
@@ -231,6 +234,18 @@ void InitGlui() {
 	spinMaxVector->set_float_limits(Framework::instance()->spinVecMin, Framework::instance()->VECMAX);
 	spinMaxVector->set_speed(0.1);
 
+	TestGlui->add_checkbox_to_panel(StreamlineSettings, "Use Probe", &Framework::instance()->useProbe);
+	ProbeX = TestGlui->add_spinner_to_panel(StreamlineSettings, "XProbeValue",GLUI_SPINNER_FLOAT, &Framework::instance()->ProbeXVal);
+	ProbeX->set_float_limits(-1.0, 1.0);
+	ProbeX->set_speed(0.1);
+	
+	ProbeY = TestGlui->add_spinner_to_panel(StreamlineSettings, "YProbeValue", GLUI_SPINNER_FLOAT, &Framework::instance()->ProbeYVal);
+	ProbeY->set_float_limits(-1.0, 1.0);
+	ProbeY->set_speed(0.1);
+
+	ProbeZ = TestGlui->add_spinner_to_panel(StreamlineSettings, "ZProbeValue", GLUI_SPINNER_FLOAT, &Framework::instance()->ProbeZVal);
+	ProbeZ->set_float_limits(-1.0, 1.0);
+	ProbeZ->set_speed(0.1);
 	TestGlui->add_checkbox_to_panel(PointsSettings, "Use Jitter", &Framework::instance()->useJitter);
 
 	/*RadSlider = TestGlui->add_slider_to_panel(PointsSettings, true, GLUI_HSLIDER_FLOAT, RadLowHigh, RADID, (GLUI_Update_CB)MySliders);

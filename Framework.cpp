@@ -143,8 +143,10 @@ void Framework::RestoreDefaults() {
 	useAnimation = 0;
 	useIsosurfaces = 0;
 	useJitter = 1;
+	useProbe = 0;
 	usePrism = 1;
 	NumPoints = 15;
+	ProbeXVal = ProbeYVal = ProbeZVal = 0.0;
 	spinVecMax = VECMAX;
 	spinVecMin = VECMIN;
 	visitstream = 0;
@@ -386,6 +388,17 @@ void Framework::Display() {
 			}
 			xval += streamstep;
 		}
+	}
+	if (useProbe) {
+		glPointSize(8);
+		glBegin(GL_POINTS);
+		glColor3f(0.75, 0.5, 0.0);
+		glPointSize(8);
+		glBegin(GL_POINTS);
+		glColor3f(0.75, 0.5, 0.0);
+		glVertex3f(ProbeXVal, ProbeYVal, ProbeZVal);
+		glEnd();
+
 	}
 	if (useIsosurfaces) {
 		float Sstar = maxvec - minvec / 2;
