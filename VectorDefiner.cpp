@@ -147,6 +147,15 @@ void VectorDefiner::populate(std::vector<vector3d*>* space){
 				this->vectors->push_back(vectorFiled);
 			}
 			csv.close();//be polite
+
+
+			/*
+			
+			Zuhair Says:
+			magnitude = ax+by+c and direction = dx+ey+f, find (a,b,c,d,e,f) to minimize error, trained against your existing points
+
+			*/
+
 		}
 	}else{
 		float* f = new float[3];
