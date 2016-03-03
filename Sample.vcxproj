@@ -48,6 +48,9 @@
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\Release\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>.\dlib-18.18;$(IncludePath)</IncludePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Midl>
       <TypeLibraryName>.\Debug/Sample.tlb</TypeLibraryName>
@@ -129,6 +132,7 @@
   <ItemGroup>
     <ClCompile Include="color.cpp" />
     <ClCompile Include="ControlWindow.cpp" />
+    <ClCompile Include="dlib-18.18\dlib\all\source.cpp" />
     <ClCompile Include="equation.cpp" />
     <ClCompile Include="Framework.cpp" />
     <ClCompile Include="HeatMapCenters.cpp" />

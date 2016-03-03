@@ -4,6 +4,7 @@
 #include <sstream>
 #include <iostream>
 #include <fstream>
+#include <dlib/svm.h>
 
 //yes
 VectorDefiner::VectorDefiner()

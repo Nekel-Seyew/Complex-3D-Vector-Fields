@@ -63,6 +63,9 @@
     <ClCompile Include="equation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="dlib-18.18\dlib\all\source.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="vector3d.h">
