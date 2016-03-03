@@ -150,6 +150,7 @@ void Framework::RestoreDefaults() {
 	spinVecMin = VECMIN;
 	visitstream = 0;
 }
+
 void Framework::Display() {
 	//printf("At the Beginning of Display, Vector Min is %f\n", VectorLowHigh[0]);
 	//printf("At the End of Display, Vector Max is %f\n", VectorLowHigh[1]);
@@ -365,28 +366,8 @@ void Framework::Display() {
 	}
 	*/
 	if (useStreamlines) {
-		float xval;
-		float yval;
-		float zval;
-		int N = 5;
-		float streamstep = 2.0 / ((float)N - 1.0);
-		xval = -1.0; //assumes contained from -1 to 1
-		for (int i = 0; i < N; i++) {
-			yval = -1.0;
-			for (int j = 0; j < N; j++) {
-				zval = -1.0;
-				for (int k = 0; k < N; k++) {
-					float x, y, z;
-					x = xval;
-					y = yval;
-					z = zval;
-					Streamline(x, y, z);
-					zval += streamstep;
-				}
-				yval += streamstep;
-			}
-			xval += streamstep;
-		}
+		glCallList(StreamlineList);
+
 	}
 	if (useProbe) {
 		glPointSize(8);
@@ -627,6 +608,33 @@ void Framework::InitLists() {
 	Axes(1.5);
 	glLineWidth(1.);
 	glEndList();
+	StreamlineList = glGenLists(2);
+	glNewList(StreamlineList, GL_COMPILE);
+
+	float xval;
+	float yval;
+	float zval;
+	int N = 5;
+	float streamstep = 2.0 / ((float)N - 1.0);
+	xval = -1.0; //assumes contained from -1 to 1
+	for (int i = 0; i < N; i++) {
+		yval = -1.0;
+		for (int j = 0; j < N; j++) {
+			zval = -1.0;
+			for (int k = 0; k < N; k++) {
+				float x, y, z;
+				x = xval;
+				y = yval;
+				z = zval;
+				Streamline(x, y, z);
+				zval += streamstep;
+			}
+			yval += streamstep;
+		}
+		xval += streamstep;
+	}
+	glEndList();
+
 
 }
 void

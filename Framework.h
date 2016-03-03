@@ -125,6 +125,7 @@ public:
 	int	GluiWindow;
 	int AxesOn;
 	GLuint	AxesList;			// list to hold the axes
+	GLuint StreamlineList;
 	int DepthCueOn;
 	int WhichProjection;
 	float MINSCALE;
