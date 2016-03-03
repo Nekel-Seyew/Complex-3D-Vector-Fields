@@ -132,6 +132,7 @@
   <ItemGroup>
     <ClCompile Include="color.cpp" />
     <ClCompile Include="ControlWindow.cpp" />
+    <ClCompile Include="DataSetTrainer.cpp" />
     <ClCompile Include="dlib-18.18\dlib\all\source.cpp" />
     <ClCompile Include="equation.cpp" />
     <ClCompile Include="Framework.cpp" />
@@ -151,6 +152,7 @@
   <ItemGroup>
     <ClInclude Include="color.h" />
     <ClInclude Include="ControlWindow.h" />
+    <ClInclude Include="DataSetTrainer.h" />
     <ClInclude Include="equation.h" />
     <ClInclude Include="Framework.h" />
     <ClInclude Include="HeatMapCenters.h" />

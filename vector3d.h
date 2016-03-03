@@ -14,6 +14,12 @@ public:
 	float magnitude();
 	float magsqr();
 
+	enum MODE {
+		rect = 0,
+		cylindrical = 1,
+		spherical = 2
+	};
+
 private:
 	//variables
 	int    mode; //0-rect, 1-cylindrival, 2-spherical
