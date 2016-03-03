@@ -83,6 +83,8 @@ void InitGlui() {
 	GLUI_Panel *probePanel;
 	GLUI_Panel *graphicsOptions;
 	GLUI_Panel *UserInput;
+	GLUI_Rollout *UserInputRollout;
+	GLUI_Rollout * TransformationRollout;
 	GLUI_Rollout * ArrowSettings;
 	GLUI_Rollout * AnimationSettings;
 	GLUI_Rollout * IsosurfaceSettings;
@@ -93,6 +95,7 @@ void InitGlui() {
 	GLUI_Panel * OculusSettings;
 	GLUI_Rollout * OculusRollout;
 	GLUI_Rollout * ReadInFileRollout;
+	GLUI_Rollout * ColorOptions;
 	GLUI_Panel * ObjFileSettings;
 	GLUI_RadioGroup * group;
 	GLUI_Rotation *rot;
@@ -119,7 +122,8 @@ void InitGlui() {
 	glutInitWindowPosition(Framework::instance()->INIT_WINDOW_SIZE + 50, 0);
 	TestGlui = GLUI_Master.create_glui((char *)Framework::instance()->GLUITITLE);
 	TestGlui->add_statictext((char *)Framework::instance()->GLUITITLE);
-	UserInput = TestGlui->add_panel("User Input Options");
+	UserInputRollout = TestGlui->add_rollout("User Input  Options");
+	UserInput = TestGlui->add_panel_to_panel(UserInputRollout, "User Input Options");
 	TestGlui->add_checkbox_to_panel(UserInput, "Use Prism Space Definer", &Framework::instance()->usePrism);
 	Framework::instance()->edittext = TestGlui->add_edittext_to_panel(UserInput, "Space Definer Equation:", GLUI_EDITTEXT_TEXT, Framework::instance()->SpaceDefinerString);
 	Framework::instance()->edittext->set_w(400);
@@ -144,7 +148,8 @@ void InitGlui() {
 	TestGlui->add_column_to_panel(settings, 0);
 	TestGlui->add_checkbox_to_panel(settings, "Intensity Depth Cue", &Framework::instance()->DepthCueOn);
 	
-	panel = TestGlui->add_panel("Object Transformation");
+	TransformationRollout = TestGlui->add_rollout("Transformation", 1);
+	panel = TestGlui->add_panel_to_panel(TransformationRollout, "Object Transformation");
 	TestGlui->add_column_to_panel(panel, 0);
 	rot2 = TestGlui->add_rotation_to_panel(panel, "Rotation", (float *)Framework::instance()->RotMatrix);
 	rot2->set_spin(1.0);
@@ -161,6 +166,9 @@ void InitGlui() {
 	TestGlui->add_column_to_panel(panel, 0);
 	trans = TestGlui->add_translation_to_panel(panel, "Trans Z", GLUI_TRANSLATION_Z, &Framework::instance()->TransXYZ[2]);
 	trans->set_speed(0.05f);
+	TestGlui->add_separator();
+	ColorOptions = TestGlui->add_rollout("Color Settings", 0);
+	TestGlui->add_checkbox_to_panel(ColorOptions, "Alternate Color Scheme", &Framework::instance()->ColorAlternate);
 	TestGlui->add_separator();
 	graphicsOptions = TestGlui->add_panel("Grahics Options");
 	TestGlui->add_column_to_panel(graphicsOptions, 0);
@@ -287,7 +295,6 @@ int main(int argc, char ** argv) {
 	glutKeyboardFunc(KeyboardFuncl);
 	Framework::instance()->Init2();
 	// setup all the user interface stuff:
-	Framework::instance()->InitLists();
 	Framework::instance()->RestoreDefaults();
 	InitGlui();
 	printf("After Init, Vector Min is %f\n", Framework::instance()->VectorLowHigh[0]);

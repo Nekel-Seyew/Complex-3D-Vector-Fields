@@ -51,8 +51,6 @@ void Vector(float x, float y, float z, float *vxp, float *vyp, float *vzp) {
 }
 
 void Framework::Init1() {
-	
-	
 	if (usePrism) {
 		thePoints = SDef->prism(2., 10, 2., 10, 2., 10); //need a start, stop, and end steps
 	}
@@ -69,6 +67,7 @@ void Framework::Init1() {
 	srand(time(NULL));
 	//glutDisplayFunc(DisplayFuncl);
 	//BuildClasses();
+	Framework::instance()->InitLists();
 }
 
 void Framework::Init2() {
@@ -149,8 +148,40 @@ void Framework::RestoreDefaults() {
 	spinVecMax = VECMAX;
 	spinVecMin = VECMIN;
 	visitstream = 0;
+	ColorAlternate = 0;
 }
+float * Framework::Color(float VecMag) {
+	float hsv[3], rgb[3];
+	float min = VDef->get_vector_cull_min()->magnitude();
+	float max = VDef->get_vector_cull_max()->magnitude();
+	// finally draw the point if it passes all the tests
+	float divisor = (max - min);
+	if (ColorAlternate) {
+		if (divisor == 0) {
+			hsv[0] = 240. - 240.* ((max - VecMag) / 1.);
+		}
+		else {
+			hsv[0] = 240. - 240.* ((max - VecMag) / divisor);
+		}
+	}
+	else {
+		
+		if (divisor == 0) {
+			hsv[0] = 240. - 240.* ((VecMag- min ) / 1.);
+		}
+		else {
+			hsv[0] = 240. - 240.* ((VecMag - min) / divisor);
+		}
 
+	}
+	//hsv[0] = 240.- 240.* (Nodes[i][j][k].vecLength - vecmax)/(vecmax - vecmin);
+	//hsv[0] = 240. - 240.* (vecmax - Nodes[i][j][k].t) / (vecmax - vecmin);
+	//hsv[0] = 240. - 240.* (TEMPMIN - Nodes[i][j][k].t) / (TEMPMAX - TEMPMIN);
+	hsv[1] = 1.;
+	hsv[2] = 1.;
+	color::HsvRgb(hsv, rgb);
+	return rgb;
+}
 void Framework::Display() {
 	//printf("At the Beginning of Display, Vector Min is %f\n", VectorLowHigh[0]);
 	//printf("At the End of Display, Vector Max is %f\n", VectorLowHigh[1]);
@@ -268,22 +299,7 @@ void Framework::Display() {
 		glBegin(GL_POINTS);
 		srand(1234);
 		for (int i = 0; i < thePoints->size(); i++) {
-			float hsv[3], rgb[3];
-			// finally draw the point if it passes all the tests
-			float divisor = (VDef->get_vector_cull_max()->magnitude() - VDef->get_vector_cull_min()->magnitude());
-			if (divisor == 0) {
-				hsv[0] = 240. - 240.* ((theVectors->at(i)->magnitude() - VDef->get_vector_cull_min()->magnitude()) / 1.);
-			}
-			else {
-				hsv[0] = 240. - 240.* ((theVectors->at(i)->magnitude() - VDef->get_vector_cull_min()->magnitude()) / divisor);
-			}
-			//hsv[0] = 240.- 240.* (Nodes[i][j][k].vecLength - vecmax)/(vecmax - vecmin);
-			//hsv[0] = 240. - 240.* (vecmax - Nodes[i][j][k].t) / (vecmax - vecmin);
-			//hsv[0] = 240. - 240.* (TEMPMIN - Nodes[i][j][k].t) / (TEMPMAX - TEMPMIN);
-			hsv[1] = 1.;
-			hsv[2] = 1.;
-			color::HsvRgb(hsv, rgb);
-			glColor3fv(rgb);
+			glColor3fv(Color((theVectors->at(i)->magnitude())));
 			float *vec = thePoints->at(i)->xyz();
 			if (useJitter) {
 				glVertex3f(vec[0] + ((rand() % 10 -5 ) / 300.), vec[1] + ((rand() % 10 -5) /300.), vec[2] + ((rand() % 10 -5) /300.));
@@ -301,23 +317,7 @@ void Framework::Display() {
 			if ((theVectors->at(i)->magnitude()  < spinVecMin) || (theVectors->at(i)->magnitude() > spinVecMax)) {
 				continue;
 			}
-			float hsv[3], rgb[3];
-			// finally draw the point if it passes all the tests
-			float divisor = (VDef->get_vector_cull_max()->magnitude() - VDef->get_vector_cull_min()->magnitude());
-			if (divisor == 0) {
-				hsv[0] = 240. - 240.* ((theVectors->at(i)->magnitude() - VDef->get_vector_cull_min()->magnitude()) / 1.);
-			}
-			else {
-				hsv[0] = 240. - 240.* ((theVectors->at(i)->magnitude() - VDef->get_vector_cull_min()->magnitude()) / divisor);
-			}
-			//These are alternative Color Schemes - Fun to Experiment with
-			//hsv[0] = 240.- 240.* (Nodes[i][j][k].vecLength - vecmax)/(vecmax - vecmin);
-			//hsv[0] = 240. - 240.* (vecmax - Nodes[i][j][k].t) / (vecmax - vecmin);
-			//hsv[0] = 240. - 240.* (TEMPMIN - Nodes[i][j][k].t) / (TEMPMAX - TEMPMIN);
-			hsv[1] = 1.;
-			hsv[2] = 1.;
-			color::HsvRgb(hsv, rgb);
-			glColor3fv(rgb);
+			glColor3fv(Color((theVectors->at(i)->magnitude())));
 			float tail[3], head[3];
 			float *xyz = thePoints->at(i)->xyz();
 			float *veccompxyz = theVectors->at(i)->xyz();

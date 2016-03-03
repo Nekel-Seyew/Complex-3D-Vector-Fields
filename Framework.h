@@ -51,6 +51,11 @@ struct node {
 	float vx, vy, vz;
 	float vecLength;
 };
+struct VectorNode {
+	vector3d vector;
+	float magnitude;
+
+};
 
 //#pragma warning(default:C4005)
 class Framework{
@@ -112,9 +117,9 @@ public:
 	int UseXY;
 	int UseXZ;
 	int UseYZ;
-	struct node XYPlane[NODE_MAX][NODE_MAX];
-	struct node XZPlane[NODE_MAX][NODE_MAX];
-	struct node YZPlane[NODE_MAX][NODE_MAX];
+	//VectorNode XYPlane[NODE_MAX][NODE_MAX];
+	//VectorNode XZPlane[NODE_MAX][NODE_MAX];
+	//VectorNode YZPlane[NODE_MAX][NODE_MAX];
 	float XYPlanesZval;
 	float  XZPlanesYval;
 	float XZPlanesZval;
@@ -160,6 +165,7 @@ public:
 	int useJitter;
 	int useProbe;
 	int usePrism;
+	int ColorAlternate;
 	unsigned int NumPoints;
 	float spinVecMin;
 	float spinVecMax;
@@ -171,6 +177,7 @@ public:
 	vector3d * Framework::VectorAdvect(vector3d *);
 	void Framework::RestoreDefaults();
 	void Framework::Streamline(float, float, float);
+	float * Framework::Color(float);
 	int visitstream; 
 	//virtual void Update(void);
 	//virtual void Draw(void);
