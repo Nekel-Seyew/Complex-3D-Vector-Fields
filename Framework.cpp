@@ -426,23 +426,23 @@ void Framework::Display() {
 		glShadeModel(GL_SMOOTH);
 		glBegin(GL_QUADS);
 		glColor3f(0.0, 0.5, 0.0);
-		for (int n = 0; n < 100; n++) {
-			if ((xnextvalues[0] > 1.0 || xnextvalues[0] < -1.0) || (xnextvalues[1] > 1.0 || xnextvalues[1] < -1.0) || (xnextvalues[2] > 1.0 || xnextvalues[2] < -1.0) || (xnextvalues[3] > 1.0 || xnextvalues[3] < -1.0) || (xnextvalues[4] > 1.0 || xnextvalues[4] < -1.0)) {
+		for (int n = 0; n < 2.0; n++) {
+			if ((xnextvalues[0] > 2.0 || xnextvalues[0] < -2.0) || (xnextvalues[1] > 2.0 || xnextvalues[1] < -2.0) || (xnextvalues[2] > 2.0 || xnextvalues[2] < -2.0) || (xnextvalues[3] > 2.0 || xnextvalues[3] < -2.0) || (xnextvalues[4] > 2.0 || xnextvalues[4] < -2.0)) {
 				break;
 			}
-			if ((xnextvalues[5] > 1.0 || xnextvalues[5] < -1.0) || (xnextvalues[6] > 1.0 || xnextvalues[6] < -1.0) || (xnextvalues[7] > 1.0 || xnextvalues[7] < -1.0) || (xnextvalues[8] > 1.0 || xnextvalues[8] < -1.0) || (xnextvalues[9] > 1.0 || xnextvalues[9] < -1.0)) {
+			if ((xnextvalues[5] > 2.0 || xnextvalues[5] < -2.0) || (xnextvalues[6] > 2.0 || xnextvalues[6] < -2.0) || (xnextvalues[7] > 2.0 || xnextvalues[7] < -2.0) || (xnextvalues[8] > 2.0 || xnextvalues[8] < -2.0) || (xnextvalues[9] > 2.0 || xnextvalues[9] < -2.0)) {
 				break;
 			}
-			if ((ynextvalues[0] > 1.0 || ynextvalues[0] < -1.0) || (ynextvalues[1] > 1.0 || ynextvalues[1] < -1.0) || (ynextvalues[2] > 1.0 || ynextvalues[2] < -1.0) || (ynextvalues[3] > 1.0 || ynextvalues[3] < -1.0) || (ynextvalues[4] > 1.0 || ynextvalues[4] < -1.0)) {
+			if ((ynextvalues[0] > 2.0 || ynextvalues[0] < -2.0) || (ynextvalues[1] > 2.0 || ynextvalues[1] < -2.0) || (ynextvalues[2] > 2.0 || ynextvalues[2] < -2.0) || (ynextvalues[3] > 2.0 || ynextvalues[3] < -2.0) || (ynextvalues[4] > 2.0 || ynextvalues[4] < -2.0)) {
 				break;
 			}
-			if ((ynextvalues[5] > 1.0 || ynextvalues[5] < -1.0) || (ynextvalues[6] > 1.0 || ynextvalues[6] < -1.0) || (ynextvalues[7] > 1.0 || ynextvalues[7] < -1.0) || (ynextvalues[8] > 1.0 || ynextvalues[8] < -1.0) || (ynextvalues[9] > 1.0 || ynextvalues[9] < -1.0)) {
+			if ((ynextvalues[5] > 2.0 || ynextvalues[5] < -2.0) || (ynextvalues[6] > 2.0 || ynextvalues[6] < -2.0) || (ynextvalues[7] > 2.0 || ynextvalues[7] < -2.0) || (ynextvalues[8] > 2.0 || ynextvalues[8] < -2.0) || (ynextvalues[9] > 2.0 || ynextvalues[9] < -2.0)) {
 				break;
 			}
-			if ((zvalues[0] > 1.0 || zvalues[0] < -1.0) || (zvalues[1] > 1.0 || zvalues[1] < -1.0) || (zvalues[2] > 1.0 || zvalues[2] < -1.0) || (zvalues[3] > 1.0 || zvalues[3] < -1.0) || (zvalues[4] > 1.0 || zvalues[4] < -1.0)) {
+			if ((zvalues[0] > 2.0 || zvalues[0] < -2.0) || (zvalues[1] > 2.0 || zvalues[1] < -2.0) || (zvalues[2] > 2.0 || zvalues[2] < -2.0) || (zvalues[3] > 2.0 || zvalues[3] < -2.0) || (zvalues[4] > 2.0 || zvalues[4] < -2.0)) {
 				break;
 			}
-			if ((znextvalues[5] > 1.0 || znextvalues[5] < -1.0) || (znextvalues[6] > 1.0 || znextvalues[6] < -1.0) || (znextvalues[7] > 1.0 || znextvalues[7] < -1.0) || (znextvalues[8] > 1.0 || znextvalues[8] < -1.0) || (znextvalues[9] > 1.0 || znextvalues[9] < -1.0)) {
+			if ((znextvalues[5] > 2.0 || znextvalues[5] < -2.0) || (znextvalues[6] > 2.0 || znextvalues[6] < -2.0) || (znextvalues[7] > 2.0 || znextvalues[7] < -2.0) || (znextvalues[8] > 2.0 || znextvalues[8] < -2.0) || (znextvalues[9] > 2.0 || znextvalues[9] < -2.0)) {
 				break;
 			}
 			//draw the quads
@@ -489,7 +489,7 @@ void Framework::Display() {
 
 	glDisable(GL_DEPTH_TEST);
 	glColor3f(0., 1., 1.);
-	DoRasterString( 0., 1., 0., "Fantastic" );
+	//DoRasterString( 0., 1., 0., "Fantastic" );
 
 
 	// draw some gratuitous text that is fixed on the screen:
