@@ -30,9 +30,9 @@ private:
 	//Linear Stuff (really non linear)
 	//my weights
 	double a, b, c, d, e, f, g, h, i, j, k, l;
-	double linear_model(const input_vector& input, const parameter_vector& params);
-	double linear_residual(const std::pair<input_vector, double>& data, const parameter_vector& params);
-	parameter_vector residual_derivative(const std::pair<input_vector, double>& data, const parameter_vctor& params);
+	static double linear_model(const input_vector& input, const parameter_vector& params);
+	static double linear_residual(const std::pair<input_vector, double>& data, const parameter_vector& params);
+	static parameter_vector residual_derivative(const std::pair<input_vector, double>& data, const parameter_vector& params);
 
 public:
 	//make sure that they are the same size, and match up. thus space->at(i) matches to vectors->at(i)

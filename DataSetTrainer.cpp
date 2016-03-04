@@ -17,7 +17,7 @@ vector3d* DataSetTrainer::get_from_linear(vector3d* loc) {
 	float theta = (loc->xyz()[0] * this->e) + (loc->xyz()[1] * this->f) + (loc->xyz()[2] * this->g) + this->h;
 	float phi = (loc->xyz()[0] * this->i) + (loc->xyz()[1] * this->j) + (loc->xyz()[2] * this->k) + this->l;
 
-	vector3d* ret = new vector3d(r, theta, phi,vector3d::MODE::spherical);
+	vector3d* ret = new vector3d(r, theta, phi,vector3d::spherical);
 	ret->xyz();
 	return ret;
 }
@@ -38,9 +38,9 @@ double DataSetTrainer::linear_model(const input_vector& input, const parameter_v
 }
 
 double DataSetTrainer::linear_residual(const std::pair<input_vector, double>& data, const parameter_vector& params) {
-	return this->linear_model(data.first, params) - data.second;
+	return DataSetTrainer::linear_model(data.first, params) - data.second;
 }
-parameter_vector DataSetTrainer::residual_derivative(const std::pair<input_vector, double>& data, const parameter_vctor& params){
+parameter_vector DataSetTrainer::residual_derivative(const std::pair<input_vector, double>& data, const parameter_vector& params){
 	parameter_vector der;
 
 	const double p0 = params(0);
@@ -65,7 +65,7 @@ parameter_vector DataSetTrainer::residual_derivative(const std::pair<input_vecto
 //http://dlib.net/least_squares_ex.cpp.html
 void DataSetTrainer::train_linear() {
 	//going to need to do this three times. So, you know, will take time.
-	std::vector<std::pair<input_vector, double>> data_samples;
+	std::vector<std::pair<input_vector, double> > data_samples;
 	input_vector input;
 	//get radius
 	for(size_t i = 0; i<this->space->size(); i++){
@@ -75,12 +75,12 @@ void DataSetTrainer::train_linear() {
 		vector3d* vf = this->space->at(i);
 		float* vec = vf->rtp();//get data from vector, as radius, theta, phi
 		
-		data_samples.push_back(std::make_pair(input, vec[0]);//training for creating the radius
+		data_samples.push_back(std::make_pair(input, vec[0]));//training for creating the radius
 	}
 	//now get constants
 	parameter_vector x;
 	dlib::solve_least_squares_lm(dlib::objective_delta_stop_strategy(1e-7).be_verbose(), 
-		DataSetTrainder::residual, 
+		DataSetTrainer::linear_residual, 
 		DataSetTrainer::residual_derivative, 
 		data_samples, 
 		x);
@@ -99,11 +99,11 @@ void DataSetTrainer::train_linear() {
 		vector3d* vf = this->space->at(i);
 		float* vec = vf->rtp();//get data from vector, as radius, theta, phi
 		
-		data_samples.push_back(std::make_pair(input, vec[1]);//training for creating the theta
+		data_samples.push_back(std::make_pair(input, vec[1]));//training for creating the theta
 	}
 	parameter_vector x1;
 	dlib::solve_least_squares_lm(dlib::objective_delta_stop_strategy(1e-7).be_verbose(), 
-		DataSetTrainder::residual, 
+		DataSetTrainer::linear_residual, 
 		DataSetTrainer::residual_derivative, 
 		data_samples, 
 		x1);
@@ -114,7 +114,7 @@ void DataSetTrainer::train_linear() {
 	this->h = x1(3);
 	
 	//get phi
-	data_samples.clear()
+	data_samples.clear();
 	for(size_t i = 0; i<this->space->size(); i++){
 		vector3d* vp = this->space->at(i);
 		float* pos = vp->xyz();//get data from position
@@ -122,11 +122,11 @@ void DataSetTrainer::train_linear() {
 		vector3d* vf = this->space->at(i);
 		float* vec = vf->rtp();//get data from vector, as radius, theta, phi
 		
-		data_samples.push_back(std::make_pair(input, vec[2]);//training for creating the phi
+		data_samples.push_back(std::make_pair(input, vec[2]));//training for creating the phi
 	}
 	parameter_vector x2;
 	dlib::solve_least_squares_lm(dlib::objective_delta_stop_strategy(1e-7).be_verbose(), 
-		DataSetTrainder::residual, 
+		DataSetTrainer::linear_residual, 
 		DataSetTrainer::residual_derivative, 
 		data_samples, 
 		x2);
