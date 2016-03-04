@@ -35,7 +35,8 @@ private:
 	parameter_vector residual_derivative(const std::pair<input_vector, double>& data, const parameter_vctor& params);
 
 public:
-	DataSetTrainer(std::vector<vector3d*>* space, std::vector<vector3d*>* vectors);
+	//make sure that they are the same size, and match up. thus space->at(i) matches to vectors->at(i)
+        DataSetTrainer(std::vector<vector3d*>* space, std::vector<vector3d*>* vectors);
 	~DataSetTrainer();
 
 	void train_linear();

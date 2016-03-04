@@ -70,20 +70,70 @@ void DataSetTrainer::train_linear() {
 	//get radius
 	for(size_t i = 0; i<this->space->size(); i++){
 		vector3d* vp = this->space->at(i);
-		float* pos = vp->xyz();
-		input = pos[0], pos[1], pos[2];
+		float* pos = vp->xyz();//get data from position
+		input = pos[0], pos[1], pos[2]; //set input to be position
 		vector3d* vf = this->space->at(i);
-		float* vec = vf->rtp();
+		float* vec = vf->rtp();//get data from vector, as radius, theta, phi
 		
-		data_samples.push_back(std::make_pair(input, vec[0]);
+		data_samples.push_back(std::make_pair(input, vec[0]);//training for creating the radius
 	}
 	//now get constants
 	parameter_vector x;
-	dlib::solve_least_squares_lm(dlib::objective_delta_stop_strategy(1e-7).be_verbose(), DataSetTrainder::residual, DataSetTrainer::residual_derivative, data_samples, x);
+	dlib::solve_least_squares_lm(dlib::objective_delta_stop_strategy(1e-7).be_verbose(), 
+		DataSetTrainder::residual, 
+		DataSetTrainer::residual_derivative, 
+		data_samples, 
+		x);
+	//set constants for later use
 	this->a = x(0);
 	this->b = x(1);
 	this->c = x(2);
 	this->d = x(3);
 
 	//get theta
+	data_samples.clear();
+	for(size_t i = 0; i<this->space->size(); i++){
+		vector3d* vp = this->space->at(i);
+		float* pos = vp->xyz();//get data from position
+		input = pos[0], pos[1], pos[2];//set input to be position
+		vector3d* vf = this->space->at(i);
+		float* vec = vf->rtp();//get data from vector, as radius, theta, phi
+		
+		data_samples.push_back(std::make_pair(input, vec[1]);//training for creating the theta
+	}
+	parameter_vector x1;
+	dlib::solve_least_squares_lm(dlib::objective_delta_stop_strategy(1e-7).be_verbose(), 
+		DataSetTrainder::residual, 
+		DataSetTrainer::residual_derivative, 
+		data_samples, 
+		x1);
+	//set constants for later use
+	this->e = x1(0);
+	this->f = x1(1);
+	this->g = x1(2);
+	this->h = x1(3);
+	
+	//get phi
+	data_samples.clear()
+	for(size_t i = 0; i<this->space->size(); i++){
+		vector3d* vp = this->space->at(i);
+		float* pos = vp->xyz();//get data from position
+		input = pos[0], pos[1], pos[2];//set input to be position
+		vector3d* vf = this->space->at(i);
+		float* vec = vf->rtp();//get data from vector, as radius, theta, phi
+		
+		data_samples.push_back(std::make_pair(input, vec[2]);//training for creating the phi
+	}
+	parameter_vector x2;
+	dlib::solve_least_squares_lm(dlib::objective_delta_stop_strategy(1e-7).be_verbose(), 
+		DataSetTrainder::residual, 
+		DataSetTrainer::residual_derivative, 
+		data_samples, 
+		x2);
+	//set constants for later use
+	this->i = x2(0);
+	this->j = x2(1);
+	this->k = x2(2);
+	this->l = x2(3);
+	//AND DONE, FULLY TRAINED. MATHEMATICAL!!!!
 }
