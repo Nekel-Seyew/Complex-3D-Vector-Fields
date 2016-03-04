@@ -3,6 +3,9 @@ bin/
 bin-debug/
 bin-release/
 
+#we don't need this tracked.
+*.o
+
 # Other files and folders
 .settings/
 *.VC.opendb
