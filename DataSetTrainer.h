@@ -32,6 +32,7 @@ private:
 	double a, b, c, d, e, f, g, h, i, j, k, l;
 	double linear_model(const input_vector& input, const parameter_vector& params);
 	double linear_residual(const std::pair<input_vector, double>& data, const parameter_vector& params);
+	parameter_vector residual_derivative(const std::pair<input_vector, double>& data, const parameter_vctor& params);
 
 public:
 	DataSetTrainer(std::vector<vector3d*>* space, std::vector<vector3d*>* vectors);

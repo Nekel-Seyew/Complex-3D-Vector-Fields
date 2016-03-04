@@ -40,8 +40,50 @@ double DataSetTrainer::linear_model(const input_vector& input, const parameter_v
 double DataSetTrainer::linear_residual(const std::pair<input_vector, double>& data, const parameter_vector& params) {
 	return this->linear_model(data.first, params) - data.second;
 }
+parameter_vector DataSetTrainer::residual_derivative(const std::pair<input_vector, double>& data, const parameter_vctor& params){
+	parameter_vector der;
+
+	const double p0 = params(0);
+	const double p1 = params(1);
+	const double p2 = params(2);
+	const double p3 = params(3);
+
+	const double i0 = data.first(0);
+	const double i1 = data.first(1);
+	const double i2 = data.first(2);
+
+	const double temp = p0*i0 + p1*i1 + p2*i2 + p3;
+
+	der(0) = i0*2*temp;
+	der(1) = i1*2*temp;
+	der(2) = i2*2*temp;
+	der(3) = 2*temp;
+
+	return der;
+}
 
 //http://dlib.net/least_squares_ex.cpp.html
 void DataSetTrainer::train_linear() {
+	//going to need to do this three times. So, you know, will take time.
+	std::vector<std::pair<input_vector, double>> data_samples;
+	input_vector input;
+	//get radius
+	for(size_t i = 0; i<this->space->size(); i++){
+		vector3d* vp = this->space->at(i);
+		float* pos = vp->xyz();
+		input = pos[0], pos[1], pos[2];
+		vector3d* vf = this->space->at(i);
+		float* vec = vf->rtp();
+		
+		data_samples.push_back(std::make_pair(input, vec[0]);
+	}
+	//now get constants
+	parameter_vector x;
+	dlib::solve_least_squares_lm(dlib::objective_delta_stop_strategy(1e-7).be_verbose(), DataSetTrainder::residual, DataSetTrainer::residual_derivative, data_samples, x);
+	this->a = x(0);
+	this->b = x(1);
+	this->c = x(2);
+	this->d = x(3);
 
+	//get theta
 }
