@@ -18,6 +18,7 @@ VectorDefiner::VectorDefiner()
 	this->min = NULL;
 	this->max = NULL;
 	this->space = NULL;
+	this->data_trainer = NULL;
 }
 
 
@@ -28,6 +29,7 @@ VectorDefiner::~VectorDefiner()
 	delete this->filename;
 	delete this->eqr;
 	delete this->vectors;
+	delete this->data_trainer;
 }
 
 void VectorDefiner::give_input(std::string str){
@@ -115,13 +117,11 @@ std::string VectorDefiner::replacer(std::string subject, const std::string& sear
 void VectorDefiner::populate(std::vector<vector3d*>* space){
 	if(this->is_file){
 		//set up of internal data structures
-		if (this->space != NULL) {
-			delete this->space;
-		}
-		this->space = new std::vector<vector3d*>();
+		std::vector<vector3d*>* temp_space = new std::vector<vector3d*>();
 		if (this->vectors != NULL) {
 			delete this->vectors;
 		}
+		std::vector<vector3d*>* temp_vectors = new std::vector<vector3d*>();
 		this->vectors = new std::vector<vector3d*>();
 
 		//I mean, Ideally, the file would be formatted as: x_space,y_space,z_space,x_vector,y_vector,z_vector\n
@@ -130,7 +130,7 @@ void VectorDefiner::populate(std::vector<vector3d*>* space){
 		std::string line;
 		std::ifstream csv(this->filename->c_str());
 		std::string newline("\n");
-		std::string space(" ");
+		std::string t_space(" ");
 		if(csv.is_open()){ //read the file if it's open
 			while(std::getline(csv, line)){ //read the file
 				//line has the data inside of it now. like a civilized language and library should
@@ -139,25 +139,28 @@ void VectorDefiner::populate(std::vector<vector3d*>* space){
 				std::string token;
 				while (std::getline(ss, token, ',')) {
 					//adds the newline, also replaces any newline tokens, which would be bad to have at the end.
-					eqrs.push_back(replacer(token, newline, space));
+					eqrs.push_back(replacer(token, newline, t_space));
 				}
 				//ok, now the items are inside eqrs;
 				vector3d* spatial = new vector3d(atof(eqrs[0].c_str()), atof(eqrs[1].c_str()), atof(eqrs[2].c_str()));
 				vector3d* vectorFiled = new vector3d(atof(eqrs[3].c_str()), atof(eqrs[4].c_str()), atof(eqrs[5].c_str()));
-				this->space->push_back(spatial);
-				this->vectors->push_back(vectorFiled);
+				temp_space->push_back(spatial);
+				temp_vectors->push_back(vectorFiled);
 			}
 			csv.close();//be polite
-
-
-			/*
-			
-			Zuhair Says:
-			magnitude = ax+by+c and direction = dx+ey+f, find (a,b,c,d,e,f) to minimize error, trained against your existing points
-
-			*/
-
 		}
+
+		//start training data
+		this->data_trainer = new DataSetTrainer(temp_space, temp_vectors);
+		this->data_trainer->train_linear();
+
+		//use trained data to get vectors
+		for (size_t i = 0; i < space->size(); ++i) {
+			vector3d* vec = this->data_trainer->get_from_linear(space->at(i));
+			this->vectors->push_back(vec);
+		}
+		this->space = space;
+		//all done
 	}else{
 		float* f = new float[3];
 			

@@ -5,6 +5,7 @@
 #include <vector>
 #include "vector3d.h"
 #include "equation.h"
+#include "DataSetTrainer.h"
 class VectorDefiner {
 protected:
 //yes
@@ -17,6 +18,7 @@ protected:
 	equation* eqr;
 	std::string* filename;
 	bool is_file;
+	DataSetTrainer* data_trainer;
 
 	//absolute cache of min and max magnitude vector
 	vector3d* min;

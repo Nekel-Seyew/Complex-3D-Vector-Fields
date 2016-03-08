@@ -10,6 +10,8 @@ DataSetTrainer::DataSetTrainer(std::vector<vector3d*>* space, std::vector<vector
 
 DataSetTrainer::~DataSetTrainer()
 {
+	delete this->space;
+	delete this->vectors;
 }
 
 vector3d* DataSetTrainer::get_from_linear(vector3d* loc) {
