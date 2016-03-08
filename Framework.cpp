@@ -155,6 +155,37 @@ void Framework::RestoreDefaults() {
 	visitstream = 0;
 	ColorAlternate = 0;
 }
+void
+Framework::CheckGlErrors(const char* caller)
+{
+	unsigned int glerr = glGetError();
+	if (glerr == GL_NO_ERROR)
+		return;
+	fprintf(stderr, "GL Error discovered from caller ‘%s‘: ", caller);
+	switch (glerr)
+	{
+	case GL_INVALID_ENUM:
+		fprintf(stderr, "Invalid enum.\n");
+		break;
+	case GL_INVALID_VALUE:
+		fprintf(stderr, "Invalid value.\n");
+		break;
+	case GL_INVALID_OPERATION:
+		fprintf(stderr, "Invalid Operation.\n");
+		break;
+	case GL_STACK_OVERFLOW:
+		fprintf(stderr, "Stack overflow.\n");
+		break;
+	case GL_STACK_UNDERFLOW:
+		fprintf(stderr, "Stack underflow.\n");
+		break;
+	case GL_OUT_OF_MEMORY:
+		fprintf(stderr, "Out of memory.\n");
+		break;
+	default:
+		fprintf(stderr, "Unknown OpenGL error : %d(0x % 0x)\n", glerr, glerr);
+	}
+}
 float * Framework::Color(float VecMag) {
 	float hsv[3], rgb[3];
 	float min = VDef->get_vector_cull_min()->magnitude();
@@ -313,6 +344,7 @@ void Framework::Display() {
 			else {
 				//printf("No Jitter\n");
 				glVertex3f(vec[0], vec[1], vec[2]);
+				//Pass in a Vec3 Here to the Vertex Shader
 			}
 		}
 		glEnd();
@@ -465,8 +497,11 @@ void Framework::Display() {
 		float scale = 2.0 / numContours;
 		float hsv[3];
 		float rgb[3];
-		glShadeModel(GL_SMOOTH);
-		glBegin(GL_LINES);
+		//glShadeModel(GL_SMOOTH);
+		//glBegin(GL_LINES);
+		glUseProgram(program);
+		printf("Shader Program Running\n");
+		glUseProgram(0);
 		
 	}
 
@@ -534,8 +569,121 @@ void Framework::InitGraphics1() {
 	//Creating the Space and Vector Definers - Perhaps this should be it's own function 
 	SDef = new SpaceDefiner();
 	VDef = new VectorDefiner();
-}
 
+	
+
+}
+void Framework::SetUpShaders() {
+	GLenum err = glewInit();
+	//Creating Vertex Shader
+	FILE *fpv = fopen("vshader.glsl", "r");
+	if (fpv == NULL) {}
+	fseek(fpv, 0, SEEK_END);
+	int vnumBytes = ftell(fpv); // length of file
+	GLchar * vbuffer = new GLchar[vnumBytes + 1];
+	rewind(fpv); // same as: “fseek( in, 0, SEEK_SET )”
+	fread(vbuffer, 1, vnumBytes, fpv);
+	fclose(fpv);
+	vbuffer[vnumBytes] = '\0'; // the entire file is now in a byte string
+	int vstatus;
+	int vlogLength;
+	GLuint vertShader = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(vertShader, 1, (const GLchar **)&vbuffer, NULL);
+	delete[] vbuffer;
+	glCompileShader(vertShader);
+	CheckGlErrors("Vertex Shader 1");
+	glGetShaderiv(vertShader, GL_COMPILE_STATUS, &vstatus);
+	if (vstatus == GL_FALSE)
+	{
+		printf( "Vertex shader compilation failed.\n");
+		glGetShaderiv(vertShader, GL_INFO_LOG_LENGTH, &vlogLength);
+		GLchar *mylog = new GLchar[vlogLength];
+		glGetShaderInfoLog(vertShader, vlogLength, NULL, mylog);
+		printf("\n%s\n", mylog);
+		delete[] mylog;
+		exit(1);
+	}
+	CheckGlErrors("Vertex Shader 2");
+	//Making The Fragment Shader:
+	FILE *fpf = fopen("fshader.glsl", "r");
+	if (fpf == NULL) {}
+	fseek(fpf, 0, SEEK_END);
+	int fnumBytes = ftell(fpf); // length of file
+	GLchar * fbuffer = new GLchar[fnumBytes + 1];
+	rewind(fpf); // same as: “fseek( in, 0, SEEK_SET )”
+	fread(fbuffer, 1, fnumBytes, fpf);
+	fclose(fpf);
+	fbuffer[fnumBytes] = '\0'; // the entire file is now in a byte string
+	int fstatus;
+	int flogLength;
+	GLuint fragShader = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(fragShader, 1, (const GLchar **)&fbuffer, NULL);
+	delete[] fbuffer;
+	glCompileShader(fragShader);
+	CheckGlErrors("Fragment Shader 1");
+	glGetShaderiv(fragShader, GL_COMPILE_STATUS, &fstatus);
+	if (fstatus == GL_FALSE)
+	{
+		fprintf(stderr, "Fragement shader compilation failed.\n");
+		glGetShaderiv(fragShader, GL_INFO_LOG_LENGTH, &flogLength);
+		GLchar *mylog = new GLchar[flogLength];
+		glGetShaderInfoLog(fragShader, flogLength, NULL, mylog);
+		fprintf(stderr, "\n%s\n", mylog);
+		delete[] mylog;
+		exit(1);
+	}
+	CheckGlErrors("Fragment Shader 2");
+	int pstatus;
+	int plogLength;
+	 program = glCreateProgram();
+	glAttachShader(program, vertShader);
+	//glAttachShader(program, fragShader);
+	glLinkProgram(program);
+	CheckGlErrors("Shader Program 1");
+	glGetProgramiv(program, GL_LINK_STATUS, &pstatus);
+	if (pstatus == GL_FALSE)
+	{
+		fprintf(stderr, "Link failed.\n");
+		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &plogLength);
+		GLchar * mylog2 = new GLchar[plogLength];
+		glGetProgramInfoLog(program, plogLength, NULL, mylog2);
+		fprintf(stderr, "\n%s\n", mylog2);
+		delete[] mylog2;
+		exit(1);
+	}
+	CheckGlErrors("Shader Program 2");
+	glValidateProgram(program);
+	glGetProgramiv(program, GL_VALIDATE_STATUS, &pstatus);
+	fprintf(stderr, "Program is %s.\n", pstatus == GL_FALSE ? "invalid" : "valid");
+	//Do Not Use Program Until Shaders are Ready
+	color4 light_position(1.5, 1.5, 2.0, 1.0);
+	color4 light_ambient(0.2, 0.2, 0.2, 1.0);
+	color4 light_diffuse(1.0, 1.0, 1.0, 1.0);
+	color4 light_specular(1.0, 1.0, 1.0, 1.0);
+
+	color4 material_ambient(0.0, 0.0, 1.0, 1.0);
+	color4 material_diffuse(0.0, 0.8, 1.0, 1.0);
+	color4 material_specular(1.0, 0.8, 0.0, 1.0);
+	float  material_shininess = 100.0;
+
+	color4 ambient_product = light_ambient * material_ambient;
+	color4 diffuse_product = light_diffuse * material_diffuse;
+	color4 specular_product = light_specular * material_specular;
+	glUniform4fv(glGetUniformLocation(program, "AmbientProduct"),
+		1, &ambient_product[0]);
+	glUniform4fv(glGetUniformLocation(program, "DiffuseProduct"),
+		1, &diffuse_product[0]);
+	glUniform4fv(glGetUniformLocation(program, "SpecularProduct"),
+		1, &specular_product[0]);
+	glUniform4fv(glGetUniformLocation(program, "LightPosition"),
+		1, &light_position[0]);
+	glUniform1f(glGetUniformLocation(program, "Shininess"),
+		material_shininess);
+	
+	GLuint modelViewLoc = glGetUniformLocation(program, "ModelView"); //this returns the index of where somthing is on the shader
+	GLuint projectionLoc = glGetUniformLocation(program, "Projection");
+
+}
 void Framework::InitGraphics2() {
 	// setup the display mode:
 	// ( *must* be done before call to glutCreateWindow( ) )
@@ -604,6 +752,7 @@ void Framework::InitGraphics2() {
 	// DO NOT SET THE GLUT IDLE FUNCTION HERE !!
 	// glutIdleFunc( NULL );
 	// let glui take care of it in InitGlui( )
+	SetUpShaders();
 }
 
 void Framework::InitLists() {

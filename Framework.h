@@ -5,9 +5,11 @@
 //#include "Drawable.h"
 //Our Header Files
 
-
+#include "glew.h"
 #include <GL/gl.h>
 #include <GL/glu.h>
+#include <glm.hpp>
+#include <gtc/matrix_transform.hpp>
 #include "glut.h"
 #include "glui.h"
 
@@ -22,7 +24,8 @@
 
 #include "vector3d.h"
 #include "color.h"
-
+typedef glm::vec4 point4;
+typedef glm::vec4 color4;
 #define VecId 1
 #define NODE_MAX 20
 
@@ -166,6 +169,7 @@ public:
 	int useProbe;
 	int usePrism;
 	int ColorAlternate;
+	GLuint program;
 	unsigned int NumPoints;
 	float spinVecMin;
 	float spinVecMax;
@@ -176,9 +180,12 @@ public:
 	vector3d * VectorAtLocation(float, float, float);
 	vector3d * Framework::VectorAdvect(vector3d *);
 	void Framework::RestoreDefaults();
+	void Framework::SetUpShaders();
 	void Framework::Streamline(float, float, float);
 	float * Framework::Color(float);
 	int visitstream; 
+
+	void Framework::CheckGlErrors(const char*);
 	//virtual void Update(void);
 	//virtual void Draw(void);
 
