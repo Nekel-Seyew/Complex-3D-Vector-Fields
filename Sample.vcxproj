@@ -132,7 +132,11 @@
   <ItemGroup>
     <ClCompile Include="color.cpp" />
     <ClCompile Include="ControlWindow.cpp" />
-    <ClCompile Include="DataSetTrainer.cpp" />
+    <ClCompile Include="DataSetTrainer.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
+      <IntrinsicFunctions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</IntrinsicFunctions>
+      <FavorSizeOrSpeed Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Speed</FavorSizeOrSpeed>
+    </ClCompile>
     <ClCompile Include="dlib-18.18\dlib\all\source.cpp" />
     <ClCompile Include="equation.cpp" />
     <ClCompile Include="Framework.cpp" />

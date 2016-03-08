@@ -36,7 +36,7 @@ private:
 
 public:
 	//make sure that they are the same size, and match up. thus space->at(i) matches to vectors->at(i)
-        DataSetTrainer(std::vector<vector3d*>* space, std::vector<vector3d*>* vectors);
+    DataSetTrainer(std::vector<vector3d*>* space, std::vector<vector3d*>* vectors);
 	~DataSetTrainer();
 
 	void train_linear();
