@@ -424,6 +424,7 @@
     <None Include="glm\gtx\vector_query.inl" />
     <None Include="glm\gtx\wrap.inl" />
     <None Include="probe.frag" />
+    <None Include="probe.glsl" />
     <None Include="probe.vert" />
     <None Include="vshader.glsl" />
   </ItemGroup>

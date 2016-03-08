@@ -568,6 +568,26 @@ void Framework::InitGraphics1() {
 	
 
 }
+void Framework::SetupVertexBuffers() {
+
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);  //bind to make it active.
+
+							 // Create and initialize the buffers objects on the card
+	// Two buffers - one for colors and one for vertices 
+	glGenBuffers(2, buffer);
+
+	// Bind makes it the active VBO
+	glBindBuffer(GL_ARRAY_BUFFER, buffer[0]);
+
+	// Copy the vertex data into our buffer on the card.
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	//Bind the color buffer and then copy the color data into the buffer on the card 
+	glBindBuffer(GL_ARRAY_BUFFER, buffer[1]);
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(vectors), vectors, GL_STATIC_DRAW);
+}
+
 void Framework::SetUpShaders() {
 	GLenum err = glewInit();
 	//Creating Vertex Shader
