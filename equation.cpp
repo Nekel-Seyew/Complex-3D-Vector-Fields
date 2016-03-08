@@ -108,6 +108,9 @@ std::string equation_factory::replacer(std::string subject, const std::string& s
 }
 
 equation* equation_factory::vector_equation(std::string eq){
+	for (size_t i = 0; i < eq.size(); ++i) {//basically, if it's not an equation, don't bother parsing. It's not going to end well.
+		if (eq.at(i) == '\\' || eq.at(i) == ':') return NULL;
+	}
 	std::vector<std::string> eqrs;
 	std::istringstream ss(eq);
 	std::string token;

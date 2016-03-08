@@ -48,5 +48,6 @@ public:
 	vector3d* get_vector_min();
 	vector3d* get_vector_max();
 
-
+	bool am_file();
+	vector3d* get_vector_at_pos(vector3d* vec);
 };

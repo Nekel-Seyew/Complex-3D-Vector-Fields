@@ -139,7 +139,7 @@ void VectorDefiner::populate(std::vector<vector3d*>* space){
 				std::string token;
 				while (std::getline(ss, token, ',')) {
 					//adds the newline, also replaces any newline tokens, which would be bad to have at the end.
-					eqrs.push_back(replacer(token, newline, t_space));
+					eqrs.push_back(replacer(replacer(token, newline, t_space),",",t_space));
 				}
 				//ok, now the items are inside eqrs;
 				vector3d* spatial = new vector3d(atof(eqrs[0].c_str()), atof(eqrs[1].c_str()), atof(eqrs[2].c_str()));
@@ -267,4 +267,11 @@ vector3d* VectorDefiner::get_vector_min() {
 }
 vector3d* VectorDefiner::get_vector_max() {
 	return this->max;
+}
+
+bool VectorDefiner::am_file() {
+	return this->is_file;
+}
+vector3d* VectorDefiner::get_vector_at_pos(vector3d* vec) {
+	return this->data_trainer->get_from_linear(vec);
 }

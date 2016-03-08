@@ -61,8 +61,13 @@ void Framework::Init1() {
 	VDef->populate(thePoints);
 	theVectors = VDef->cull_vectors(-10.0, 10.0, -10.0, 10.0, -10.0, 10.0);
 	thePoints = VDef-> cull_space(-10.0, 10.0, -10.0, 10.0, -10.0, 10.0);
-	theEquation = new equation_factory();
-	VectorEquation = theEquation->vector_equation(VectorInput);
+	if (!VDef->am_file()) {
+		theEquation = new equation_factory();
+		VectorEquation = theEquation->vector_equation(VectorInput);
+	}
+	else {
+		VectorEquation = NULL;
+	}
 	//Only do this once for each specified list if you want to access the cullspace cullvector again use the corresponding cache returners
 	srand(time(NULL));
 	//glutDisplayFunc(DisplayFuncl);
@@ -651,10 +656,17 @@ Framework::Keyboard(unsigned char c, int x, int y)
 	glutSetWindow(MainWindow);
 	glutPostRedisplay();
 }
-vector3d * Framework::VectorAtLocation(float xCord, float yCord, float zCord) {
+vector3d* Framework::VectorAtLocation(float xCord, float yCord, float zCord) {
 	float vectorP[3];
-	VectorEquation->eval(xCord, yCord, zCord, vectorP);
-	vector3d * returnVec = new vector3d(vectorP[0], vectorP[1], vectorP[2]);
+	vector3d* returnVec;
+	if (VectorEquation != NULL) {
+		VectorEquation->eval(xCord, yCord, zCord, vectorP);
+		returnVec = new vector3d(vectorP[0], vectorP[1], vectorP[2]);
+	}else if(VDef->am_file()) {
+		vector3d* temp = new vector3d(xCord, yCord, zCord);
+		returnVec = VDef->get_vector_at_pos(temp);
+		delete temp;
+	}
 	//printf("The values of the returnVec are %f, %f, %f\n", returnVec->xyz()[0], returnVec->xyz()[1], returnVec->xyz()[2]);
 	return returnVec;
 }

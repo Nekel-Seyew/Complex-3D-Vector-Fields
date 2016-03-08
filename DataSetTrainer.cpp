@@ -74,7 +74,7 @@ void DataSetTrainer::train_linear() {
 		vector3d* vp = this->space->at(i);
 		float* pos = vp->xyz();//get data from position
 		input = pos[0], pos[1], pos[2]; //set input to be position
-		vector3d* vf = this->space->at(i);
+		vector3d* vf = this->vectors->at(i);
 		float* vec = vf->rtp();//get data from vector, as radius, theta, phi
 		
 		data_samples.push_back(std::make_pair(input, vec[0]));//training for creating the radius
@@ -98,7 +98,7 @@ void DataSetTrainer::train_linear() {
 		vector3d* vp = this->space->at(i);
 		float* pos = vp->xyz();//get data from position
 		input = pos[0], pos[1], pos[2];//set input to be position
-		vector3d* vf = this->space->at(i);
+		vector3d* vf = this->vectors->at(i);
 		float* vec = vf->rtp();//get data from vector, as radius, theta, phi
 		
 		data_samples.push_back(std::make_pair(input, vec[1]));//training for creating the theta
@@ -121,7 +121,7 @@ void DataSetTrainer::train_linear() {
 		vector3d* vp = this->space->at(i);
 		float* pos = vp->xyz();//get data from position
 		input = pos[0], pos[1], pos[2];//set input to be position
-		vector3d* vf = this->space->at(i);
+		vector3d* vf = this->vectors->at(i);
 		float* vec = vf->rtp();//get data from vector, as radius, theta, phi
 		
 		data_samples.push_back(std::make_pair(input, vec[2]));//training for creating the phi
