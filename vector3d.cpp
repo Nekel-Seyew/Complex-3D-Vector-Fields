@@ -54,11 +54,15 @@ float* vector3d::to_rect(){
 		this->abc[1] = y;
 		this->abc[2] = z;
 	}
+	this->mode = 0;
 	return this->abc;
 }
 float* vector3d::to_cyl(){
 	if(mode == 0){
 		float r = sqrt((this->abc[0] * this->abc[0]) + (this->abc[1] * this->abc[1]));
+		if (r == 0.0) {
+			return this->abc; //it's a null vector, basically, return a null vector.
+		}
 		float t = atan(this->abc[1] / this->abc[0]);
 		this->abc[0] = r;
 		this->abc[1] = t;
@@ -68,11 +72,15 @@ float* vector3d::to_cyl(){
 		this->abc[0] = r;
 		this->abc[2] = z;
 	}
+	this->mode = 1;
 	return this->abc;
 }
 float* vector3d::to_sph(){
 	if(mode == 0){
 		float r = sqrt((this->abc[0] * this->abc[0]) + (this->abc[1] * this->abc[1]) + (this->abc[2] * this->abc[2]));
+		if (r == 0.0) {
+			return this->abc; //it's a null vector, return a null vector.
+		}
 		float t = atan(this->abc[1] / this->abc[0]);
 		float p = acos(this->abc[2] / r);
 		this->abc[0] = r;
@@ -84,6 +92,7 @@ float* vector3d::to_sph(){
 		this->abc[0] = r;
 		this->abc[2] = p;
 	}
+	this->mode = 2;
 	return this->abc;
 }
 
