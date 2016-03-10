@@ -326,7 +326,7 @@ void Framework::Display() {
 	
 	//draw the cube:
 	GLdouble size = 2.0;
-	glColor3f(1., 1., 0.);
+	glColor3f(1., 1., 1.);
 	glutWireCube(size);
 	glPointSize(5);
 
@@ -596,7 +596,7 @@ void Framework::SetupVertexBuffers() {
 void Framework::SetUpShaders() {
 	GLenum err = glewInit();
 	//Creating Vertex Shader
-	FILE *fpv = fopen("vshader.glsl", "r");
+	FILE *fpv = fopen("probe.glsl", "rb");
 	if (fpv == NULL) {}
 	fseek(fpv, 0, SEEK_END);
 	int vnumBytes = ftell(fpv); // length of file
@@ -625,7 +625,7 @@ void Framework::SetUpShaders() {
 	}
 	CheckGlErrors("Vertex Shader 2");
 	//Making The Fragment Shader:
-	FILE *fpf = fopen("fshader.glsl", "r");
+	FILE *fpf = fopen("probe.frag", "rb");
 	if (fpf == NULL) {}
 	fseek(fpf, 0, SEEK_END);
 	int fnumBytes = ftell(fpf); // length of file

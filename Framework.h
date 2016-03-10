@@ -170,6 +170,8 @@ public:
 	int usePrism;
 	int ColorAlternate;
 	GLuint program;
+	GLuint buffer[2];
+	GLuint vao;
 	unsigned int NumPoints;
 	float spinVecMin;
 	float spinVecMax;
@@ -184,7 +186,7 @@ public:
 	void Framework::Streamline(float, float, float);
 	float * Framework::Color(float);
 	int visitstream; 
-
+	void Framework::SetupVertexBuffers();
 	void Framework::CheckGlErrors(const char*);
 	//virtual void Update(void);
 	//virtual void Draw(void);
