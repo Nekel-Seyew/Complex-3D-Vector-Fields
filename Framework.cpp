@@ -52,7 +52,7 @@ void Vector(float x, float y, float z, float *vxp, float *vyp, float *vzp) {
 
 void Framework::Init1() {
 	if (usePrism) {
-		thePoints = SDef->prism(2., 10, 2., 10, 2., 10); //need a start, stop, and end steps
+		thePoints = SDef->prism(6., 40, 6., 40, 6., 40); //need a start, stop, and end steps
 	}
 	else {
 		thePoints = SDef->uv_surface(SpaceInput, 0., 1.,0.,1., 30., 30.);
