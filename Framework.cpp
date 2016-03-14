@@ -446,7 +446,7 @@ void Framework::Display() {
 		glShadeModel(GL_SMOOTH);
 		glBegin(GL_QUADS);
 		glColor3f(0.0, 0.5, 0.0);
-		for (int n = 0; n < 2.0; n++) {
+		for (int n = 0; n < 100; n++) {
 			if ((xnextvalues[0] > 2.0 || xnextvalues[0] < -2.0) || (xnextvalues[1] > 2.0 || xnextvalues[1] < -2.0) || (xnextvalues[2] > 2.0 || xnextvalues[2] < -2.0) || (xnextvalues[3] > 2.0 || xnextvalues[3] < -2.0) || (xnextvalues[4] > 2.0 || xnextvalues[4] < -2.0)) {
 				break;
 			}
@@ -792,7 +792,6 @@ void Framework::InitLists() {
 	glEndList();
 	StreamlineList = glGenLists(2);
 	glNewList(StreamlineList, GL_COMPILE);
-
 	float xval;
 	float yval;
 	float zval;
