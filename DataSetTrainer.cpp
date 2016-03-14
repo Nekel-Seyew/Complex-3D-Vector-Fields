@@ -161,26 +161,26 @@ void DataSetTrainer::train_linear() {
 
 void DataSetTrainer::train_neural_net() {
 	for (size_t i = 0; i < this->vectors->size(); ++i) {
-		input_vector* pos_iv = new input_vector();
-		neural_output* vec_no = new neural_output();
+		input_vector pos_iv;
+		neural_output vec_no;
 		vector3d* pos = this->vectors->at(i);
 		float* pos_arr = pos->xyz();
-		(*pos_iv)(0) = pos_arr[0];
-		(*pos_iv)(1) = pos_arr[1];
-		(*pos_iv)(2) = pos_arr[2];
+		pos_iv(0) = pos_arr[0];
+		pos_iv(1) = pos_arr[1];
+		pos_iv(2) = pos_arr[2];
 
 		vector3d* vec = this->vectors->at(i);
 		float* vec_arr = vec->xyz();
-		(*vec_no)(0) = vec_arr[0];
-		(*vec_no)(1) = vec_arr[1];
-		(*vec_no)(2) = vec_arr[2];
-		try {
+		vec_no(0) = vec_arr[0];
+		vec_no(1) = vec_arr[1];
+		vec_no(2) = vec_arr[2];
+		//try {
 			//THIS LINE IS THE PROBLEM
-			this->net->train(*pos_iv, *vec_no);
-		}
-		catch (std::exception e) {
-			std::cout << e.what() << std::endl;
-		}
+			this->net->train(pos_iv, vec_no);//min(vec_no) needs to be >=0.0. UGHHHHH
+		//}
+		//catch (std::exception e) {
+			//std::cout << e.what() << std::endl;
+		//}
 	}
 }
 vector3d* DataSetTrainer::get_from_neural_net(vector3d* loc) {
