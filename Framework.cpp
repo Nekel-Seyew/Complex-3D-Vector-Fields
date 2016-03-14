@@ -115,6 +115,7 @@ void Framework::RestoreDefaults() {
 
 	DepthCueOn = 1;
 	AxesOn = 1;
+	BoxOn = 1;
 	FOGCOLOR[0] = .0;
 	FOGCOLOR[1] = .0;
 	FOGCOLOR[2] = .0;
@@ -122,7 +123,7 @@ void Framework::RestoreDefaults() {
 	FOGMODE = { GL_LINEAR };
 	FOGDENSITY = { 0.30f };
 	FOGSTART = { 1.5 };
-	FOGEND = { 4. };
+	FOGEND = { 4.0 };
 	MINSCALE = { 0.05f };
 	Scale = 1.0;
 	Scale2 = 0.0;		// because we add 1. to it in Display( )
@@ -325,11 +326,12 @@ void Framework::Display() {
 	}
 	
 	//draw the cube:
-	GLdouble size = 2.0;
-	glColor3f(1., 1., 1.);
-	glutWireCube(size);
-	glPointSize(5);
-
+	if (BoxOn != 0) {
+		GLdouble size = 2.0;
+		glColor3f(1., 1., 1.);
+		glutWireCube(size);
+		glPointSize(5);
+	}
 	//Draw Points
 	if(usePoints){
 		glBegin(GL_POINTS);
@@ -501,6 +503,12 @@ void Framework::Display() {
 		//glBegin(GL_LINES);
 		glUseProgram(program);
 		printf("Shader Program Running\n");
+		glPointSize(10);
+		glBegin(GL_POINTS);
+		glColor3f(0., 1., 1.);
+		glVertex3f(0., 0., 0.);
+		glPointSize(4);
+		glEnd();
 		glUseProgram(0);
 		
 	}
@@ -657,7 +665,7 @@ void Framework::SetUpShaders() {
 	int plogLength;
 	 program = glCreateProgram();
 	glAttachShader(program, vertShader);
-	//glAttachShader(program, fragShader);
+	glAttachShader(program, fragShader);
 	glLinkProgram(program);
 	CheckGlErrors("Shader Program 1");
 	glGetProgramiv(program, GL_LINK_STATUS, &pstatus);

@@ -143,6 +143,8 @@ void InitGlui() {
 	settings = TestGlui->add_panel("Visual Settings");
 	TestGlui->add_column_to_panel(settings, 0);
 	TestGlui->add_checkbox_to_panel(settings, "Axes", &Framework::instance()->AxesOn);
+	TestGlui->add_column_to_panel(settings, 0);
+	TestGlui->add_checkbox_to_panel(settings, "Box", &Framework::instance()->BoxOn);
 	TestGlui->add_column_to_panel(settings,0);
 	TestGlui->add_checkbox_to_panel(settings, "Perspective", &Framework::instance()->WhichProjection);
 	TestGlui->add_column_to_panel(settings, 0);
@@ -232,7 +234,7 @@ void InitGlui() {
 	RadLabel2 = TestGlui->add_statictext_to_panel(ArrowSettings, radstr);
 	*/
 	spinArrowLength = TestGlui->add_spinner_to_panel(ArrowSettings, "Arrow Size", GLUI_SPINNER_FLOAT, &Framework::instance()->ArrowLength);
-	spinArrowLength ->set_float_limits(0.0, 5.0);
+	spinArrowLength ->set_float_limits(0.0, 15.0);
 	spinArrowLength ->set_speed(0.1);
 
 	spinMinVector = TestGlui->add_spinner_to_panel(ArrowSettings, "Vector Magnitude Min", GLUI_SPINNER_FLOAT, &Framework::instance()->spinVecMin);
