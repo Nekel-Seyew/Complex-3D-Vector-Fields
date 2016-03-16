@@ -6,6 +6,8 @@
 #include <fstream>
 #include <dlib/svm.h>
 
+#include <ctime>
+#include <cstdlib>
 //yes
 VectorDefiner::VectorDefiner()
 {
@@ -149,17 +151,45 @@ void VectorDefiner::populate(std::vector<vector3d*>* space){
 			}
 			csv.close();//be polite
 		}
-
+		
 		//start training data
-		this->data_trainer = new DataSetTrainer(temp_space, temp_vectors);
+		/*this->data_trainer = new DataSetTrainer(temp_space, temp_vectors);
 		this->data_trainer->train_linear();
 
+		double errX = 0;
+		double errY = 0;
+		double errZ = 0;
 		//use trained data to get vectors
-		for (size_t i = 0; i < space->size(); ++i) {
-			vector3d* vec = this->data_trainer->get_from_linear(space->at(i));
+		for (size_t i = 0; i < temp_space->size(); ++i) {
+			vector3d* vec = this->data_trainer->get_from_linear(temp_space->at(i));
+			//this->vectors->push_back(vec);
+			//calc error
+			float* a = temp_vectors->at(i)->rtp();
+			float* b = vec->rtp();
+			errX += (b[0] - a[0]) * (b[0] - a[0]);
+			errY += (b[1] - a[1]) * (b[1] - a[1]);
+			errZ += (b[2] - a[2]) * (b[2] - a[2]);
+			vec->xyz();
 			this->vectors->push_back(vec);
 		}
-		this->space = space;
+		errX /= temp_space->size();
+		errY /= temp_space->size();
+		errZ /= temp_space->size();
+		std::cout << "X error: " << errX << std::endl;
+		std::cout << "Y error: " << errY << std::endl;
+		std::cout << "Z error: " << errZ << std::endl;
+		this->space = temp_space;*/
+
+		this->data_trainer = new DataSetTrainer(temp_space, temp_vectors);
+		this->data_trainer->train_neural_net();
+
+		for (size_t i = 0; i < temp_space->size(); ++i) {
+			vector3d* vec = this->data_trainer->get_from_neural_net(temp_space->at(i));
+			this->vectors->push_back(vec);
+		}
+
+		this->space = temp_space;
+		//this->vectors = temp_vectors;
 		//all done
 	}else{
 		float* f = new float[3];
