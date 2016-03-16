@@ -52,7 +52,7 @@ void Vector(float x, float y, float z, float *vxp, float *vyp, float *vzp) {
 
 void Framework::Init1() {
 	if (usePrism) {
-		thePoints = SDef->prism(6., 40, 6., 40, 6., 40); //need a start, stop, and end steps
+		thePoints = SDef->prism(2., 10, 2., 10, 2., 10); //Change This Line to (6., 40, 6., 40, 6., 40) if you want to view a bigger dataset
 	}
 	else {
 		thePoints = SDef->uv_surface(SpaceInput, 0., 1.,0.,1., 30., 30.);
@@ -511,7 +511,8 @@ void Framework::Display() {
 		glEnd();
 		glUseProgram(0);
 		GLuint posSSbo;
-		GLuint velSSbo;		glGenBuffers(1, &posSSbo);
+		GLuint velSSbo;
+		glGenBuffers(1, &posSSbo);
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, posSSbo);
 		glBufferData(GL_SHADER_STORAGE_BUFFER, NumPoints * sizeof(posShader), NULL, GL_STATIC_DRAW);
 		GLint bufMask = GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT; // the invalidate makes a big difference when re-writing
