@@ -335,7 +335,7 @@ void Framework::Display() {
 	//Draw Points
 	if(usePoints){
 		glBegin(GL_POINTS);
-		srand(1234);
+		srand(time(NULL));
 		for (int i = 0; i < thePoints->size(); i++) {
 			glColor3fv(Color((theVectors->at(i)->magnitude())));
 			float *vec = thePoints->at(i)->xyz();
@@ -360,7 +360,7 @@ void Framework::Display() {
 			float tail[3], head[3];
 			float *xyz = thePoints->at(i)->xyz();
 			float *veccompxyz = theVectors->at(i)->xyz();
-			tail[0] = xyz[0]- (veccompxyz[0] * ArrowLength) / 2.0;;
+			tail[0] = xyz[0]- (veccompxyz[0] * ArrowLength) / 2.0;
 			tail[1] = xyz[1] - (veccompxyz[1] * ArrowLength) / 2.0;
 			tail[2] = xyz[2] - (veccompxyz[2] * ArrowLength) / 2.0;
 			head[0] = xyz[0] + (veccompxyz[0] * ArrowLength) / 2.0;
@@ -509,6 +509,41 @@ void Framework::Display() {
 		glVertex3f(0., 0., 0.);
 		glPointSize(4);
 		glEnd();
+		glUseProgram(0);
+		GLuint posSSbo;
+		GLuint velSSbo;		glGenBuffers(1, &posSSbo);
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, posSSbo);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, NumPoints * sizeof(posShader), NULL, GL_STATIC_DRAW);
+		GLint bufMask = GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT; // the invalidate makes a big difference when re-writing
+		posShader * DynamicNow = (posShader *) glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, NumPoints * sizeof(struct posShader), bufMask);
+		float testFloat = 0.; //This will be passed in by Glui - modifications can happen later
+		float xval, yval;
+		float planestep = 2.0 / ((float)10 - 1.0);
+		xval = -1.0;
+		int NumPoints = 10;
+		int count = 0;
+		for (int i = 0; i < (NumPoints * NumPoints); i++) {
+			yval = -1.0;
+				vector3d * tempVec = VectorAtLocation(xval, yval, testFloat);
+				float mag = tempVec->magnitude();
+				DynamicNow[i].x = xval;
+				DynamicNow[i].y = yval;
+				DynamicNow[i].z = testFloat;
+				DynamicNow[i].m = mag;
+				yval += planestep;
+			if (count % 2 == 0) {
+				xval += planestep;
+			}
+			count++;
+		}
+		glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+		glUseProgram(program);
+		glBindBuffer( GL_ARRAY_BUFFER, posSSbo );
+		glVertexPointer( 4, GL_FLOAT, 0, (void *)0 );
+		glEnableClientState( GL_VERTEX_ARRAY );
+		glDrawArrays( GL_QUADS, 0, NumPoints * NumPoints );
+		glDisableClientState( GL_VERTEX_ARRAY );
+		glBindBuffer( GL_ARRAY_BUFFER, 0 );
 		glUseProgram(0);
 		
 	}

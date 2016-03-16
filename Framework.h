@@ -24,6 +24,7 @@
 
 #include "vector3d.h"
 #include "color.h"
+#include <time.h>
 typedef glm::vec4 point4;
 typedef glm::vec4 color4;
 #define VecId 1
@@ -54,6 +55,11 @@ struct node {
 	float vx, vy, vz;
 	float vecLength;
 };
+struct posShader
+{
+	float x, y, z, m; // m is magnitude
+};
+
 struct VectorNode {
 	vector3d vector;
 	float magnitude;
@@ -105,8 +111,8 @@ public:
 	void InitGraphics1();
 	void InitGraphics2();
 	char *SpaceInput = { "<(cos(2 * 3.14159265359 * X) * sin(3.14159265359 * Y) * 1), (sin(2 * 3.14159265359 * X) * sin(3.14159265359 * Y) * 1), (cos(3.14159265359 * Y) * 1)>" };
-	char *VectorInput = { "<Y*Z*(Y*Y + Z*Z), X*Z*(X*X + Z*Z), Y*X*(Y*Y + X* X)>" };
-	//char * VectorInput = { "<((sqrt(X * X + Z * Z)^3)* e^(~3. * sqrt(X * X + Z * Z))* Z),(0.008/((Z *Z/sqrt(X * X + Z * Z)) + (X * X /sqrt(X * X + Z * Z)) + 0.0001)), ((sqrt(X * X + Z * Z)^3) * e^(~3. *sqrt(X * X + Z * Z)) * ~X)>" };
+	//char *VectorInput = { "<Y*Z*(Y*Y + Z*Z), X*Z*(X*X + Z*Z), Y*X*(Y*Y + X* X)>" };
+	char * VectorInput = { "<((sqrt(X * X + Z * Z)^3)* e^(~3. * sqrt(X * X + Z * Z))* Z),(0.008/((Z *Z/sqrt(X * X + Z * Z)) + (X * X /sqrt(X * X + Z * Z)) + 0.0001)), ((sqrt(X * X + Z * Z)^3) * e^(~3. *sqrt(X * X + Z * Z)) * ~X)>" };
 	struct node Nodes[NODE_MAX][NODE_MAX][NODE_MAX];
 	int nodeXCount;
 	int nodeYCount;
