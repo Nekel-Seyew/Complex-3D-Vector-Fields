@@ -153,7 +153,7 @@ void VectorDefiner::populate(std::vector<vector3d*>* space){
 		}
 		
 		//start training data
-		/*this->data_trainer = new DataSetTrainer(temp_space, temp_vectors);
+		this->data_trainer = new DataSetTrainer(temp_space, temp_vectors);
 		this->data_trainer->train_linear();
 
 		double errX = 0;
@@ -175,20 +175,36 @@ void VectorDefiner::populate(std::vector<vector3d*>* space){
 		errX /= temp_space->size();
 		errY /= temp_space->size();
 		errZ /= temp_space->size();
-		std::cout << "X error: " << errX << std::endl;
-		std::cout << "Y error: " << errY << std::endl;
-		std::cout << "Z error: " << errZ << std::endl;
-		this->space = temp_space;*/
-
+		std::cout << "RADIUS error: " << errX << std::endl;
+		std::cout << "THETA error: " << errY << std::endl;
+		std::cout << "PHI error: " << errZ << std::endl;
+		this->space = temp_space;
+		/*
 		this->data_trainer = new DataSetTrainer(temp_space, temp_vectors);
-		this->data_trainer->train_neural_net();
+		this->data_trainer->train_hybrid();
 
+		double errX = 0;
+		double errY = 0;
+		double errZ = 0;
 		for (size_t i = 0; i < temp_space->size(); ++i) {
-			vector3d* vec = this->data_trainer->get_from_neural_net(temp_space->at(i));
+			vector3d* vec = this->data_trainer->get_from_hybrid(temp_space->at(i));
+
+			float* a = temp_vectors->at(i)->rtp();
+			float* b = vec->rtp();
+			errX += (b[0] - a[0]) * (b[0] - a[0]);
+			errY += (b[1] - a[1]) * (b[1] - a[1]);
+			errZ += (b[2] - a[2]) * (b[2] - a[2]);
+
+			vec->xyz();
 			this->vectors->push_back(vec);
 		}
-
-		this->space = temp_space;
+		errX /= temp_space->size();
+		errY /= temp_space->size();
+		errZ /= temp_space->size();
+		std::cout << "RADIUS error: " << errX << std::endl;
+		std::cout << "THETA error: " << errY << std::endl;
+		std::cout << "PHI error: " << errZ << std::endl;
+		this->space = temp_space;*/
 		//this->vectors = temp_vectors;
 		//all done
 	}else{

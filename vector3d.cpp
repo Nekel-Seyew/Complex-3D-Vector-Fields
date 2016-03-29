@@ -1,3 +1,4 @@
+#define _USE_MATH_DEFINES
 #include <cmath>
 #include "vector3d.h"
 
@@ -81,7 +82,8 @@ float* vector3d::to_sph(){
 		if (r == 0.0) {
 			return this->abc; //it's a null vector, return a null vector.
 		}
-		float t = atan(this->abc[1] / this->abc[0]);
+		float t = atan2(this->abc[1] , this->abc[0]);
+		t = (t < 0) ? (t + (2 * M_PI)) : t; //if the result is negative, then push into 0-2PI range
 		float p = acos(this->abc[2] / r);
 		this->abc[0] = r;
 		this->abc[1] = t;

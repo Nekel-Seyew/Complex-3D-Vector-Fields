@@ -24,7 +24,7 @@ typedef dlib::matrix<double, 3, 1> input_vector;
 typedef dlib::matrix<double, 4, 1> parameter_vector;
 
 //neural network
-typedef dlib::matrix<double, 3, 1> neural_output;
+typedef dlib::matrix<double, 2, 1> neural_output;
 
 class DataSetTrainer{
 private:
@@ -38,8 +38,13 @@ private:
 	static double linear_residual(const std::pair<input_vector, double>& data, const parameter_vector& params);
 	static parameter_vector residual_derivative(const std::pair<input_vector, double>& data, const parameter_vector& params);
 
+
 	//neural net
 	dlib::mlp::kernel_1a_c* net;
+
+	//hybrid approach
+	static double hybrid_model(const input_vector& input, const parameter_vector& params);
+	static double hybrid_residual(const std::pair<input_vector, double>& data, const parameter_vector& params);
 
 public:
 	//make sure that they are the same size, and match up. thus space->at(i) matches to vectors->at(i)
@@ -49,8 +54,9 @@ public:
 	void train_linear();
 	vector3d* get_from_linear(vector3d* loc);
 
-	void train_neural_net();
-	vector3d* get_from_neural_net(vector3d* loc);
+	//hybrid because for R we use non-linear least squares reduction, and Neural Network for THETA and PHI
+	void train_hybrid();
+	vector3d* get_from_hybrid(vector3d* loc);
 
 };
 
