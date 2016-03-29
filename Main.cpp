@@ -286,6 +286,7 @@ void KeyboardFuncl(unsigned char c, int x, int y) {
 void MainKeyboard(unsigned char c, int x, int y) {
 	//Framework::instance().Glui.sync_live();
 }
+
 int main(int argc, char ** argv) {
 
 	//just here for compile checks. Remove when you want things to run

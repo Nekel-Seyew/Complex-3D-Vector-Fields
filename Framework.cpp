@@ -13,11 +13,7 @@
 
 void Arrow(float*, float*);
 
-/*const float BOXSIZE = { 2.f };
-int	AxesOn;					// != 0 means to draw the axes
-int	DebugOn;				// != 0 means to print debugging info
-int	DepthCueOn;				// != 0 means to use intensity depth cueing*/
-
+//Singleton instance reference function
 Framework* Framework::_instance = 0;
 Framework* Framework::instance()
 {
@@ -38,10 +34,11 @@ Framework::Framework()
 
 }
 
-//remove later with temp init beloq
+//remove later with temp init below
 inline float SQR(float x) { //Dr. Bailey timed this - its much faster than actually using Pow
 	return x * x;
 }
+
 void Vector(float x, float y, float z, float *vxp, float *vyp, float *vzp) {
 	*vxp = y * z * (y*y + z*z);
 	*vyp = x * z * (x*x + z*z);
@@ -50,6 +47,7 @@ void Vector(float x, float y, float z, float *vxp, float *vyp, float *vzp) {
 
 }
 
+//Init split into two halfs due to glut funtion initilization not working in class
 void Framework::Init1() {
 	if (usePrism) {
 		thePoints = SDef->prism(2., 10, 2., 10, 2., 10); //Change This Line to (6., 40, 6., 40, 6., 40) if you want to view a bigger dataset
@@ -70,43 +68,36 @@ void Framework::Init1() {
 	}
 	//Only do this once for each specified list if you want to access the cullspace cullvector again use the corresponding cache returners
 	srand(time(NULL));
-	//glutDisplayFunc(DisplayFuncl);
-	//BuildClasses();
+
 	Framework::instance()->InitLists();
 }
 
 void Framework::Init2() {
-	//glutInit(&argc, argv);
 	InitGraphics2();
 	BuildClasses();
 }
 
+//Framework will never be removed
 Framework::~Framework()
 {
 
 }
+
 void Framework::Run(int argc, char ** argv) {
-
-	//Init(argc, argv);
-
-	//Do all of the Init Glut Stuff Here
-	
-	//Put all of this in Main
-	//Builds the Axes and Other Lists
 
 	// draw the scene once and wait for some interaction:
 	// (this will never return)
 
 	glutMainLoop();
 
-
-	// this is here to make the compiler happy:
-
 	return;
 }
+
 void Framework::BuildClasses() {
 
 }
+
+//sets initial values of variables
 void Framework::RestoreDefaults() {
 	
 	nodeXCount = 20;
@@ -156,6 +147,7 @@ void Framework::RestoreDefaults() {
 	visitstream = 0;
 	ColorAlternate = 0;
 }
+
 void
 Framework::CheckGlErrors(const char* caller)
 {
@@ -187,6 +179,7 @@ Framework::CheckGlErrors(const char* caller)
 		fprintf(stderr, "Unknown OpenGL error : %d(0x % 0x)\n", glerr, glerr);
 	}
 }
+
 float * Framework::Color(float VecMag) {
 	float hsv[3], rgb[3];
 	float min = VDef->get_vector_cull_min()->magnitude();
@@ -219,14 +212,10 @@ float * Framework::Color(float VecMag) {
 	color::HsvRgb(hsv, rgb);
 	return rgb;
 }
-void Framework::Display() {
-	//printf("At the Beginning of Display, Vector Min is %f\n", VectorLowHigh[0]);
-	//printf("At the End of Display, Vector Max is %f\n", VectorLowHigh[1]);
 
-	
+void Framework::Display() {
 
 	glutSetWindow(MainWindow);
-	//printf("DisplayStarted\n");
 
 	// erase the background:
 
@@ -332,6 +321,7 @@ void Framework::Display() {
 		glutWireCube(size);
 		glPointSize(5);
 	}
+
 	//Draw Points
 	if(usePoints){
 		glBegin(GL_POINTS);
@@ -351,6 +341,8 @@ void Framework::Display() {
 		}
 		glEnd();
 	}
+
+	//Draw Arrows
 	if (useArrows) {
 		for (int i = 0; i < thePoints->size(); i++) {
 			if ((theVectors->at(i)->magnitude()  < spinVecMin) || (theVectors->at(i)->magnitude() > spinVecMax)) {
@@ -369,45 +361,14 @@ void Framework::Display() {
 			Arrow(tail, head);
 		}
 	}
-/*
-	if (useArrows) {
-		for (int i = 0; i < nodeXCount; i++) {
-			for (int j = 0; j < nodeYCount; j++) {
-				for (int k = 0; k < nodeZCount; k++) {
-					//printf("test: %lf\n", Nodes[i][j][k].vecLength);
-					if ((Nodes[i][j][k].vecLength < spinVecMin) || (Nodes[i][j][k].vecLength > spinVecMax)) {
-					continue;
-					}
-					float hsv[3], rgb[3];
 
-					hsv[0] = 240. - 240.* (Nodes[i][j][k].vecLength - minvec) / (maxvec - minvec);
-					//Alternative Color Schemes
-					//hsv[0] = 240. - 240.* (Nodes[i][j][k].vecLength - vecmax) / (vecmax - vecmin);
-					//hsv[0] = 240. - 240.* (vecmax - Nodes[i][j][k].t) / (vecmax - vecmin);
-					//hsv[0] = 240. - 240.* (vecmin - Nodes[i][j][k].t) / (vecmax - vecmin);
-					hsv[1] = 1.;
-					hsv[2] = 1.;
-					color::HsvRgb(hsv, rgb);
-					glColor3fv(rgb);
-					float tail[3], head[3];
-					float tailx, taily, tailz, headx, heady, headz;
-					//printf("nodetest: %lf, %lf\n", Nodes[i][j][k].vx, ArrowLength);
-					tail[0] = Nodes[i][j][k].x - (Nodes[i][j][k].vx * ArrowLength) / 2.0;;
-					tail[1] = Nodes[i][j][k].y - (Nodes[i][j][k].vy * ArrowLength) / 2.0;
-					tail[2] = Nodes[i][j][k].z - (Nodes[i][j][k].vz * ArrowLength) / 2.0;
-					head[0] = Nodes[i][j][k].x + (Nodes[i][j][k].vx * ArrowLength) / 2.0;
-					head[1] = Nodes[i][j][k].y + (Nodes[i][j][k].vy * ArrowLength) / 2.0;
-					head[2] = Nodes[i][j][k].z + (Nodes[i][j][k].vz * ArrowLength) / 2.0;
-					Arrow(tail, head);
-				}
-			}
-		}
-	}
-	*/
+	//Draw Streamlines
 	if (useStreamlines) {
 		glCallList(StreamlineList);
 
 	}
+
+	//Draw Probe
 	if (useProbe) {
 		glPointSize(8);
 		glBegin(GL_POINTS);
@@ -492,6 +453,8 @@ void Framework::Display() {
 		glEnd();
 
 	}
+
+	//Insert comment here when this does something
 	if (useIsosurfaces) {
 		float Sstar = maxvec - minvec / 2;
 		float SMax = maxvec;
@@ -549,12 +512,8 @@ void Framework::Display() {
 		
 	}
 
-	//printf("DisplayDrewSomething\n");
-	// draw some gratuitous text that just rotates on top of the scene:
-
 	glDisable(GL_DEPTH_TEST);
 	glColor3f(0., 1., 1.);
-	//DoRasterString( 0., 1., 0., "Fantastic" );
 
 
 	// draw some gratuitous text that is fixed on the screen:
@@ -610,13 +569,13 @@ void Framework::InitGraphics1() {
 	glClearColor(BACKCOLOR[0], BACKCOLOR[1], BACKCOLOR[2], BACKCOLOR[3]);
 
 	glutSetWindow(MainWindow);
+
 	//Creating the Space and Vector Definers - Perhaps this should be it's own function 
 	SDef = new SpaceDefiner();
 	VDef = new VectorDefiner();
 
-	
-
 }
+
 void Framework::SetupVertexBuffers() {
 
 	glGenVertexArrays(1, &vao);
@@ -748,6 +707,7 @@ void Framework::SetUpShaders() {
 	GLuint projectionLoc = glGetUniformLocation(program, "Projection");
 
 }
+
 void Framework::InitGraphics2() {
 	// setup the display mode:
 	// ( *must* be done before call to glutCreateWindow( ) )
@@ -826,6 +786,7 @@ void Framework::InitLists() {
 	Axes(1.5);
 	glLineWidth(1.);
 	glEndList();
+
 	StreamlineList = glGenLists(2);
 	glNewList(StreamlineList, GL_COMPILE);
 	float xval;
@@ -854,8 +815,8 @@ void Framework::InitLists() {
 
 
 }
-void
-Framework::Keyboard(unsigned char c, int x, int y)
+
+void Framework::Keyboard(unsigned char c, int x, int y)
 {
 
 	// synchronize the GLUI display with the variables:
@@ -868,6 +829,7 @@ Framework::Keyboard(unsigned char c, int x, int y)
 	glutSetWindow(MainWindow);
 	glutPostRedisplay();
 }
+
 vector3d* Framework::VectorAtLocation(float xCord, float yCord, float zCord) {
 	float vectorP[3];
 	vector3d* returnVec;
@@ -882,6 +844,7 @@ vector3d* Framework::VectorAtLocation(float xCord, float yCord, float zCord) {
 	//printf("The values of the returnVec are %f, %f, %f\n", returnVec->xyz()[0], returnVec->xyz()[1], returnVec->xyz()[2]);
 	return returnVec;
 }
+
 void Framework::Streamline(float x, float y, float z)
 {
 	visitstream++;
@@ -914,6 +877,7 @@ void Framework::Streamline(float x, float y, float z)
 	}
 	glEnd();
 }
+
 vector3d * Framework::VectorAdvect(vector3d * inputVector) {
 	float TimeStep = 0.1;
 	float xa, ya, za;
@@ -949,6 +913,7 @@ vector3d * Framework::VectorAdvect(vector3d * inputVector) {
 	vector3d* vectorReturn = new vector3d(xc, yc, zc);
 	return vectorReturn;
 }
+
 void Framework::Axes(float length) {
 	// the stroke characters 'X' 'Y' 'Z' :
 
@@ -1063,8 +1028,7 @@ void Framework::Axes(float length) {
 }
 
 //to be moved to vector3d?
-void
-Cross(float v1[3], float v2[3], float vout[3])
+void Cross(float v1[3], float v2[3], float vout[3])
 {
 	float tmp[3];
 
@@ -1077,10 +1041,8 @@ Cross(float v1[3], float v2[3], float vout[3])
 	vout[2] = tmp[2];
 }
 
-
 //to be moved to vector3d?
-float
-Unit(float vin[3], float vout[3])
+float Unit(float vin[3], float vout[3])
 {
 	float dist = vin[0] * vin[0] + vin[1] * vin[1] + vin[2] * vin[2];
 
@@ -1103,13 +1065,11 @@ Unit(float vin[3], float vout[3])
 
 void Arrow(float tail[3], float head[3]) {
 	float u[3], v[3], w[3];		// arrow coordinate system
-	//printf("start of arrow: %lf, %lf, %lf, %lf, %lf, %lf\n", tail[0], tail[1], tail[2], head[0], head[1], head[2]);
 								// set w direction in u-v-w coordinate system:
 
 	w[0] = head[0] - tail[0];
 	w[1] = head[1] - tail[1];
 	w[2] = head[2] - tail[2];
-	//printf("start of arrow: %lf, %lf, %lf\n", w[0], w[1], w[2]);
 
 	// determine major direction:
 
@@ -1204,8 +1164,7 @@ void Arrow(float tail[3], float head[3]) {
 
 }
 
-void
-Framework::DoRasterString(float x, float y, float z, char *s)
+void Framework::DoRasterString(float x, float y, float z, char *s)
 {
 	char c;			// one character to print
 
