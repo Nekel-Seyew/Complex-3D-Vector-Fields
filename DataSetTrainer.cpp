@@ -22,7 +22,7 @@ DataSetTrainer::DataSetTrainer(std::vector<vector3d*>* space, std::vector<vector
 		this->k = 0;
 		this->l = 0;
 	}
-	this->net = new dlib::mlp::kernel_1a_c(3, 10, 0L, 2);//3 input nodes, 5 hidden nodes on first layer, 0 nodes second layer, and 2 nodes output layer, rest default
+	this->net = new dlib::mlp::kernel_1a_c(3, 10, 0L, 2);//3 input nodes, 10 hidden nodes on first layer, 0 nodes second layer, and 2 nodes output layer, rest default
 	//really have no idea what i'm doing. Guess I'll be playing with those middle two values, and maybe others as well?
 }
 
