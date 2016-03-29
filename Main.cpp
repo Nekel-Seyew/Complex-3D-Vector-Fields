@@ -77,39 +77,59 @@ void MyButtons(int button) {
 
 
 void InitGlui() {
-	
-	GLUI_Panel *panel;
-	GLUI_Panel *settings;
-	GLUI_Panel *probePanel;
-	GLUI_Panel *graphicsOptions;
+
+	//User Input Section 
 	GLUI_Panel *UserInput;
 	GLUI_Rollout *UserInputRollout;
+	GLUI_Rollout * ReadInFileRollout;
+
+	//Visualization Settings:
+	GLUI_Panel *settings;
+
+	//Transformation Settings:
+	GLUI_Panel * transformationPanel;
 	GLUI_Rollout * TransformationRollout;
+	GLUI_Rotation *rotation;
+	GLUI_Translation *trans, *scale;
+
+	//Color Options Settings:
+	GLUI_Rollout * ColorOptions;
+
+	//Graphics Options Settings:
+	GLUI_Panel * graphicsOptions;
+
+	//Graphics Rollouts:
+	GLUI_Panel * CustomSettings;
 	GLUI_Rollout * ArrowSettings;
 	GLUI_Rollout * AnimationSettings;
 	GLUI_Rollout * IsosurfaceSettings;
 	GLUI_Rollout * PointsSettings;
 	GLUI_Rollout * StrokesSettings;
 	GLUI_Rollout * StreamlineSettings;
-	GLUI_Panel * CustomSettings;
+
+	//Oculus Settings:
 	GLUI_Panel * OculusSettings;
 	GLUI_Rollout * OculusRollout;
-	GLUI_Rollout * ReadInFileRollout;
-	GLUI_Rollout * ColorOptions;
+	
+	//ObjFileSettings:
 	GLUI_Panel * ObjFileSettings;
-	GLUI_RadioGroup * group;
-	GLUI_Rotation *rot;
-	GLUI_Rotation *rot2;
-	GLUI_Rotation *rot3;
-	GLUI_Translation *trans, *scale;
+
+	//Arrow Settings:
 	GLUI_Spinner * spinArrowLength;
 	GLUI_Spinner * spinNumPoints;
 	GLUI_Spinner * spinMinVector;
 	GLUI_Spinner * spinMaxVector;
+
+	//Isosurface Settings
 	GLUI_Spinner * spinNumContours;
+
+	//Probe Controls:
+	GLUI_Panel *probePanel;
 	GLUI_Spinner * ProbeX;
 	GLUI_Spinner * ProbeY;
 	GLUI_Spinner * ProbeZ;
+
+	//Strings for Sliders
 	char tempstr[128];
 	char xstr[128];
 	char ystr[128];
@@ -117,11 +137,14 @@ void InitGlui() {
 	char radstr[128];
 	char gradstr[128];
 	char vecstr[128];
+
 	// setup the glui window:
 
 	glutInitWindowPosition(Framework::instance()->INIT_WINDOW_SIZE + 50, 0);
 	TestGlui = GLUI_Master.create_glui((char *)Framework::instance()->GLUITITLE);
 	TestGlui->add_statictext((char *)Framework::instance()->GLUITITLE);
+
+	//Here is Where the User Defined 
 	UserInputRollout = TestGlui->add_rollout("User Input  Options");
 	UserInput = TestGlui->add_panel_to_panel(UserInputRollout, "User Input Options");
 	TestGlui->add_checkbox_to_panel(UserInput, "Use Prism Space Definer", &Framework::instance()->usePrism);
@@ -138,7 +161,7 @@ void InitGlui() {
 	TestGlui->add_button_to_panel(UserInput, "Redraw", 0, ((GLUI_Update_CB)MyButtons));
 	TestGlui->add_button_to_panel(UserInput, "Enter", 1, ((GLUI_Update_CB)MyButtons));
 	
-
+	//Visualization Settings:
 	TestGlui->add_separator();
 	settings = TestGlui->add_panel("Visual Settings");
 	TestGlui->add_column_to_panel(settings, 0);
@@ -150,28 +173,33 @@ void InitGlui() {
 	TestGlui->add_column_to_panel(settings, 0);
 	TestGlui->add_checkbox_to_panel(settings, "Intensity Depth Cue", &Framework::instance()->DepthCueOn);
 	
+	//Transformation Settings:
 	TransformationRollout = TestGlui->add_rollout("Transformation", 1);
-	panel = TestGlui->add_panel_to_panel(TransformationRollout, "Object Transformation");
-	TestGlui->add_column_to_panel(panel, 0);
-	rot2 = TestGlui->add_rotation_to_panel(panel, "Rotation", (float *)Framework::instance()->RotMatrix);
-	rot2->set_spin(1.0);
-	rot2->reset();
+	transformationPanel = TestGlui->add_panel_to_panel(TransformationRollout, "Object Transformation");
+	TestGlui->add_column_to_panel(transformationPanel, 0);
+	rotation = TestGlui->add_rotation_to_panel(transformationPanel, "Rotation", (float *)Framework::instance()->RotMatrix);
+	rotation->set_spin(1.0);
+	rotation->reset();
 
-	TestGlui->add_column_to_panel(panel, 0);
-	scale = TestGlui->add_translation_to_panel(panel, "Scale", GLUI_TRANSLATION_Y, &Framework::instance()->Scale2);
+	TestGlui->add_column_to_panel(transformationPanel, 0);
+	scale = TestGlui->add_translation_to_panel(transformationPanel, "Scale", GLUI_TRANSLATION_Y, &Framework::instance()->Scale2);
 	scale->set_speed(0.005f);
 
-	TestGlui->add_column_to_panel(panel, 0);
-	trans = TestGlui->add_translation_to_panel(panel, "Trans XY", GLUI_TRANSLATION_XY, &Framework::instance()->TransXYZ[0]);
+	TestGlui->add_column_to_panel(transformationPanel, 0);
+	trans = TestGlui->add_translation_to_panel(transformationPanel, "Trans XY", GLUI_TRANSLATION_XY, &Framework::instance()->TransXYZ[0]);
 	trans->set_speed(0.05f);
 
-	TestGlui->add_column_to_panel(panel, 0);
-	trans = TestGlui->add_translation_to_panel(panel, "Trans Z", GLUI_TRANSLATION_Z, &Framework::instance()->TransXYZ[2]);
+	TestGlui->add_column_to_panel(transformationPanel, 0);
+	trans = TestGlui->add_translation_to_panel(transformationPanel, "Trans Z", GLUI_TRANSLATION_Z, &Framework::instance()->TransXYZ[2]);
 	trans->set_speed(0.05f);
+
+	//Color Settings Rollout:
 	TestGlui->add_separator();
 	ColorOptions = TestGlui->add_rollout("Color Settings", 0);
 	TestGlui->add_checkbox_to_panel(ColorOptions, "Alternate Color Scheme", &Framework::instance()->ColorAlternate);
 	TestGlui->add_separator();
+
+	//Graphics Options Panel:
 	graphicsOptions = TestGlui->add_panel("Grahics Options");
 	TestGlui->add_column_to_panel(graphicsOptions, 0);
 	TestGlui->add_checkbox_to_panel(graphicsOptions, "Use Arrows", &Framework::instance()-> useArrows);
@@ -197,6 +225,7 @@ void InitGlui() {
 	StrokesSettings = TestGlui->add_rollout_to_panel(CustomSettings, "Strokes Visualization Settings", 0);
 	StrokesSettings->set_w(200);
 
+	//Oculus Rift Settings:
 	OculusSettings = TestGlui->add_panel("Oculus Rift"); 
 	TestGlui->add_button_to_panel(OculusSettings, "Oculus Mode");
 	OculusRollout = TestGlui->add_rollout_to_panel(OculusSettings, "Oculus Settings");
@@ -208,14 +237,9 @@ void InitGlui() {
 	TestGlui->add_button_to_panel(ObjFileSettings, "Save", 2, ((GLUI_Update_CB)MyButtons));
 
 
-	//This is everything inside of the rollouts:
-	/*Framework::instance()->VectorSlider = TestGlui->add_slider_to_panel(ArrowSettings, 1, GLUI_HSLIDER_FLOAT, Framework::instance()->VectorLowHigh , VecId, (GLUI_Update_CB)MySliders);
-	Framework::instance()->VectorSlider->set_float_limits(Framework::instance()->VECMIN, Framework::instance()->VECMAX);
-	Framework::instance()->VectorSlider->set_w(200);		// good slider width
-	sprintf(vecstr, Framework::instance()->VECFORMAT, Framework::instance()->VectorLowHigh[0], Framework::instance()->VectorLowHigh[1]);
-	Framework::instance()->VectorLabel = TestGlui->add_statictext_to_panel(ArrowSettings, vecstr);
-	*/
+	/*This is everything inside of the rollouts*/
 
+	//Arrow Settings: 
 	TRadLowHigh[0] = VecTest[0];
 	TRadLowHigh[1] = VecTest[1];
 	printf("Before Sliders are initialize, Value of RadLowHigh[0] is %f, RadLowHigh[1] is %f,  VecTest[0] is %f, VecTest[1] is %f\n", TRadLowHigh[0], TRadLowHigh[1], VecTest[0], VecTest[1]);
@@ -225,14 +249,7 @@ void InitGlui() {
 	sprintf(radstr, TRADIUSFORMAT, TRadLowHigh[0], TRadLowHigh[1]);
 	TRadLabel = TestGlui->add_statictext_to_panel(ArrowSettings, radstr);
 	printf("After Sliders are initialized, Value of RadLowHigh[0] is %f, RadLowHigh[1] is %f,  VecTest[0] is %f, VecTest[1] is %f\n", TRadLowHigh[0], TRadLowHigh[1], VecTest[0], VecTest[1]);
-	//RadSlider->enable();
-	/*
-	RadSlider2 = TestGlui->add_slider_to_panel(ArrowSettings, 1, GLUI_HSLIDER_FLOAT, VecTest, RADID, (GLUI_Update_CB)MySliders);
-	RadSlider2->set_float_limits(RADIUSMIN, RADIUSMAX);
-	RadSlider2->set_w(200);		// good slider width
-	sprintf(radstr, RADIUSFORMAT, RadLowHigh[0], RadLowHigh[1]);
-	RadLabel2 = TestGlui->add_statictext_to_panel(ArrowSettings, radstr);
-	*/
+
 	spinArrowLength = TestGlui->add_spinner_to_panel(ArrowSettings, "Arrow Size", GLUI_SPINNER_FLOAT, &Framework::instance()->ArrowLength);
 	spinArrowLength ->set_float_limits(0.0, 15.0);
 	spinArrowLength ->set_speed(0.1);
@@ -244,6 +261,7 @@ void InitGlui() {
 	spinMaxVector->set_float_limits(Framework::instance()->spinVecMin, Framework::instance()->VECMAX);
 	spinMaxVector->set_speed(0.1);
 
+	//Streamline & Probe Settings:
 	TestGlui->add_checkbox_to_panel(StreamlineSettings, "Use Probe", &Framework::instance()->useProbe);
 	ProbeX = TestGlui->add_spinner_to_panel(StreamlineSettings, "XProbeValue",GLUI_SPINNER_FLOAT, &Framework::instance()->ProbeXVal);
 	ProbeX->set_float_limits(-1.0, 1.0);
@@ -256,18 +274,17 @@ void InitGlui() {
 	ProbeZ = TestGlui->add_spinner_to_panel(StreamlineSettings, "ZProbeValue", GLUI_SPINNER_FLOAT, &Framework::instance()->ProbeZVal);
 	ProbeZ->set_float_limits(-1.0, 1.0);
 	ProbeZ->set_speed(0.1);
+
+	//Point Settings:
 	TestGlui->add_checkbox_to_panel(PointsSettings, "Use Jitter", &Framework::instance()->useJitter);
 
-	/*RadSlider = TestGlui->add_slider_to_panel(PointsSettings, true, GLUI_HSLIDER_FLOAT, RadLowHigh, RADID, (GLUI_Update_CB)MySliders);
-	RadSlider->set_float_limits(RADIUSMIN, RADIUSMAX);
-	RadSlider->set_w(200);		// good slider width
-	sprintf(radstr, RADIUSFORMAT, RadLowHigh[0], RadLowHigh[1]);
-	RadLabel = TestGlui->add_statictext_to_panel(PointsSettings, radstr);*/
-
+	//Isosurface Settings:
 	spinNumContours = TestGlui->add_spinner_to_panel(IsosurfaceSettings, "NumContours", GLUI_SPINNER_FLOAT, &Framework::instance()->numContours);
 	spinNumContours->set_float_limits(0.0, 1.0);
 	spinNumContours->set_speed(0.1);
 
+
+	//Final Setup for Glui - making it the main window
 	TestGlui->set_main_gfx_window(Framework::instance()->MainWindow);
 
 
