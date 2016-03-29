@@ -203,8 +203,8 @@ void InitGlui() {
 	OculusRollout->set_w(200);
 	TestGlui->add_separator();
 	ObjFileSettings = TestGlui->add_panel("Save .obj File Settings");
-	Framework::instance()->edittext4 = TestGlui->add_edittext_to_panel(ObjFileSettings, ".obj FileName:", GLUI_EDITTEXT_TEXT, Framework::instance()->ObjFileNameString);
-	Framework::instance()->edittext4->set_w(400);
+	Framework::instance()-> SavedFileName = TestGlui->add_edittext_to_panel(ObjFileSettings, ".obj FileName:", GLUI_EDITTEXT_TEXT, Framework::instance()->ObjFileNameString);
+	Framework::instance()->SavedFileName->set_w(400);
 	TestGlui->add_button_to_panel(ObjFileSettings, "Save", 2, ((GLUI_Update_CB)MyButtons));
 
 
@@ -281,7 +281,7 @@ void DisplayFuncl()
 	Framework::instance()->Display();
 }
 void KeyboardFuncl(unsigned char c, int x, int y) {
-	Framework::instance()-> Keyboard(c, x, y);
+	//Framework::instance()->Keyboard(c, x, y);
 }
 void MainKeyboard(unsigned char c, int x, int y) {
 	//Framework::instance().Glui.sync_live();

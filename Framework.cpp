@@ -100,9 +100,6 @@ void Framework::BuildClasses() {
 //sets initial values of variables
 void Framework::RestoreDefaults() {
 	
-	nodeXCount = 20;
-	nodeYCount = 20;
-	nodeZCount = 20;
 
 	DepthCueOn = 1;
 	AxesOn = 1;
@@ -816,19 +813,7 @@ void Framework::InitLists() {
 
 }
 
-void Framework::Keyboard(unsigned char c, int x, int y)
-{
 
-	// synchronize the GLUI display with the variables:
-
-	Glui->sync_live();
-
-
-	// force a call to Display( ):
-
-	glutSetWindow(MainWindow);
-	glutPostRedisplay();
-}
 
 vector3d* Framework::VectorAtLocation(float xCord, float yCord, float zCord) {
 	float vectorP[3];
