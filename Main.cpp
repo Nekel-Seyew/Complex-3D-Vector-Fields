@@ -314,8 +314,6 @@ int main(int argc, char ** argv) {
 	glutDisplayFunc(DisplayFuncl);
 	glutKeyboardFunc(KeyboardFuncl);
 	Framework::instance()->Init2();
-	// setup all the user interface stuff:
-	Framework::instance()->RestoreDefaults();
 	InitGlui();
 	printf("After Init, Vector Min is %f\n", Framework::instance()->VectorLowHigh[0]);
 	printf("After Init,Vector Max is %f\n", Framework::instance()->VectorLowHigh[1]);

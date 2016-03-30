@@ -47,6 +47,7 @@ void Vector(float x, float y, float z, float *vxp, float *vyp, float *vzp) {
 
 //Init split into two halfs due to glut funtion initilization not working in class
 void Framework::Init1() {
+
 	if (usePrism) {
 		thePoints = SDef->prism(2., 10, 2., 10, 2., 10); //Change This Line to (6., 40, 6., 40, 6., 40) if you want to view a bigger dataset
 	}
@@ -73,6 +74,7 @@ void Framework::Init1() {
 void Framework::Init2() {
 	InitGraphics2();
 	BuildClasses();
+	RestoreDefaults();
 }
 
 //Framework will never be removed
