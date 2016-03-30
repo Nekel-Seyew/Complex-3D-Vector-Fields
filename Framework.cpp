@@ -100,7 +100,9 @@ void Framework::BuildClasses() {
 //sets initial values of variables
 void Framework::RestoreDefaults() {
 	
-
+	backgroundColor = 0.1f;
+	boxColor = 1.0f;
+	axesColor = 1.0f;
 	DepthCueOn = 1;
 	AxesOn = 1;
 	BoxOn = 1;
@@ -214,6 +216,8 @@ void Framework::Display() {
 
 	glutSetWindow(MainWindow);
 
+	//Sets the color to be the backgroundcolor specified by the spinner
+	glClearColor(backgroundColor, backgroundColor, backgroundColor, 0.f);
 	// erase the background:
 
 	glDrawBuffer(GL_BACK);
@@ -308,13 +312,14 @@ void Framework::Display() {
 
 	if (AxesOn != 0)
 	{
+		glColor3f(boxColor, boxColor, boxColor);
 		glCallList(AxesList);
 	}
 	
 	//draw the cube:
 	if (BoxOn != 0) {
 		GLdouble size = 2.0;
-		glColor3f(1., 1., 1.);
+		glColor3f(boxColor, boxColor, boxColor);
 		glutWireCube(size);
 		glPointSize(5);
 	}
@@ -671,7 +676,7 @@ void Framework::InitGraphics1() {
 
 	// setup the clear values:
 
-	glClearColor(BACKCOLOR[0], BACKCOLOR[1], BACKCOLOR[2], BACKCOLOR[3]);
+	glClearColor(backgroundColor, backgroundColor, backgroundColor, 0.1f);
 
 	glutSetWindow(MainWindow);
 

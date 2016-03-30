@@ -94,7 +94,8 @@ void InitGlui() {
 
 	//Color Options Settings:
 	GLUI_Rollout * ColorOptions;
-
+	GLUI_Spinner * backgroundColorSpinner;
+	GLUI_Spinner * boxColorSpinner;
 	//Graphics Options Settings:
 	GLUI_Panel * graphicsOptions;
 
@@ -198,6 +199,12 @@ void InitGlui() {
 	ColorOptions = TestGlui->add_rollout("Color Settings", 0);
 	TestGlui->add_checkbox_to_panel(ColorOptions, "Alternate Color Scheme", &Framework::instance()->ColorAlternate);
 	TestGlui->add_separator();
+	backgroundColorSpinner = TestGlui->add_spinner_to_panel(ColorOptions, "Background Color", GLUI_SPINNER_FLOAT, &Framework::instance()->backgroundColor);
+	backgroundColorSpinner->set_float_limits(0.0, 1.0);
+	backgroundColorSpinner ->set_speed(0.05);
+	boxColorSpinner = TestGlui->add_spinner_to_panel(ColorOptions, "Box And Axes Color", GLUI_SPINNER_FLOAT, &Framework::instance()->boxColor);
+	boxColorSpinner->set_float_limits(0.0, 1.0);
+	boxColorSpinner->set_speed(0.05);
 
 	//Graphics Options Panel:
 	graphicsOptions = TestGlui->add_panel("Grahics Options");

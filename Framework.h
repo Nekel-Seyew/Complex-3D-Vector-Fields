@@ -205,6 +205,9 @@ public:
 	float	TransXYZ[3];		// set by glui translation widgets
 	//Color Options Settings:
 	int ColorAlternate;
+	float backgroundColor;
+	float boxColor;
+	float axesColor;
 
 	//Checkboxes for Different Graphics Methods in Glui
 	int useArrows;
