@@ -11,8 +11,6 @@
 #include "Framework.h"
 #include "vector3d.h"
 
-void Arrow(float*, float*);
-
 //Singleton instance reference function
 Framework* Framework::_instance = 0;
 Framework* Framework::instance()
@@ -321,134 +319,22 @@ void Framework::Display() {
 
 	//Draw Points
 	if(usePoints){
-		glBegin(GL_POINTS);
-		srand(time(NULL));
-		for (int i = 0; i < thePoints->size(); i++) {
-			glColor3fv(Color((theVectors->at(i)->magnitude())));
-			float *vec = thePoints->at(i)->xyz();
-			if (useJitter) {
-				glVertex3f(vec[0] + ((rand() % 10 -5 ) / 300.), vec[1] + ((rand() % 10 -5) /300.), vec[2] + ((rand() % 10 -5) /300.));
-				//printf("Jitter Jitter\n");
-			}
-			else {
-				//printf("No Jitter\n");
-				glVertex3f(vec[0], vec[1], vec[2]);
-				//Pass in a Vec3 Here to the Vertex Shader
-			}
-		}
-		glEnd();
+		DrawPoints();
 	}
 
 	//Draw Arrows
 	if (useArrows) {
-		for (int i = 0; i < thePoints->size(); i++) {
-			if ((theVectors->at(i)->magnitude()  < spinVecMin) || (theVectors->at(i)->magnitude() > spinVecMax)) {
-				continue;
-			}
-			glColor3fv(Color((theVectors->at(i)->magnitude())));
-			float tail[3], head[3];
-			float *xyz = thePoints->at(i)->xyz();
-			float *veccompxyz = theVectors->at(i)->xyz();
-			tail[0] = xyz[0]- (veccompxyz[0] * ArrowLength) / 2.0;
-			tail[1] = xyz[1] - (veccompxyz[1] * ArrowLength) / 2.0;
-			tail[2] = xyz[2] - (veccompxyz[2] * ArrowLength) / 2.0;
-			head[0] = xyz[0] + (veccompxyz[0] * ArrowLength) / 2.0;
-			head[1] = xyz[1] + (veccompxyz[1] * ArrowLength) / 2.0;
-			head[2] = xyz[2] + (veccompxyz[2] * ArrowLength) / 2.0;
-			Arrow(tail, head);
-		}
+		DrawArrows();
 	}
 
 	//Draw Streamlines
 	if (useStreamlines) {
 		glCallList(StreamlineList);
-
 	}
 
 	//Draw Probe
 	if (useProbe) {
-		glPointSize(8);
-		glBegin(GL_POINTS);
-		glColor3f(0.75, 0.5, 0.0);
-		glPointSize(8);
-		glBegin(GL_POINTS);
-		glColor3f(0.75, 0.5, 0.0);
-		glVertex3f(ProbeXVal, ProbeYVal, ProbeZVal);
-		glEnd();
-		float xvalues[10];
-		float yvalues[10];
-		float zvalues[10];
-		float xnextvalues[10];
-		float ynextvalues[10];
-		float znextvalues[10];
-
-		for (int l = 0; l < 10; l++) {
-			xvalues[l] = ProbeXVal + 0.01*(l);
-			yvalues[l] = ProbeYVal;
-			zvalues[l] = ProbeZVal;
-		}
-
-		for (int l = 0; l < 10; l++) {
-			xnextvalues[l] = ProbeXVal + 0.01*(l);
-			ynextvalues[l] = ProbeYVal;
-			znextvalues[l] = ProbeZVal;
-			vector3d * NextVector = new vector3d(xnextvalues[l], ynextvalues[l], znextvalues[l]);
-			NextVector = VectorAdvect(NextVector); //change this line
-			float  * newValues  = NextVector->xyz();
-			xnextvalues[l] = newValues[0];
-			ynextvalues[l] = newValues[1];
-			znextvalues[l] = newValues[2];
-			free(NextVector);
-		}
-		glPointSize(8);
-		glShadeModel(GL_SMOOTH);
-		glBegin(GL_QUADS);
-		glColor3f(0.0, 0.5, 0.0);
-		for (int n = 0; n < 100; n++) {
-			if ((xnextvalues[0] > 2.0 || xnextvalues[0] < -2.0) || (xnextvalues[1] > 2.0 || xnextvalues[1] < -2.0) || (xnextvalues[2] > 2.0 || xnextvalues[2] < -2.0) || (xnextvalues[3] > 2.0 || xnextvalues[3] < -2.0) || (xnextvalues[4] > 2.0 || xnextvalues[4] < -2.0)) {
-				break;
-			}
-			if ((xnextvalues[5] > 2.0 || xnextvalues[5] < -2.0) || (xnextvalues[6] > 2.0 || xnextvalues[6] < -2.0) || (xnextvalues[7] > 2.0 || xnextvalues[7] < -2.0) || (xnextvalues[8] > 2.0 || xnextvalues[8] < -2.0) || (xnextvalues[9] > 2.0 || xnextvalues[9] < -2.0)) {
-				break;
-			}
-			if ((ynextvalues[0] > 2.0 || ynextvalues[0] < -2.0) || (ynextvalues[1] > 2.0 || ynextvalues[1] < -2.0) || (ynextvalues[2] > 2.0 || ynextvalues[2] < -2.0) || (ynextvalues[3] > 2.0 || ynextvalues[3] < -2.0) || (ynextvalues[4] > 2.0 || ynextvalues[4] < -2.0)) {
-				break;
-			}
-			if ((ynextvalues[5] > 2.0 || ynextvalues[5] < -2.0) || (ynextvalues[6] > 2.0 || ynextvalues[6] < -2.0) || (ynextvalues[7] > 2.0 || ynextvalues[7] < -2.0) || (ynextvalues[8] > 2.0 || ynextvalues[8] < -2.0) || (ynextvalues[9] > 2.0 || ynextvalues[9] < -2.0)) {
-				break;
-			}
-			if ((zvalues[0] > 2.0 || zvalues[0] < -2.0) || (zvalues[1] > 2.0 || zvalues[1] < -2.0) || (zvalues[2] > 2.0 || zvalues[2] < -2.0) || (zvalues[3] > 2.0 || zvalues[3] < -2.0) || (zvalues[4] > 2.0 || zvalues[4] < -2.0)) {
-				break;
-			}
-			if ((znextvalues[5] > 2.0 || znextvalues[5] < -2.0) || (znextvalues[6] > 2.0 || znextvalues[6] < -2.0) || (znextvalues[7] > 2.0 || znextvalues[7] < -2.0) || (znextvalues[8] > 2.0 || znextvalues[8] < -2.0) || (znextvalues[9] > 2.0 || znextvalues[9] < -2.0)) {
-				break;
-			}
-			//draw the quads
-			for (int q = 0; q < 9; q++) {
-				glVertex3f(xvalues[q], yvalues[q], zvalues[q]);
-				glVertex3f(xnextvalues[q], ynextvalues[q], znextvalues[q]);
-				glVertex3f(xnextvalues[q + 1], ynextvalues[q + 1], znextvalues[q + 1]);
-				glVertex3f(xvalues[q + 1], yvalues[q + 1], zvalues[q + 1]);
-			}
-			//set = to next
-			for (int p = 0; p < 10; p++) {
-				xvalues[p] = xnextvalues[p];
-				yvalues[p] = ynextvalues[p];
-				zvalues[p] = znextvalues[p];
-			}
-			//advect next
-			for (int p = 0; p < 10; p++) {
-				vector3d * NextVector = new vector3d(xnextvalues[p], ynextvalues[p], znextvalues[p]);
-				NextVector = VectorAdvect(NextVector); //change this line
-				float  * newValues = NextVector->xyz();
-				xnextvalues[p] = newValues[0];
-				ynextvalues[p] = newValues[1];
-				znextvalues[p] = newValues[2];
-				free(NextVector);
-			}
-		}
-		glEnd();
-
+		DrawProbe();
 	}
 
 	//Insert comment here when this does something
@@ -540,6 +426,226 @@ void Framework::Display() {
 	// be sure the graphics buffer has been sent:
 	// note: be sure to use glFlush( ) here, not glFinish( ) !
 	glFlush();
+}
+
+void Framework::DrawPoints() {
+	glBegin(GL_POINTS);
+	srand(time(NULL));
+	for (int i = 0; i < thePoints->size(); i++) {
+		glColor3fv(Color((theVectors->at(i)->magnitude())));
+		float *vec = thePoints->at(i)->xyz();
+		if (useJitter) {
+			glVertex3f(vec[0] + ((rand() % 10 - 5) / 300.), vec[1] + ((rand() % 10 - 5) / 300.), vec[2] + ((rand() % 10 - 5) / 300.));
+			//printf("Jitter Jitter\n");
+		}
+		else {
+			//printf("No Jitter\n");
+			glVertex3f(vec[0], vec[1], vec[2]);
+			//Pass in a Vec3 Here to the Vertex Shader
+		}
+	}
+	glEnd();
+}
+
+void Framework::DrawArrows() {
+	for (int i = 0; i < thePoints->size(); i++) {
+		if ((theVectors->at(i)->magnitude()  < spinVecMin) || (theVectors->at(i)->magnitude() > spinVecMax)) {
+			continue;
+		}
+		glColor3fv(Color((theVectors->at(i)->magnitude())));
+		float tail[3], head[3];
+		float *xyz = thePoints->at(i)->xyz();
+		float *veccompxyz = theVectors->at(i)->xyz();
+		tail[0] = xyz[0] - (veccompxyz[0] * ArrowLength) / 2.0;
+		tail[1] = xyz[1] - (veccompxyz[1] * ArrowLength) / 2.0;
+		tail[2] = xyz[2] - (veccompxyz[2] * ArrowLength) / 2.0;
+		head[0] = xyz[0] + (veccompxyz[0] * ArrowLength) / 2.0;
+		head[1] = xyz[1] + (veccompxyz[1] * ArrowLength) / 2.0;
+		head[2] = xyz[2] + (veccompxyz[2] * ArrowLength) / 2.0;
+
+
+		float u[3], v[3], w[3];		// arrow coordinate system
+									// set w direction in u-v-w coordinate system:
+
+		w[0] = head[0] - tail[0];
+		w[1] = head[1] - tail[1];
+		w[2] = head[2] - tail[2];
+
+		// determine major direction:
+
+		int axis = X;
+		float mag = fabs(w[0]);
+		if (fabs(w[1])  > mag) {
+			axis = Y;
+			mag = fabs(w[1]);
+		}
+		if (fabs(w[2])  > mag) {
+			axis = Z;
+			mag = fabs(w[2]);
+		}
+
+
+		// set size of wings and turn w into a Unit vector:
+
+		float d = WINGS * Unit(w, w);
+
+		// draw the shaft of the arrow:
+		glBegin(GL_LINE_STRIP);
+		glVertex3fv(tail);
+		glVertex3fv(head);
+		glEnd();
+
+		// draw two sets of wings in the non-major directions:
+
+		float x, y, z;
+
+		if (axis != X) {
+			Cross(w, axx, v);
+			(void)Unit(v, v);
+			Cross(v, w, u);
+			x = head[0] + d * (u[0] - w[0]);
+			y = head[1] + d * (u[1] - w[1]);
+			z = head[2] + d * (u[2] - w[2]);
+			glBegin(GL_LINE_STRIP);
+			glVertex3fv(head);
+			glVertex3f(x, y, z);
+			glEnd();
+			x = head[0] + d * (-u[0] - w[0]);
+			y = head[1] + d * (-u[1] - w[1]);
+			z = head[2] + d * (-u[2] - w[2]);
+			glBegin(GL_LINE_STRIP);
+			glVertex3fv(head);
+			glVertex3f(x, y, z);
+			glEnd();
+		}
+
+
+		if (axis != Y) {
+			Cross(w, ayy, v);
+			(void)Unit(v, v);
+			Cross(v, w, u);
+			x = head[0] + d * (u[0] - w[0]);
+			y = head[1] + d * (u[1] - w[1]);
+			z = head[2] + d * (u[2] - w[2]);
+			glBegin(GL_LINE_STRIP);
+			glVertex3fv(head);
+			glVertex3f(x, y, z);
+			glEnd();
+			x = head[0] + d * (-u[0] - w[0]);
+			y = head[1] + d * (-u[1] - w[1]);
+			z = head[2] + d * (-u[2] - w[2]);
+			glBegin(GL_LINE_STRIP);
+			glVertex3fv(head);
+			glVertex3f(x, y, z);
+			glEnd();
+		}
+
+
+
+		if (axis != Z) {
+			Cross(w, azz, v);
+			(void)Unit(v, v);
+			Cross(v, w, u);
+			x = head[0] + d * (u[0] - w[0]);
+			y = head[1] + d * (u[1] - w[1]);
+			z = head[2] + d * (u[2] - w[2]);
+			glBegin(GL_LINE_STRIP);
+			glVertex3fv(head);
+			glVertex3f(x, y, z);
+			glEnd();
+			x = head[0] + d * (-u[0] - w[0]);
+			y = head[1] + d * (-u[1] - w[1]);
+			z = head[2] + d * (-u[2] - w[2]);
+			glBegin(GL_LINE_STRIP);
+			glVertex3fv(head);
+			glVertex3f(x, y, z);
+			glEnd();
+		}
+	}
+}
+
+void Framework::DrawProbe() {
+	glPointSize(8);
+	glBegin(GL_POINTS);
+	glColor3f(0.75, 0.5, 0.0);
+	glPointSize(8);
+	glBegin(GL_POINTS);
+	glColor3f(0.75, 0.5, 0.0);
+	glVertex3f(ProbeXVal, ProbeYVal, ProbeZVal);
+	glEnd();
+	float xvalues[10];
+	float yvalues[10];
+	float zvalues[10];
+	float xnextvalues[10];
+	float ynextvalues[10];
+	float znextvalues[10];
+
+	for (int l = 0; l < 10; l++) {
+		xvalues[l] = ProbeXVal + 0.01*(l);
+		yvalues[l] = ProbeYVal;
+		zvalues[l] = ProbeZVal;
+	}
+
+	for (int l = 0; l < 10; l++) {
+		xnextvalues[l] = ProbeXVal + 0.01*(l);
+		ynextvalues[l] = ProbeYVal;
+		znextvalues[l] = ProbeZVal;
+		vector3d * NextVector = new vector3d(xnextvalues[l], ynextvalues[l], znextvalues[l]);
+		NextVector = VectorAdvect(NextVector); //change this line
+		float  * newValues = NextVector->xyz();
+		xnextvalues[l] = newValues[0];
+		ynextvalues[l] = newValues[1];
+		znextvalues[l] = newValues[2];
+		free(NextVector);
+	}
+	glPointSize(8);
+	glShadeModel(GL_SMOOTH);
+	glBegin(GL_QUADS);
+	glColor3f(0.0, 0.5, 0.0);
+	for (int n = 0; n < 100; n++) {
+		if ((xnextvalues[0] > 2.0 || xnextvalues[0] < -2.0) || (xnextvalues[1] > 2.0 || xnextvalues[1] < -2.0) || (xnextvalues[2] > 2.0 || xnextvalues[2] < -2.0) || (xnextvalues[3] > 2.0 || xnextvalues[3] < -2.0) || (xnextvalues[4] > 2.0 || xnextvalues[4] < -2.0)) {
+			break;
+		}
+		if ((xnextvalues[5] > 2.0 || xnextvalues[5] < -2.0) || (xnextvalues[6] > 2.0 || xnextvalues[6] < -2.0) || (xnextvalues[7] > 2.0 || xnextvalues[7] < -2.0) || (xnextvalues[8] > 2.0 || xnextvalues[8] < -2.0) || (xnextvalues[9] > 2.0 || xnextvalues[9] < -2.0)) {
+			break;
+		}
+		if ((ynextvalues[0] > 2.0 || ynextvalues[0] < -2.0) || (ynextvalues[1] > 2.0 || ynextvalues[1] < -2.0) || (ynextvalues[2] > 2.0 || ynextvalues[2] < -2.0) || (ynextvalues[3] > 2.0 || ynextvalues[3] < -2.0) || (ynextvalues[4] > 2.0 || ynextvalues[4] < -2.0)) {
+			break;
+		}
+		if ((ynextvalues[5] > 2.0 || ynextvalues[5] < -2.0) || (ynextvalues[6] > 2.0 || ynextvalues[6] < -2.0) || (ynextvalues[7] > 2.0 || ynextvalues[7] < -2.0) || (ynextvalues[8] > 2.0 || ynextvalues[8] < -2.0) || (ynextvalues[9] > 2.0 || ynextvalues[9] < -2.0)) {
+			break;
+		}
+		if ((zvalues[0] > 2.0 || zvalues[0] < -2.0) || (zvalues[1] > 2.0 || zvalues[1] < -2.0) || (zvalues[2] > 2.0 || zvalues[2] < -2.0) || (zvalues[3] > 2.0 || zvalues[3] < -2.0) || (zvalues[4] > 2.0 || zvalues[4] < -2.0)) {
+			break;
+		}
+		if ((znextvalues[5] > 2.0 || znextvalues[5] < -2.0) || (znextvalues[6] > 2.0 || znextvalues[6] < -2.0) || (znextvalues[7] > 2.0 || znextvalues[7] < -2.0) || (znextvalues[8] > 2.0 || znextvalues[8] < -2.0) || (znextvalues[9] > 2.0 || znextvalues[9] < -2.0)) {
+			break;
+		}
+		//draw the quads
+		for (int q = 0; q < 9; q++) {
+			glVertex3f(xvalues[q], yvalues[q], zvalues[q]);
+			glVertex3f(xnextvalues[q], ynextvalues[q], znextvalues[q]);
+			glVertex3f(xnextvalues[q + 1], ynextvalues[q + 1], znextvalues[q + 1]);
+			glVertex3f(xvalues[q + 1], yvalues[q + 1], zvalues[q + 1]);
+		}
+		//set = to next
+		for (int p = 0; p < 10; p++) {
+			xvalues[p] = xnextvalues[p];
+			yvalues[p] = ynextvalues[p];
+			zvalues[p] = znextvalues[p];
+		}
+		//advect next
+		for (int p = 0; p < 10; p++) {
+			vector3d * NextVector = new vector3d(xnextvalues[p], ynextvalues[p], znextvalues[p]);
+			NextVector = VectorAdvect(NextVector); //change this line
+			float  * newValues = NextVector->xyz();
+			xnextvalues[p] = newValues[0];
+			ynextvalues[p] = newValues[1];
+			znextvalues[p] = newValues[2];
+			free(NextVector);
+		}
+	}
+	glEnd();
 }
 
 void Framework::InitGraphics1() {
@@ -813,8 +919,6 @@ void Framework::InitLists() {
 
 }
 
-
-
 vector3d* Framework::VectorAtLocation(float xCord, float yCord, float zCord) {
 	float vectorP[3];
 	vector3d* returnVec;
@@ -1013,7 +1117,7 @@ void Framework::Axes(float length) {
 }
 
 //to be moved to vector3d?
-void Cross(float v1[3], float v2[3], float vout[3])
+void Framework::Cross(float v1[3], float v2[3], float vout[3])
 {
 	float tmp[3];
 
@@ -1027,7 +1131,7 @@ void Cross(float v1[3], float v2[3], float vout[3])
 }
 
 //to be moved to vector3d?
-float Unit(float vin[3], float vout[3])
+float Framework::Unit(float vin[3], float vout[3])
 {
 	float dist = vin[0] * vin[0] + vin[1] * vin[1] + vin[2] * vin[2];
 
@@ -1048,106 +1152,7 @@ float Unit(float vin[3], float vout[3])
 	return dist;
 }
 
-void Arrow(float tail[3], float head[3]) {
-	float u[3], v[3], w[3];		// arrow coordinate system
-								// set w direction in u-v-w coordinate system:
 
-	w[0] = head[0] - tail[0];
-	w[1] = head[1] - tail[1];
-	w[2] = head[2] - tail[2];
-
-	// determine major direction:
-
-	int axis = X;
-	float mag = fabs(w[0]);
-	if (fabs(w[1])  > mag) {
-		axis = Y;
-		mag = fabs(w[1]);
-	}
-	if (fabs(w[2])  > mag) {
-		axis = Z;
-		mag = fabs(w[2]);
-	}
-
-
-	// set size of wings and turn w into a Unit vector:
-
-	float d = WINGS * Unit(w, w);
-
-	// draw the shaft of the arrow:
-	glBegin(GL_LINE_STRIP);
-	glVertex3fv(tail);
-	glVertex3fv(head);
-	glEnd();
-
-	// draw two sets of wings in the non-major directions:
-
-	float x, y, z;
-
-	if (axis != X) {
-		Cross(w, axx, v);
-		(void)Unit(v, v);
-		Cross(v, w, u);
-		x = head[0] + d * (u[0] - w[0]);
-		y = head[1] + d * (u[1] - w[1]);
-		z = head[2] + d * (u[2] - w[2]);
-		glBegin(GL_LINE_STRIP);
-		glVertex3fv(head);
-		glVertex3f(x, y, z);
-		glEnd();
-		x = head[0] + d * (-u[0] - w[0]);
-		y = head[1] + d * (-u[1] - w[1]);
-		z = head[2] + d * (-u[2] - w[2]);
-		glBegin(GL_LINE_STRIP);
-		glVertex3fv(head);
-		glVertex3f(x, y, z);
-		glEnd();
-	}
-
-
-	if (axis != Y) {
-		Cross(w, ayy, v);
-		(void)Unit(v, v);
-		Cross(v, w, u);
-		x = head[0] + d * (u[0] - w[0]);
-		y = head[1] + d * (u[1] - w[1]);
-		z = head[2] + d * (u[2] - w[2]);
-		glBegin(GL_LINE_STRIP);
-		glVertex3fv(head);
-		glVertex3f(x, y, z);
-		glEnd();
-		x = head[0] + d * (-u[0] - w[0]);
-		y = head[1] + d * (-u[1] - w[1]);
-		z = head[2] + d * (-u[2] - w[2]);
-		glBegin(GL_LINE_STRIP);
-		glVertex3fv(head);
-		glVertex3f(x, y, z);
-		glEnd();
-	}
-
-
-
-	if (axis != Z) {
-		Cross(w, azz, v);
-		(void)Unit(v, v);
-		Cross(v, w, u);
-		x = head[0] + d * (u[0] - w[0]);
-		y = head[1] + d * (u[1] - w[1]);
-		z = head[2] + d * (u[2] - w[2]);
-		glBegin(GL_LINE_STRIP);
-		glVertex3fv(head);
-		glVertex3f(x, y, z);
-		glEnd();
-		x = head[0] + d * (-u[0] - w[0]);
-		y = head[1] + d * (-u[1] - w[1]);
-		z = head[2] + d * (-u[2] - w[2]);
-		glBegin(GL_LINE_STRIP);
-		glVertex3fv(head);
-		glVertex3f(x, y, z);
-		glEnd();
-	}
-
-}
 
 void Framework::DoRasterString(float x, float y, float z, char *s)
 {

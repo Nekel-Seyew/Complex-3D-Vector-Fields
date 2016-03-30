@@ -123,11 +123,18 @@ public:
 	static Framework* instance();
 
 	/*Graphics (View)*/
+	//These are the Functions for drawing the Vector Data
+	void DrawPoints();
+	void DrawArrows();
+	void DrawProbe();
+
 	//These are the Helper Functions for Graphics: 
 	vector3d * VectorAtLocation(float, float, float);
-	vector3d * Framework::VectorAdvect(vector3d *);
-	float * Framework::Color(float);
+	vector3d * VectorAdvect(vector3d *);
+	float * Color(float);
 	void InitLists();
+	float Unit(float*, float*);
+	void Cross(float*, float*, float*);
 
 	//These are the Gluints that correspond to the Lists in InitLists:
 	GLuint	AxesList;			
