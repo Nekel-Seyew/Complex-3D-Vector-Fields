@@ -310,6 +310,13 @@ void KeyboardFuncl(unsigned char c, int x, int y) {
 void MainKeyboard(unsigned char c, int x, int y) {
 	//Framework::instance().Glui.sync_live();
 }
+void MouseMotionFuncl(int myx, int myy) {
+	Framework::instance()->MouseMotion(myx, myy);
+}
+void MouseButtonFuncl(int arg1, int arg2, int arg3, int arg4) {
+	Framework::instance()->MouseButton(arg1, arg2, arg3, arg4);
+}
+
 
 int main(int argc, char ** argv) {
 
@@ -320,6 +327,8 @@ int main(int argc, char ** argv) {
     Framework::instance()->Init1();
 	glutDisplayFunc(DisplayFuncl);
 	glutKeyboardFunc(KeyboardFuncl);
+	glutMouseFunc(MouseButtonFuncl);
+	glutMotionFunc(MouseMotionFuncl);
 	Framework::instance()->Init2();
 	InitGlui();
 	printf("After Init, Vector Min is %f\n", Framework::instance()->VectorLowHigh[0]);

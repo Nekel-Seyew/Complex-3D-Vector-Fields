@@ -99,7 +99,8 @@ void Framework::BuildClasses() {
 
 //sets initial values of variables
 void Framework::RestoreDefaults() {
-	
+	ActiveButton = 0;
+	LeftButton = ROTATE;
 	backgroundColor = 0.1f;
 	boxColor = 1.0f;
 	axesColor = 1.0f;
@@ -422,7 +423,14 @@ void Framework::Display() {
 	gluOrtho2D(0., 100., 0., 100.);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glColor3f(1., 1., 1.);
+	float colorFactor;
+	if (backgroundColor < 0.5) {
+		colorFactor = 1.0;
+	}
+	else {
+		colorFactor = 0.1;
+	}
+	glColor3f(colorFactor, colorFactor, colorFactor);
 	DoRasterString(5., 5., 0., "Team TARDIS");
 
 	// swap the double-buffered framebuffers:
@@ -972,6 +980,7 @@ void Framework::Streamline(float x, float y, float z)
 		//printf("Printing out a streamlinevertex %8.2f %8.2f %8.2f\n", x, y, z);
 	}
 	glEnd();
+	glLineWidth(1.);
 }
 
 vector3d * Framework::VectorAdvect(vector3d * inputVector) {
@@ -1170,4 +1179,79 @@ void Framework::DoRasterString(float x, float y, float z, char *s)
 	{
 		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, c);
 	}
+}
+void Framework::MouseButton(int button, int state, int x, int y){
+	int b = 0;			// LEFT, MIDDLE, or RIGHT
+
+	// get the proper button bit mask:
+
+	switch (button)
+	{
+	case GLUT_LEFT_BUTTON:
+		b = LEFT;		break;
+
+	case GLUT_MIDDLE_BUTTON:
+		b = MIDDLE;		break;
+
+	case GLUT_RIGHT_BUTTON:
+		b = RIGHT;		break;
+
+	default:
+		b = 0;
+		fprintf(stderr, "Unknown mouse button: %d\n", button);
+	}
+
+
+	// button down sets the bit, up clears the bit:
+
+	if (state == GLUT_DOWN)
+	{
+		Xmouse = x;
+		Ymouse = y;
+		ActiveButton |= b;		// set the proper bit
+	}
+	else
+	{
+		ActiveButton &= ~b;		// clear the proper bit
+	}
+}
+void Framework::MouseMotion(int x, int y){
+
+
+	int dx = x - Xmouse;		// change in mouse coords
+	int dy = y - Ymouse;
+
+	if ((ActiveButton & LEFT) != 0)
+	{
+		switch (LeftButton)
+		{
+		case ROTATE:
+			Xrot += (ANGFACT*dy);
+			Yrot += (ANGFACT*dx);
+			break;
+
+		case SCALE:
+			Scale += SCLFACT * (float)(dx - dy);
+			if (Scale < MINSCALE)
+				Scale = MINSCALE;
+			break;
+		}
+	}
+
+
+	if ((ActiveButton & MIDDLE) != 0)
+	{
+		Scale += SCLFACT * (float)(dx - dy);
+
+		// keep object from turning inside-out or disappearing:
+
+		if (Scale < MINSCALE)
+			Scale = MINSCALE;
+	}
+
+	Xmouse = x;			// new current position
+	Ymouse = y;
+
+	glutSetWindow(MainWindow);
+	glutPostRedisplay();
 }

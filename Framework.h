@@ -69,6 +69,30 @@ struct VectorNode {
 	float magnitude;
 
 };
+//Constants for the Mouse Motion:
+// multiplication factors for input interaction:
+//  (these are known from previous experience)
+
+const float ANGFACT = { 1. };
+const float SCLFACT = { 0.005f };
+
+
+// able to use the left mouse for either rotation or scaling,
+// in case have only a 2-button mouse:
+
+
+
+
+// minimum allowable scale factor:
+
+const float MINSCALE = { 0.05f };
+
+
+// active mouse buttons (or them together):
+
+const int LEFT = { 4 };
+const int MIDDLE = { 2 };
+const int RIGHT = { 1 };
 
 //#pragma warning(default:C4005)
 class Framework{
@@ -98,7 +122,6 @@ protected:
 	void DoRasterString(float, float, float, char *);
 	//To Be Initialized When We Add Mouse and Keyboard Functionality In:
 	//KeyboardState keyboard;
-	//MouseState mouse;
 	
 	//This Function Has Not Been Initialized Yet
 	void BuildClasses();
@@ -118,6 +141,17 @@ public:
 	void Keyboard(unsigned char, int, int);
 	//
 	int MainWindow;
+	//MouseState mouse;
+	int	ActiveButton;
+	enum LeftButton
+	{
+		ROTATE,
+		SCALE
+	};
+	void MouseButton(int, int, int, int);
+	void MouseMotion(int, int);
+	int	LeftButton;				// either ROTATE or SCALE
+
 
 	//Here is the Static Instance Necessary For Our Singleton:
 	static Framework* instance();
@@ -219,8 +253,6 @@ public:
 	int useJitter;
 	int useProbe;
 	int usePrism;
-
-	
 
 	//These are the Arrows Controls
 	float minvec;
