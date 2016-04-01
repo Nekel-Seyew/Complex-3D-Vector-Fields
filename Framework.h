@@ -176,7 +176,7 @@ public:
 
 
 	//Streamline Function and Related Variables
-	void Framework::Streamline(float, float, float);
+	void GenStreamline(float, float, float);
 	int visitstream;
 
 	//These are Functions For Setting Up Shaders:

@@ -32,6 +32,12 @@ Framework::Framework()
 
 }
 
+//Framework will never be removed
+Framework::~Framework()
+{
+
+}
+
 //remove later with temp init below
 inline float SQR(float x) { //Dr. Bailey timed this - its much faster than actually using Pow
 	return x * x;
@@ -45,8 +51,243 @@ void Vector(float x, float y, float z, float *vxp, float *vyp, float *vzp) {
 
 }
 
+float * Framework::Color(float VecMag) {
+	float hsv[3], rgb[3];
+	float min = VDef->get_vector_cull_min()->magnitude();
+	float max = VDef->get_vector_cull_max()->magnitude();
+	// finally draw the point if it passes all the tests
+	float divisor = (max - min);
+	if (ColorAlternate) {
+		if (divisor == 0) {
+			hsv[0] = 240. - 240.* ((max - VecMag) / 1.);
+		}
+		else {
+			hsv[0] = 240. - 240.* ((max - VecMag) / divisor);
+		}
+	}
+	else {
+
+		if (divisor == 0) {
+			hsv[0] = 240. - 240.* ((VecMag - min) / 1.);
+		}
+		else {
+			hsv[0] = 240. - 240.* ((VecMag - min) / divisor);
+		}
+
+	}
+	//hsv[0] = 240.- 240.* (Nodes[i][j][k].vecLength - vecmax)/(vecmax - vecmin);
+	//hsv[0] = 240. - 240.* (vecmax - Nodes[i][j][k].t) / (vecmax - vecmin);
+	//hsv[0] = 240. - 240.* (TEMPMIN - Nodes[i][j][k].t) / (TEMPMAX - TEMPMIN);
+	hsv[1] = 1.;
+	hsv[2] = 1.;
+	color::HsvRgb(hsv, rgb);
+	return rgb;
+}
+
+vector3d * Framework::VectorAdvect(vector3d * inputVector) {
+	float TimeStep = 0.1;
+	float xa, ya, za;
+	float xb, yb, zb;
+	float vxa, vya, vza;
+	float vxb, vyb, vzb;
+	float vx, vy, vz;
+	float xc, yc, zc;
+	float *vec = inputVector->xyz();
+	xa = vec[0];
+	ya = vec[1];
+	za = vec[2];
+	vector3d * firstOutputVector = VectorAtLocation(xa, ya, za);
+
+	float *firstvec = firstOutputVector->xyz();
+	vxa = firstvec[0];
+	vya = firstvec[1];
+	vza = firstvec[2];
+	xb = xa + TimeStep * vxa;
+	yb = ya + TimeStep * vya;
+	zb = za + TimeStep * vza;
+	vector3d * secondOutputVector = VectorAtLocation(xb, yb, zb);
+	float *secondvec = secondOutputVector->xyz();
+	vxb = secondvec[0];
+	vyb = secondvec[1];
+	vzb = secondvec[2];
+	vx = (vxa + vxb) / 2.;
+	vy = (vya + vyb) / 2.;
+	vz = (vza + vzb) / 2.;
+	xc = xa + TimeStep * vx;
+	yc = ya + TimeStep * vy;
+	zc = za + TimeStep * vz;
+	vector3d* vectorReturn = new vector3d(xc, yc, zc);
+	return vectorReturn;
+}
+
+vector3d* Framework::VectorAtLocation(float xCord, float yCord, float zCord) {
+	float vectorP[3];
+	vector3d* returnVec;
+	if (VectorEquation != NULL) {
+		VectorEquation->eval(xCord, yCord, zCord, vectorP);
+		returnVec = new vector3d(vectorP[0], vectorP[1], vectorP[2]);
+	}
+	else if (VDef->am_file()) {
+		vector3d* temp = new vector3d(xCord, yCord, zCord);
+		returnVec = VDef->get_vector_at_pos(temp);
+		delete temp;
+	}
+	//printf("The values of the returnVec are %f, %f, %f\n", returnVec->xyz()[0], returnVec->xyz()[1], returnVec->xyz()[2]);
+	return returnVec;
+}
+
+void Framework::Axes(float length) {
+	// the stroke characters 'X' 'Y' 'Z' :
+
+	static float xx[] = {
+		0.f, 1.f, 0.f, 1.f
+	};
+
+	static float xy[] = {
+		-.5f, .5f, .5f, -.5f
+	};
+
+	static int xorder[] = {
+		1, 2, -3, 4
+	};
+
+
+	static float yx[] = {
+		0.f, 0.f, -.5f, .5f
+	};
+
+	static float yy[] = {
+		0.f, .6f, 1.f, 1.f
+	};
+
+	static int yorder[] = {
+		1, 2, 3, -2, 4
+	};
+
+
+	static float zx[] = {
+		1.f, 0.f, 1.f, 0.f, .25f, .75f
+	};
+
+	static float zy[] = {
+		.5f, .5f, -.5f, -.5f, 0.f, 0.f
+	};
+
+	static int zorder[] = {
+		1, 2, 3, 4, -5, 6
+	};
+
+
+	// fraction of the length to use as height of the characters:
+
+	const float LENFRAC = 0.10f;
+
+
+	// fraction of length to use as start location of the characters:
+
+	const float BASEFRAC = 1.10f;
+	glBegin(GL_LINE_STRIP);
+	glVertex3f(length, 0., 0.);
+	glVertex3f(0., 0., 0.);
+	glVertex3f(0., length, 0.);
+	glEnd();
+	glBegin(GL_LINE_STRIP);
+	glVertex3f(0., 0., 0.);
+	glVertex3f(0., 0., length);
+	glEnd();
+
+	float fact = LENFRAC * length;
+	float base = BASEFRAC * length;
+
+	glBegin(GL_LINE_STRIP);
+	for (int i = 0; i < 4; i++)
+	{
+		int j = xorder[i];
+		if (j < 0)
+		{
+
+			glEnd();
+			glBegin(GL_LINE_STRIP);
+			j = -j;
+		}
+		j--;
+		glVertex3f(base + fact*xx[j], fact*xy[j], 0.0);
+	}
+	glEnd();
+
+	glBegin(GL_LINE_STRIP);
+	for (int i = 0; i < 5; i++)
+	{
+		int j = yorder[i];
+		if (j < 0)
+		{
+
+			glEnd();
+			glBegin(GL_LINE_STRIP);
+			j = -j;
+		}
+		j--;
+		glVertex3f(fact*yx[j], base + fact*yy[j], 0.0);
+	}
+	glEnd();
+
+	glBegin(GL_LINE_STRIP);
+	for (int i = 0; i < 6; i++)
+	{
+		int j = zorder[i];
+		if (j < 0)
+		{
+
+			glEnd();
+			glBegin(GL_LINE_STRIP);
+			j = -j;
+		}
+		j--;
+		glVertex3f(0.0, fact*zy[j], base + fact*zx[j]);
+	}
+	glEnd();
+
+}
+
+//to be moved to vector3d?
+void Framework::Cross(float v1[3], float v2[3], float vout[3])
+{
+	float tmp[3];
+
+	tmp[0] = v1[1] * v2[2] - v2[1] * v1[2];
+	tmp[1] = v2[0] * v1[2] - v1[0] * v2[2];
+	tmp[2] = v1[0] * v2[1] - v2[0] * v1[1];
+
+	vout[0] = tmp[0];
+	vout[1] = tmp[1];
+	vout[2] = tmp[2];
+}
+
+//to be moved to vector3d?
+float Framework::Unit(float vin[3], float vout[3])
+{
+	float dist = vin[0] * vin[0] + vin[1] * vin[1] + vin[2] * vin[2];
+
+	if (dist > 0.0)
+	{
+		dist = sqrt(dist);
+		vout[0] = vin[0] / dist;
+		vout[1] = vin[1] / dist;
+		vout[2] = vin[2] / dist;
+	}
+	else
+	{
+		vout[0] = vin[0];
+		vout[1] = vin[1];
+		vout[2] = vin[2];
+	}
+
+	return dist;
+}
+
 //Init split into two halfs due to glut funtion initilization not working in class
 void Framework::Init1() {
+	InitGraphics1();
 
 	if (usePrism) {
 		thePoints = SDef->prism(2., 10, 2., 10, 2., 10); //Change This Line to (6., 40, 6., 40, 6., 40) if you want to view a bigger dataset
@@ -77,20 +318,275 @@ void Framework::Init2() {
 	RestoreDefaults();
 }
 
-//Framework will never be removed
-Framework::~Framework()
-{
+void Framework::InitGraphics1() {
+	// setup the display mode:
+	// ( *must* be done before call to glutCreateWindow( ) )
+	// ask for color, double-buffering, and z-buffering:
+	const float BACKCOLOR[4] = { 0.1f, 0.1f, 0.1f, 0.f };
+	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
+
+
+	// set the initial window configuration:
+
+	glutInitWindowPosition(0, 0);
+	glutInitWindowSize(INIT_WINDOW_SIZE, INIT_WINDOW_SIZE);
+
+
+	// open the window and set its title:
+
+	MainWindow = glutCreateWindow(WINDOWTITLE);
+	glutSetWindowTitle(WINDOWTITLE);
+
+	// setup the clear values:
+
+	glClearColor(backgroundColor, backgroundColor, backgroundColor, 0.1f);
+
+	glutSetWindow(MainWindow);
+
+	//Creating the Space and Vector Definers - Perhaps this should be it's own function 
+	SDef = new SpaceDefiner();
+	VDef = new VectorDefiner();
 
 }
 
-void Framework::Run(int argc, char ** argv) {
+void Framework::InitGraphics2() {
+	// setup the display mode:
+	// ( *must* be done before call to glutCreateWindow( ) )
+	// ask for color, double-buffering, and z-buffering:
+	/*const float BACKCOLOR[4] = { 0.1f, 0.1f, 0.1f, 0.f };
+	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
 
-	// draw the scene once and wait for some interaction:
-	// (this will never return)
 
-	glutMainLoop();
+	// set the initial window configuration:
 
-	return;
+	glutInitWindowPosition(0, 0);
+	glutInitWindowSize(INIT_WINDOW_SIZE, INIT_WINDOW_SIZE);
+
+
+	// open the window and set its title:
+
+	MainWindow = glutCreateWindow(WINDOWTITLE);
+	glutSetWindowTitle(WINDOWTITLE);
+
+	// setup the clear values:
+
+	glClearColor(BACKCOLOR[0], BACKCOLOR[1], BACKCOLOR[2], BACKCOLOR[3]);
+
+
+	// setup the callback routines:
+	// DisplayFunc -- redraw the window
+	// ReshapeFunc -- handle the user resizing the window
+	// KeyboardFunc -- handle a keyboard input
+	// MouseFunc -- handle the mouse button going down or up
+	// MotionFunc -- handle the mouse moving with a button down
+	// PassiveMotionFunc -- handle the mouse moving with a button up
+	// VisibilityFunc -- handle a change in window visibility
+	// EntryFunc	-- handle the cursor entering or leaving the window
+	// SpecialFunc -- handle special keys on the keyboard
+	// SpaceballMotionFunc -- handle spaceball translation
+	// SpaceballRotateFunc -- handle spaceball rotation
+	// SpaceballButtonFunc -- handle spaceball button hits
+	// ButtonBoxFunc -- handle button box hits
+	// DialsFunc -- handle dial rotations
+	// TabletMotionFunc -- handle digitizing tablet motion
+	// TabletButtonFunc -- handle digitizing tablet button hits
+	// MenuStateFunc -- declare when a pop-up menu is in use
+	// TimerFunc -- trigger something to happen a certain time from now
+	// IdleFunc -- what to do when nothing else is going on
+	*/
+	//glutSetWindow(MainWindow);
+	//glutDisplayFunc(GLForwader::DisplayFuncl);
+	/*glutReshapeFunc(Resize);*/
+	/*
+	glutMouseFunc(MouseButton);
+	glutMotionFunc(MouseMotion);*/
+	glutPassiveMotionFunc(NULL);
+	//glutVisibilityFunc(Visibility);
+	glutEntryFunc(NULL);
+	glutSpecialFunc(NULL);
+	glutSpaceballMotionFunc(NULL);
+	glutSpaceballRotateFunc(NULL);
+	glutSpaceballButtonFunc(NULL);
+	glutButtonBoxFunc(NULL);
+	glutDialsFunc(NULL);
+	glutTabletMotionFunc(NULL);
+	glutTabletButtonFunc(NULL);
+	glutMenuStateFunc(NULL);
+	glutTimerFunc(0, NULL, 0);
+
+	// DO NOT SET THE GLUT IDLE FUNCTION HERE !!
+	// glutIdleFunc( NULL );
+	// let glui take care of it in InitGlui( )
+	SetUpShaders();
+}
+
+void Framework::SetupVertexBuffers() {
+
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);  //bind to make it active.
+
+							 // Create and initialize the buffers objects on the card
+							 // Two buffers - one for colors and one for vertices 
+	glGenBuffers(2, buffer);
+
+	// Bind makes it the active VBO
+	glBindBuffer(GL_ARRAY_BUFFER, buffer[0]);
+
+	// Copy the vertex data into our buffer on the card.
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	//Bind the color buffer and then copy the color data into the buffer on the card 
+	glBindBuffer(GL_ARRAY_BUFFER, buffer[1]);
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(vectors), vectors, GL_STATIC_DRAW);
+}
+
+void Framework::SetUpShaders() {
+	GLenum err = glewInit();
+	//Creating Vertex Shader
+	FILE *fpv = fopen("probe.glsl", "rb");
+	if (fpv == NULL) {}
+	fseek(fpv, 0, SEEK_END);
+	int vnumBytes = ftell(fpv); // length of file
+	GLchar * vbuffer = new GLchar[vnumBytes + 1];
+	rewind(fpv); // same as: “fseek( in, 0, SEEK_SET )”
+	fread(vbuffer, 1, vnumBytes, fpv);
+	fclose(fpv);
+	vbuffer[vnumBytes] = '\0'; // the entire file is now in a byte string
+	int vstatus;
+	int vlogLength;
+	GLuint vertShader = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(vertShader, 1, (const GLchar **)&vbuffer, NULL);
+	delete[] vbuffer;
+	glCompileShader(vertShader);
+	CheckGlErrors("Vertex Shader 1");
+	glGetShaderiv(vertShader, GL_COMPILE_STATUS, &vstatus);
+	if (vstatus == GL_FALSE)
+	{
+		printf("Vertex shader compilation failed.\n");
+		glGetShaderiv(vertShader, GL_INFO_LOG_LENGTH, &vlogLength);
+		GLchar *mylog = new GLchar[vlogLength];
+		glGetShaderInfoLog(vertShader, vlogLength, NULL, mylog);
+		printf("\n%s\n", mylog);
+		delete[] mylog;
+		exit(1);
+	}
+	CheckGlErrors("Vertex Shader 2");
+	//Making The Fragment Shader:
+	FILE *fpf = fopen("probe.frag", "rb");
+	if (fpf == NULL) {}
+	fseek(fpf, 0, SEEK_END);
+	int fnumBytes = ftell(fpf); // length of file
+	GLchar * fbuffer = new GLchar[fnumBytes + 1];
+	rewind(fpf); // same as: “fseek( in, 0, SEEK_SET )”
+	fread(fbuffer, 1, fnumBytes, fpf);
+	fclose(fpf);
+	fbuffer[fnumBytes] = '\0'; // the entire file is now in a byte string
+	int fstatus;
+	int flogLength;
+	GLuint fragShader = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(fragShader, 1, (const GLchar **)&fbuffer, NULL);
+	delete[] fbuffer;
+	glCompileShader(fragShader);
+	CheckGlErrors("Fragment Shader 1");
+	glGetShaderiv(fragShader, GL_COMPILE_STATUS, &fstatus);
+	if (fstatus == GL_FALSE)
+	{
+		fprintf(stderr, "Fragement shader compilation failed.\n");
+		glGetShaderiv(fragShader, GL_INFO_LOG_LENGTH, &flogLength);
+		GLchar *mylog = new GLchar[flogLength];
+		glGetShaderInfoLog(fragShader, flogLength, NULL, mylog);
+		fprintf(stderr, "\n%s\n", mylog);
+		delete[] mylog;
+		exit(1);
+	}
+	CheckGlErrors("Fragment Shader 2");
+	int pstatus;
+	int plogLength;
+	program = glCreateProgram();
+	glAttachShader(program, vertShader);
+	glAttachShader(program, fragShader);
+	glLinkProgram(program);
+	CheckGlErrors("Shader Program 1");
+	glGetProgramiv(program, GL_LINK_STATUS, &pstatus);
+	if (pstatus == GL_FALSE)
+	{
+		fprintf(stderr, "Link failed.\n");
+		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &plogLength);
+		GLchar * mylog2 = new GLchar[plogLength];
+		glGetProgramInfoLog(program, plogLength, NULL, mylog2);
+		fprintf(stderr, "\n%s\n", mylog2);
+		delete[] mylog2;
+		exit(1);
+	}
+	CheckGlErrors("Shader Program 2");
+	glValidateProgram(program);
+	glGetProgramiv(program, GL_VALIDATE_STATUS, &pstatus);
+	fprintf(stderr, "Program is %s.\n", pstatus == GL_FALSE ? "invalid" : "valid");
+	//Do Not Use Program Until Shaders are Ready
+	color4 light_position(1.5, 1.5, 2.0, 1.0);
+	color4 light_ambient(0.2, 0.2, 0.2, 1.0);
+	color4 light_diffuse(1.0, 1.0, 1.0, 1.0);
+	color4 light_specular(1.0, 1.0, 1.0, 1.0);
+
+	color4 material_ambient(0.0, 0.0, 1.0, 1.0);
+	color4 material_diffuse(0.0, 0.8, 1.0, 1.0);
+	color4 material_specular(1.0, 0.8, 0.0, 1.0);
+	float  material_shininess = 100.0;
+
+	color4 ambient_product = light_ambient * material_ambient;
+	color4 diffuse_product = light_diffuse * material_diffuse;
+	color4 specular_product = light_specular * material_specular;
+	glUniform4fv(glGetUniformLocation(program, "AmbientProduct"),
+		1, &ambient_product[0]);
+	glUniform4fv(glGetUniformLocation(program, "DiffuseProduct"),
+		1, &diffuse_product[0]);
+	glUniform4fv(glGetUniformLocation(program, "SpecularProduct"),
+		1, &specular_product[0]);
+	glUniform4fv(glGetUniformLocation(program, "LightPosition"),
+		1, &light_position[0]);
+	glUniform1f(glGetUniformLocation(program, "Shininess"),
+		material_shininess);
+
+	GLuint modelViewLoc = glGetUniformLocation(program, "ModelView"); //this returns the index of where somthing is on the shader
+	GLuint projectionLoc = glGetUniformLocation(program, "Projection");
+
+}
+
+void Framework::InitLists() {
+	AxesList = glGenLists(1);
+	glNewList(AxesList, GL_COMPILE);
+	glLineWidth(3.);
+	Axes(1.5);
+	glLineWidth(1.);
+	glEndList();
+
+	StreamlineList = glGenLists(2);
+	glNewList(StreamlineList, GL_COMPILE);
+	float xval;
+	float yval;
+	float zval;
+	int N = 5;
+	float streamstep = 2.0 / ((float)N - 1.0);
+	xval = -1.0; //assumes contained from -1 to 1
+	for (int i = 0; i < N; i++) {
+		yval = -1.0;
+		for (int j = 0; j < N; j++) {
+			zval = -1.0;
+			for (int k = 0; k < N; k++) {
+				float x, y, z;
+				x = xval;
+				y = yval;
+				z = zval;
+				GenStreamline(x, y, z);
+				zval += streamstep;
+			}
+			yval += streamstep;
+		}
+		xval += streamstep;
+	}
+	glEndList();
+
+
 }
 
 void Framework::BuildClasses() {
@@ -148,8 +644,17 @@ void Framework::RestoreDefaults() {
 	ColorAlternate = 0;
 }
 
-void
-Framework::CheckGlErrors(const char* caller)
+void Framework::Run(int argc, char ** argv) {
+
+	// draw the scene once and wait for some interaction:
+	// (this will never return)
+
+	glutMainLoop();
+
+	return;
+}
+
+void Framework::CheckGlErrors(const char* caller)
 {
 	unsigned int glerr = glGetError();
 	if (glerr == GL_NO_ERROR)
@@ -178,39 +683,6 @@ Framework::CheckGlErrors(const char* caller)
 	default:
 		fprintf(stderr, "Unknown OpenGL error : %d(0x % 0x)\n", glerr, glerr);
 	}
-}
-
-float * Framework::Color(float VecMag) {
-	float hsv[3], rgb[3];
-	float min = VDef->get_vector_cull_min()->magnitude();
-	float max = VDef->get_vector_cull_max()->magnitude();
-	// finally draw the point if it passes all the tests
-	float divisor = (max - min);
-	if (ColorAlternate) {
-		if (divisor == 0) {
-			hsv[0] = 240. - 240.* ((max - VecMag) / 1.);
-		}
-		else {
-			hsv[0] = 240. - 240.* ((max - VecMag) / divisor);
-		}
-	}
-	else {
-		
-		if (divisor == 0) {
-			hsv[0] = 240. - 240.* ((VecMag- min ) / 1.);
-		}
-		else {
-			hsv[0] = 240. - 240.* ((VecMag - min) / divisor);
-		}
-
-	}
-	//hsv[0] = 240.- 240.* (Nodes[i][j][k].vecLength - vecmax)/(vecmax - vecmin);
-	//hsv[0] = 240. - 240.* (vecmax - Nodes[i][j][k].t) / (vecmax - vecmin);
-	//hsv[0] = 240. - 240.* (TEMPMIN - Nodes[i][j][k].t) / (TEMPMAX - TEMPMIN);
-	hsv[1] = 1.;
-	hsv[2] = 1.;
-	color::HsvRgb(hsv, rgb);
-	return rgb;
 }
 
 void Framework::Display() {
@@ -663,293 +1135,7 @@ void Framework::DrawProbe() {
 	glEnd();
 }
 
-void Framework::InitGraphics1() {
-	// setup the display mode:
-	// ( *must* be done before call to glutCreateWindow( ) )
-	// ask for color, double-buffering, and z-buffering:
-	const float BACKCOLOR[4] = { 0.1f, 0.1f, 0.1f, 0.f };
-	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
-
-
-	// set the initial window configuration:
-
-	glutInitWindowPosition(0, 0);
-	glutInitWindowSize(INIT_WINDOW_SIZE, INIT_WINDOW_SIZE);
-
-
-	// open the window and set its title:
-
-	MainWindow = glutCreateWindow(WINDOWTITLE);
-	glutSetWindowTitle(WINDOWTITLE);
-
-	// setup the clear values:
-
-	glClearColor(backgroundColor, backgroundColor, backgroundColor, 0.1f);
-
-	glutSetWindow(MainWindow);
-
-	//Creating the Space and Vector Definers - Perhaps this should be it's own function 
-	SDef = new SpaceDefiner();
-	VDef = new VectorDefiner();
-
-}
-
-void Framework::SetupVertexBuffers() {
-
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao);  //bind to make it active.
-
-							 // Create and initialize the buffers objects on the card
-	// Two buffers - one for colors and one for vertices 
-	glGenBuffers(2, buffer);
-
-	// Bind makes it the active VBO
-	glBindBuffer(GL_ARRAY_BUFFER, buffer[0]);
-
-	// Copy the vertex data into our buffer on the card.
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	//Bind the color buffer and then copy the color data into the buffer on the card 
-	glBindBuffer(GL_ARRAY_BUFFER, buffer[1]);
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(vectors), vectors, GL_STATIC_DRAW);
-}
-
-void Framework::SetUpShaders() {
-	GLenum err = glewInit();
-	//Creating Vertex Shader
-	FILE *fpv = fopen("probe.glsl", "rb");
-	if (fpv == NULL) {}
-	fseek(fpv, 0, SEEK_END);
-	int vnumBytes = ftell(fpv); // length of file
-	GLchar * vbuffer = new GLchar[vnumBytes + 1];
-	rewind(fpv); // same as: “fseek( in, 0, SEEK_SET )”
-	fread(vbuffer, 1, vnumBytes, fpv);
-	fclose(fpv);
-	vbuffer[vnumBytes] = '\0'; // the entire file is now in a byte string
-	int vstatus;
-	int vlogLength;
-	GLuint vertShader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertShader, 1, (const GLchar **)&vbuffer, NULL);
-	delete[] vbuffer;
-	glCompileShader(vertShader);
-	CheckGlErrors("Vertex Shader 1");
-	glGetShaderiv(vertShader, GL_COMPILE_STATUS, &vstatus);
-	if (vstatus == GL_FALSE)
-	{
-		printf( "Vertex shader compilation failed.\n");
-		glGetShaderiv(vertShader, GL_INFO_LOG_LENGTH, &vlogLength);
-		GLchar *mylog = new GLchar[vlogLength];
-		glGetShaderInfoLog(vertShader, vlogLength, NULL, mylog);
-		printf("\n%s\n", mylog);
-		delete[] mylog;
-		exit(1);
-	}
-	CheckGlErrors("Vertex Shader 2");
-	//Making The Fragment Shader:
-	FILE *fpf = fopen("probe.frag", "rb");
-	if (fpf == NULL) {}
-	fseek(fpf, 0, SEEK_END);
-	int fnumBytes = ftell(fpf); // length of file
-	GLchar * fbuffer = new GLchar[fnumBytes + 1];
-	rewind(fpf); // same as: “fseek( in, 0, SEEK_SET )”
-	fread(fbuffer, 1, fnumBytes, fpf);
-	fclose(fpf);
-	fbuffer[fnumBytes] = '\0'; // the entire file is now in a byte string
-	int fstatus;
-	int flogLength;
-	GLuint fragShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragShader, 1, (const GLchar **)&fbuffer, NULL);
-	delete[] fbuffer;
-	glCompileShader(fragShader);
-	CheckGlErrors("Fragment Shader 1");
-	glGetShaderiv(fragShader, GL_COMPILE_STATUS, &fstatus);
-	if (fstatus == GL_FALSE)
-	{
-		fprintf(stderr, "Fragement shader compilation failed.\n");
-		glGetShaderiv(fragShader, GL_INFO_LOG_LENGTH, &flogLength);
-		GLchar *mylog = new GLchar[flogLength];
-		glGetShaderInfoLog(fragShader, flogLength, NULL, mylog);
-		fprintf(stderr, "\n%s\n", mylog);
-		delete[] mylog;
-		exit(1);
-	}
-	CheckGlErrors("Fragment Shader 2");
-	int pstatus;
-	int plogLength;
-	 program = glCreateProgram();
-	glAttachShader(program, vertShader);
-	glAttachShader(program, fragShader);
-	glLinkProgram(program);
-	CheckGlErrors("Shader Program 1");
-	glGetProgramiv(program, GL_LINK_STATUS, &pstatus);
-	if (pstatus == GL_FALSE)
-	{
-		fprintf(stderr, "Link failed.\n");
-		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &plogLength);
-		GLchar * mylog2 = new GLchar[plogLength];
-		glGetProgramInfoLog(program, plogLength, NULL, mylog2);
-		fprintf(stderr, "\n%s\n", mylog2);
-		delete[] mylog2;
-		exit(1);
-	}
-	CheckGlErrors("Shader Program 2");
-	glValidateProgram(program);
-	glGetProgramiv(program, GL_VALIDATE_STATUS, &pstatus);
-	fprintf(stderr, "Program is %s.\n", pstatus == GL_FALSE ? "invalid" : "valid");
-	//Do Not Use Program Until Shaders are Ready
-	color4 light_position(1.5, 1.5, 2.0, 1.0);
-	color4 light_ambient(0.2, 0.2, 0.2, 1.0);
-	color4 light_diffuse(1.0, 1.0, 1.0, 1.0);
-	color4 light_specular(1.0, 1.0, 1.0, 1.0);
-
-	color4 material_ambient(0.0, 0.0, 1.0, 1.0);
-	color4 material_diffuse(0.0, 0.8, 1.0, 1.0);
-	color4 material_specular(1.0, 0.8, 0.0, 1.0);
-	float  material_shininess = 100.0;
-
-	color4 ambient_product = light_ambient * material_ambient;
-	color4 diffuse_product = light_diffuse * material_diffuse;
-	color4 specular_product = light_specular * material_specular;
-	glUniform4fv(glGetUniformLocation(program, "AmbientProduct"),
-		1, &ambient_product[0]);
-	glUniform4fv(glGetUniformLocation(program, "DiffuseProduct"),
-		1, &diffuse_product[0]);
-	glUniform4fv(glGetUniformLocation(program, "SpecularProduct"),
-		1, &specular_product[0]);
-	glUniform4fv(glGetUniformLocation(program, "LightPosition"),
-		1, &light_position[0]);
-	glUniform1f(glGetUniformLocation(program, "Shininess"),
-		material_shininess);
-	
-	GLuint modelViewLoc = glGetUniformLocation(program, "ModelView"); //this returns the index of where somthing is on the shader
-	GLuint projectionLoc = glGetUniformLocation(program, "Projection");
-
-}
-
-void Framework::InitGraphics2() {
-	// setup the display mode:
-	// ( *must* be done before call to glutCreateWindow( ) )
-	// ask for color, double-buffering, and z-buffering:
-	/*const float BACKCOLOR[4] = { 0.1f, 0.1f, 0.1f, 0.f };
-	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
-
-
-	// set the initial window configuration:
-
-	glutInitWindowPosition(0, 0);
-	glutInitWindowSize(INIT_WINDOW_SIZE, INIT_WINDOW_SIZE);
-
-
-	// open the window and set its title:
-
-	MainWindow = glutCreateWindow(WINDOWTITLE);
-	glutSetWindowTitle(WINDOWTITLE);
-
-	// setup the clear values:
-
-	glClearColor(BACKCOLOR[0], BACKCOLOR[1], BACKCOLOR[2], BACKCOLOR[3]);
-
-
-	// setup the callback routines:
-	// DisplayFunc -- redraw the window
-	// ReshapeFunc -- handle the user resizing the window
-	// KeyboardFunc -- handle a keyboard input
-	// MouseFunc -- handle the mouse button going down or up
-	// MotionFunc -- handle the mouse moving with a button down
-	// PassiveMotionFunc -- handle the mouse moving with a button up
-	// VisibilityFunc -- handle a change in window visibility
-	// EntryFunc	-- handle the cursor entering or leaving the window
-	// SpecialFunc -- handle special keys on the keyboard
-	// SpaceballMotionFunc -- handle spaceball translation
-	// SpaceballRotateFunc -- handle spaceball rotation
-	// SpaceballButtonFunc -- handle spaceball button hits
-	// ButtonBoxFunc -- handle button box hits
-	// DialsFunc -- handle dial rotations
-	// TabletMotionFunc -- handle digitizing tablet motion
-	// TabletButtonFunc -- handle digitizing tablet button hits
-	// MenuStateFunc -- declare when a pop-up menu is in use
-	// TimerFunc -- trigger something to happen a certain time from now
-	// IdleFunc -- what to do when nothing else is going on
-	*/
-	//glutSetWindow(MainWindow);
-	//glutDisplayFunc(GLForwader::DisplayFuncl);
-	/*glutReshapeFunc(Resize);*/
-	/*
-	glutMouseFunc(MouseButton);
-	glutMotionFunc(MouseMotion);*/
-	glutPassiveMotionFunc(NULL);
-	//glutVisibilityFunc(Visibility);
-	glutEntryFunc(NULL);
-	glutSpecialFunc(NULL);
-	glutSpaceballMotionFunc(NULL);
-	glutSpaceballRotateFunc(NULL);
-	glutSpaceballButtonFunc(NULL);
-	glutButtonBoxFunc(NULL);
-	glutDialsFunc(NULL);
-	glutTabletMotionFunc(NULL);
-	glutTabletButtonFunc(NULL);
-	glutMenuStateFunc(NULL);
-	glutTimerFunc(0, NULL, 0);
-
-	// DO NOT SET THE GLUT IDLE FUNCTION HERE !!
-	// glutIdleFunc( NULL );
-	// let glui take care of it in InitGlui( )
-	SetUpShaders();
-}
-
-void Framework::InitLists() {
-	AxesList = glGenLists(1);
-	glNewList(AxesList, GL_COMPILE);
-	glLineWidth(3.);
-	Axes(1.5);
-	glLineWidth(1.);
-	glEndList();
-
-	StreamlineList = glGenLists(2);
-	glNewList(StreamlineList, GL_COMPILE);
-	float xval;
-	float yval;
-	float zval;
-	int N = 5;
-	float streamstep = 2.0 / ((float)N - 1.0);
-	xval = -1.0; //assumes contained from -1 to 1
-	for (int i = 0; i < N; i++) {
-		yval = -1.0;
-		for (int j = 0; j < N; j++) {
-			zval = -1.0;
-			for (int k = 0; k < N; k++) {
-				float x, y, z;
-				x = xval;
-				y = yval;
-				z = zval;
-				Streamline(x, y, z);
-				zval += streamstep;
-			}
-			yval += streamstep;
-		}
-		xval += streamstep;
-	}
-	glEndList();
-
-
-}
-
-vector3d* Framework::VectorAtLocation(float xCord, float yCord, float zCord) {
-	float vectorP[3];
-	vector3d* returnVec;
-	if (VectorEquation != NULL) {
-		VectorEquation->eval(xCord, yCord, zCord, vectorP);
-		returnVec = new vector3d(vectorP[0], vectorP[1], vectorP[2]);
-	}else if(VDef->am_file()) {
-		vector3d* temp = new vector3d(xCord, yCord, zCord);
-		returnVec = VDef->get_vector_at_pos(temp);
-		delete temp;
-	}
-	//printf("The values of the returnVec are %f, %f, %f\n", returnVec->xyz()[0], returnVec->xyz()[1], returnVec->xyz()[2]);
-	return returnVec;
-}
-
-void Framework::Streamline(float x, float y, float z)
+void Framework::GenStreamline(float x, float y, float z)
 {
 	visitstream++;
 	//printf("Visit Stream is %d\n", visitstream);
@@ -983,193 +1169,6 @@ void Framework::Streamline(float x, float y, float z)
 	glLineWidth(1.);
 }
 
-vector3d * Framework::VectorAdvect(vector3d * inputVector) {
-	float TimeStep = 0.1;
-	float xa, ya, za;
-	float xb, yb, zb;
-	float vxa, vya, vza;
-	float vxb, vyb, vzb;
-	float vx, vy, vz;
-	float xc, yc, zc;
-	float *vec = inputVector->xyz();
-	xa = vec[0];
-	ya = vec[1];
-	za = vec[2];
-	vector3d * firstOutputVector = VectorAtLocation(xa, ya, za);
-	
-	float *firstvec = firstOutputVector->xyz();
-	vxa = firstvec[0];
-	vya = firstvec[1];
-	vza = firstvec[2];
-	xb = xa + TimeStep * vxa;
-	yb = ya + TimeStep * vya;
-	zb = za + TimeStep * vza;
-	vector3d * secondOutputVector = VectorAtLocation(xb, yb, zb);
-	float *secondvec = secondOutputVector->xyz();
-	vxb = secondvec[0];
-	vyb = secondvec[1];
-	vzb = secondvec[2];
-	vx = (vxa + vxb) / 2.;
-	vy = (vya + vyb) / 2.;
-	vz = (vza + vzb) / 2.;
-	xc = xa + TimeStep * vx;
-	yc = ya + TimeStep * vy;
-	zc = za + TimeStep * vz;
-	vector3d* vectorReturn = new vector3d(xc, yc, zc);
-	return vectorReturn;
-}
-
-void Framework::Axes(float length) {
-	// the stroke characters 'X' 'Y' 'Z' :
-
-	static float xx[] = {
-		0.f, 1.f, 0.f, 1.f
-	};
-
-	static float xy[] = {
-		-.5f, .5f, .5f, -.5f
-	};
-
-	static int xorder[] = {
-		1, 2, -3, 4
-	};
-
-
-	static float yx[] = {
-		0.f, 0.f, -.5f, .5f
-	};
-
-	static float yy[] = {
-		0.f, .6f, 1.f, 1.f
-	};
-
-	static int yorder[] = {
-		1, 2, 3, -2, 4
-	};
-
-
-	static float zx[] = {
-		1.f, 0.f, 1.f, 0.f, .25f, .75f
-	};
-
-	static float zy[] = {
-		.5f, .5f, -.5f, -.5f, 0.f, 0.f
-	};
-
-	static int zorder[] = {
-		1, 2, 3, 4, -5, 6
-	};
-
-
-	// fraction of the length to use as height of the characters:
-
-	const float LENFRAC = 0.10f;
-
-
-	// fraction of length to use as start location of the characters:
-
-	const float BASEFRAC = 1.10f;
-		glBegin(GL_LINE_STRIP);
-		glVertex3f(length, 0., 0.);
-		glVertex3f(0., 0., 0.);
-		glVertex3f(0., length, 0.);
-		glEnd();
-		glBegin(GL_LINE_STRIP);
-		glVertex3f(0., 0., 0.);
-		glVertex3f(0., 0., length);
-		glEnd();
-
-		float fact = LENFRAC * length;
-		float base = BASEFRAC * length;
-
-		glBegin(GL_LINE_STRIP);
-		for (int i = 0; i < 4; i++)
-		{
-			int j = xorder[i];
-			if (j < 0)
-			{
-
-				glEnd();
-				glBegin(GL_LINE_STRIP);
-				j = -j;
-			}
-			j--;
-			glVertex3f(base + fact*xx[j], fact*xy[j], 0.0);
-		}
-		glEnd();
-
-		glBegin(GL_LINE_STRIP);
-		for (int i = 0; i < 5; i++)
-		{
-			int j = yorder[i];
-			if (j < 0)
-			{
-
-				glEnd();
-				glBegin(GL_LINE_STRIP);
-				j = -j;
-			}
-			j--;
-			glVertex3f(fact*yx[j], base + fact*yy[j], 0.0);
-		}
-		glEnd();
-
-		glBegin(GL_LINE_STRIP);
-		for (int i = 0; i < 6; i++)
-		{
-			int j = zorder[i];
-			if (j < 0)
-			{
-
-				glEnd();
-				glBegin(GL_LINE_STRIP);
-				j = -j;
-			}
-			j--;
-			glVertex3f(0.0, fact*zy[j], base + fact*zx[j]);
-		}
-		glEnd();
-
-}
-
-//to be moved to vector3d?
-void Framework::Cross(float v1[3], float v2[3], float vout[3])
-{
-	float tmp[3];
-
-	tmp[0] = v1[1] * v2[2] - v2[1] * v1[2];
-	tmp[1] = v2[0] * v1[2] - v1[0] * v2[2];
-	tmp[2] = v1[0] * v2[1] - v2[0] * v1[1];
-
-	vout[0] = tmp[0];
-	vout[1] = tmp[1];
-	vout[2] = tmp[2];
-}
-
-//to be moved to vector3d?
-float Framework::Unit(float vin[3], float vout[3])
-{
-	float dist = vin[0] * vin[0] + vin[1] * vin[1] + vin[2] * vin[2];
-
-	if (dist > 0.0)
-	{
-		dist = sqrt(dist);
-		vout[0] = vin[0] / dist;
-		vout[1] = vin[1] / dist;
-		vout[2] = vin[2] / dist;
-	}
-	else
-	{
-		vout[0] = vin[0];
-		vout[1] = vin[1];
-		vout[2] = vin[2];
-	}
-
-	return dist;
-}
-
-
-
 void Framework::DoRasterString(float x, float y, float z, char *s)
 {
 	char c;			// one character to print
@@ -1180,6 +1179,7 @@ void Framework::DoRasterString(float x, float y, float z, char *s)
 		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, c);
 	}
 }
+
 void Framework::MouseButton(int button, int state, int x, int y){
 	int b = 0;			// LEFT, MIDDLE, or RIGHT
 
@@ -1215,6 +1215,7 @@ void Framework::MouseButton(int button, int state, int x, int y){
 		ActiveButton &= ~b;		// clear the proper bit
 	}
 }
+
 void Framework::MouseMotion(int x, int y){
 
 

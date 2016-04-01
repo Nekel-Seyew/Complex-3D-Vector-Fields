@@ -26,6 +26,7 @@ GLUI_HSlider *		RadSlider2; //temperature slider
 GLUI_StaticText *	RadLabel2; //temperature static text label
 #define RADID 2
 float VecTest[2] = { 0.f, 10.f };
+
 void MySliders(int numSlide) {
 	//printf("Slider #%d\n", numSlide);
 	char tempstr[128];
@@ -323,7 +324,6 @@ int main(int argc, char ** argv) {
 	//just here for compile checks. Remove when you want things to run
 	//Framework * myFramework = new Framework(argc, argv);
 	glutInit(&argc, argv);
-	Framework::instance()->InitGraphics1();
     Framework::instance()->Init1();
 	glutDisplayFunc(DisplayFuncl);
 	glutKeyboardFunc(KeyboardFuncl);
