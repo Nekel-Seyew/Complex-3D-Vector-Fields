@@ -55,10 +55,13 @@ void MySliders(int numSlide) {
 	glutSetWindow(Framework::instance()->MainWindow);
 	glutPostRedisplay();
 }
+void MyTextBoxes(int textbox) {
+	
+}
 void MyButtons(int button) {
 	switch (button) {
 	case(0) :
-		Framework::instance()->Init1();
+		Framework::instance()->setUpPointsAndVectors(); 
 		break;
 	case(1) :
 		printf("Entering Input\n");
@@ -68,7 +71,7 @@ void MyButtons(int button) {
 		if ((int)strlen(Framework::instance()->SpaceDefinerString) != 0) {
 			Framework::instance()->SpaceInput = Framework::instance()->SpaceDefinerString;
 		}
-		Framework::instance()->Init1();
+		Framework::instance()->setUpPointsAndVectors(); 
 		break;
 	case(2) :
 		printf(".obj file saved");
@@ -309,7 +312,7 @@ void KeyboardFuncl(unsigned char c, int x, int y) {
 	//Framework::instance()->Keyboard(c, x, y);
 }
 void MainKeyboard(unsigned char c, int x, int y) {
-	//Framework::instance().Glui.sync_live();
+	TestGlui->sync_live();
 }
 void MouseMotionFuncl(int myx, int myy) {
 	Framework::instance()->MouseMotion(myx, myy);
@@ -317,7 +320,6 @@ void MouseMotionFuncl(int myx, int myy) {
 void MouseButtonFuncl(int arg1, int arg2, int arg3, int arg4) {
 	Framework::instance()->MouseButton(arg1, arg2, arg3, arg4);
 }
-
 
 int main(int argc, char ** argv) {
 
@@ -329,6 +331,7 @@ int main(int argc, char ** argv) {
 	glutKeyboardFunc(KeyboardFuncl);
 	glutMouseFunc(MouseButtonFuncl);
 	glutMotionFunc(MouseMotionFuncl);
+	glutKeyboardFunc(MainKeyboard);
 	Framework::instance()->Init2();
 	InitGlui();
 	printf("After Init, Vector Min is %f\n", Framework::instance()->VectorLowHigh[0]);

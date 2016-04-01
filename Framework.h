@@ -119,7 +119,7 @@ protected:
 	};
 	//These are Functions For Different Graphics Effects in Main:
 	void Axes(float);
-	void DoRasterString(float, float, float, char *);
+	void DrawRasterString(float, float, float, char *);
 	//To Be Initialized When We Add Mouse and Keyboard Functionality In:
 	//KeyboardState keyboard;
 	
@@ -135,6 +135,7 @@ public:
 	void Init2();
 	void InitGraphics1();
 	void InitGraphics2();
+	void setUpPointsAndVectors();
 	void Framework::RestoreDefaults();
 	void virtual Run(int, char **);
 	void Display();
@@ -273,8 +274,6 @@ public:
 	//These are the Glui Values for Probe Manipulation:
 	float ProbeXVal, ProbeYVal, ProbeZVal;
 
-	
-	
 	
 
 private:

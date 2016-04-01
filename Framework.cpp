@@ -285,27 +285,12 @@ float Framework::Unit(float vin[3], float vout[3])
 	return dist;
 }
 
+
+
 //Init split into two halfs due to glut funtion initilization not working in class
 void Framework::Init1() {
 	InitGraphics1();
-
-	if (usePrism) {
-		thePoints = SDef->prism(2., 10, 2., 10, 2., 10); //Change This Line to (6., 40, 6., 40, 6., 40) if you want to view a bigger dataset
-	}
-	else {
-		thePoints = SDef->uv_surface(SpaceInput, 0., 1.,0.,1., 30., 30.);
-	}
-	VDef->give_input(VectorInput);
-	VDef->populate(thePoints);
-	theVectors = VDef->cull_vectors(-10.0, 10.0, -10.0, 10.0, -10.0, 10.0);
-	thePoints = VDef-> cull_space(-10.0, 10.0, -10.0, 10.0, -10.0, 10.0);
-	if (!VDef->am_file()) {
-		theEquation = new equation_factory();
-		VectorEquation = theEquation->vector_equation(VectorInput);
-	}
-	else {
-		VectorEquation = NULL;
-	}
+	setUpPointsAndVectors();
 	//Only do this once for each specified list if you want to access the cullspace cullvector again use the corresponding cache returners
 	srand(time(NULL));
 
@@ -418,6 +403,26 @@ void Framework::InitGraphics2() {
 	// glutIdleFunc( NULL );
 	// let glui take care of it in InitGlui( )
 	SetUpShaders();
+}
+
+void Framework::setUpPointsAndVectors() {
+	if (usePrism) {
+		thePoints = SDef->prism(2., 10, 2., 10, 2., 10); //Change This Line to (6., 40, 6., 40, 6., 40) if you want to view a bigger dataset
+	}
+	else {
+		thePoints = SDef->uv_surface(SpaceInput, 0., 1., 0., 1., 30., 30.);
+	}
+	VDef->give_input(VectorInput);
+	VDef->populate(thePoints);
+	theVectors = VDef->cull_vectors(-10.0, 10.0, -10.0, 10.0, -10.0, 10.0);
+	thePoints = VDef->cull_space(-10.0, 10.0, -10.0, 10.0, -10.0, 10.0);
+	if (!VDef->am_file()) {
+		theEquation = new equation_factory();
+		VectorEquation = theEquation->vector_equation(VectorInput);
+	}
+	else {
+		VectorEquation = NULL;
+	}
 }
 
 void Framework::SetupVertexBuffers() {
@@ -603,10 +608,10 @@ void Framework::RestoreDefaults() {
 	DepthCueOn = 1;
 	AxesOn = 1;
 	BoxOn = 1;
-	FOGCOLOR[0] = .0;
-	FOGCOLOR[1] = .0;
-	FOGCOLOR[2] = .0;
-	FOGCOLOR[3] = 1.;
+	FOGCOLOR[0] = backgroundColor;
+	FOGCOLOR[1] = backgroundColor;
+	FOGCOLOR[2] = backgroundColor;
+	FOGCOLOR[3] = 0.5; //Check and Talk with Bailey - originally this was 1 caused background to fade in all white
 	FOGMODE = { GL_LINEAR };
 	FOGDENSITY = { 0.30f };
 	FOGSTART = { 1.5 };
@@ -691,6 +696,9 @@ void Framework::Display() {
 
 	//Sets the color to be the backgroundcolor specified by the spinner
 	glClearColor(backgroundColor, backgroundColor, backgroundColor, 0.f);
+	FOGCOLOR[0] = backgroundColor;
+	FOGCOLOR[1] = backgroundColor;
+	FOGCOLOR[2] = backgroundColor;
 	// erase the background:
 
 	glDrawBuffer(GL_BACK);
@@ -903,7 +911,7 @@ void Framework::Display() {
 		colorFactor = 0.1;
 	}
 	glColor3f(colorFactor, colorFactor, colorFactor);
-	DoRasterString(5., 5., 0., "Team TARDIS");
+	DrawRasterString(5., 5., 0., "Team TARDIS");
 
 	// swap the double-buffered framebuffers:
 
@@ -1169,7 +1177,7 @@ void Framework::GenStreamline(float x, float y, float z)
 	glLineWidth(1.);
 }
 
-void Framework::DoRasterString(float x, float y, float z, char *s)
+void Framework::DrawRasterString(float x, float y, float z, char *s)
 {
 	char c;			// one character to print
 
