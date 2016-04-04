@@ -162,6 +162,7 @@ public:
 	void DrawPoints();
 	void DrawArrows();
 	void DrawProbe();
+	void DrawSheet();
 
 	//These are the Helper Functions for Graphics: 
 	vector3d * VectorAtLocation(float, float, float);

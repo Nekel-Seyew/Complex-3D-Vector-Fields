@@ -827,6 +827,10 @@ void Framework::Display() {
 		DrawProbe();
 	}
 
+	if (useVectorSheet) {
+		DrawSheet();
+	}
+
 	//Insert comment here when this does something
 	if (useIsosurfaces) {
 		float Sstar = maxvec - minvec / 2;
@@ -1177,6 +1181,10 @@ void Framework::GenStreamline(float x, float y, float z)
 	}
 	glEnd();
 	glLineWidth(1.);
+}
+
+void Framework::DrawSheet() {
+
 }
 
 void Framework::DrawRasterString(float x, float y, float z, char *s)
