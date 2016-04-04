@@ -111,7 +111,7 @@ void InitGlui() {
 	GLUI_Rollout * PointsSettings;
 	GLUI_Rollout * StrokesSettings;
 	GLUI_Rollout * StreamlineSettings;
-
+	GLUI_Rollout * VectorSheetSettings; 
 	//Oculus Settings:
 	GLUI_Panel * OculusSettings;
 	GLUI_Rollout * OculusRollout;
@@ -133,6 +133,15 @@ void InitGlui() {
 	GLUI_Spinner * ProbeX;
 	GLUI_Spinner * ProbeY;
 	GLUI_Spinner * ProbeZ;
+
+	//Vector Sheet Controls:
+	GLUI_Spinner * VectorSheetTime;
+	GLUI_Spinner * VectorSheetXLoc;
+	GLUI_Spinner * VectorSheetYLoc;
+	GLUI_Spinner * VectorSheetZLoc;
+	GLUI_Spinner * VectorSheetXVec;
+	GLUI_Spinner * VectorSheetYVec;
+	GLUI_Spinner * VectorSheetZVec;
 
 	//Strings for Sliders
 	char tempstr[128];
@@ -221,6 +230,7 @@ void InitGlui() {
 	TestGlui->add_column_to_panel(graphicsOptions, 0);
 	TestGlui->add_checkbox_to_panel(graphicsOptions, "Use Streamlines", &Framework::instance()->useStreamlines);
 	TestGlui->add_checkbox_to_panel(graphicsOptions, "Use StrokeVisualization", &Framework::instance()->useStrokes);
+	TestGlui->add_checkbox_to_panel(graphicsOptions, "Use VectorSheet", &Framework::instance()->useVectorSheet);
 
 	CustomSettings = TestGlui->add_panel("", 0);
 	ArrowSettings = TestGlui->add_rollout_to_panel(CustomSettings, "Arrow Settings", 0);
@@ -235,6 +245,8 @@ void InitGlui() {
 	StreamlineSettings->set_w(200);
 	StrokesSettings = TestGlui->add_rollout_to_panel(CustomSettings, "Strokes Visualization Settings", 0);
 	StrokesSettings->set_w(200);
+	VectorSheetSettings = TestGlui->add_rollout_to_panel(CustomSettings, "Vector Sheet Settings", 0);
+	VectorSheetSettings ->set_w(200);
 
 	//Oculus Rift Settings:
 	OculusSettings = TestGlui->add_panel("Oculus Rift"); 
@@ -274,10 +286,10 @@ void InitGlui() {
 
 	//Streamline & Probe Settings:
 	TestGlui->add_checkbox_to_panel(StreamlineSettings, "Use Probe", &Framework::instance()->useProbe);
-	ProbeX = TestGlui->add_spinner_to_panel(StreamlineSettings, "XProbeValue",GLUI_SPINNER_FLOAT, &Framework::instance()->ProbeXVal);
+	ProbeX = TestGlui->add_spinner_to_panel(StreamlineSettings, "XProbeValue", GLUI_SPINNER_FLOAT, &Framework::instance()->ProbeXVal);
 	ProbeX->set_float_limits(-1.0, 1.0);
 	ProbeX->set_speed(0.1);
-	
+
 	ProbeY = TestGlui->add_spinner_to_panel(StreamlineSettings, "YProbeValue", GLUI_SPINNER_FLOAT, &Framework::instance()->ProbeYVal);
 	ProbeY->set_float_limits(-1.0, 1.0);
 	ProbeY->set_speed(0.1);
@@ -285,6 +297,7 @@ void InitGlui() {
 	ProbeZ = TestGlui->add_spinner_to_panel(StreamlineSettings, "ZProbeValue", GLUI_SPINNER_FLOAT, &Framework::instance()->ProbeZVal);
 	ProbeZ->set_float_limits(-1.0, 1.0);
 	ProbeZ->set_speed(0.1);
+
 
 	//Point Settings:
 	TestGlui->add_checkbox_to_panel(PointsSettings, "Use Jitter", &Framework::instance()->useJitter);
@@ -294,7 +307,34 @@ void InitGlui() {
 	spinNumContours->set_float_limits(0.0, 1.0);
 	spinNumContours->set_speed(0.1);
 
+	//VectorSheet Settings:
+	VectorSheetTime = TestGlui->add_spinner_to_panel(VectorSheetSettings, "Time Value", GLUI_SPINNER_FLOAT, &Framework::instance()->VectorSheetTimeVal);
+	VectorSheetTime->set_float_limits(-10.0, 10.0);
+	VectorSheetTime->set_speed(0.1);
 
+	VectorSheetXLoc = TestGlui->add_spinner_to_panel(VectorSheetSettings, "XVectorSheetLocation", GLUI_SPINNER_FLOAT, &Framework::instance()->VectorSheetXLoc);
+	VectorSheetXLoc->set_float_limits(-1.0, 1.0);
+	VectorSheetXLoc->set_speed(0.1);
+
+	VectorSheetYLoc = TestGlui->add_spinner_to_panel(VectorSheetSettings, "YVectorSheetLocation", GLUI_SPINNER_FLOAT, &Framework::instance()->VectorSheetYLoc);
+	VectorSheetYLoc->set_float_limits(-1.0, 1.0);
+	VectorSheetYLoc->set_speed(0.1);
+
+	VectorSheetZLoc = TestGlui->add_spinner_to_panel(VectorSheetSettings, "ZVectorSheetLocation", GLUI_SPINNER_FLOAT, &Framework::instance()->VectorSheetZLoc);
+	VectorSheetZLoc->set_float_limits(-1.0, 1.0);
+	VectorSheetZLoc->set_speed(0.1);
+
+	VectorSheetXVec = TestGlui->add_spinner_to_panel(VectorSheetSettings, "XVectorSheetVector", GLUI_SPINNER_FLOAT, &Framework::instance()->VectorSheetXVec);
+	VectorSheetXVec->set_float_limits(-1.0, 1.0);
+	VectorSheetXVec->set_speed(0.1);
+
+	VectorSheetYVec = TestGlui->add_spinner_to_panel(VectorSheetSettings, "YVectorSheetVector", GLUI_SPINNER_FLOAT, &Framework::instance()->VectorSheetYVec);
+	VectorSheetYVec->set_float_limits(-1.0, 1.0);
+	VectorSheetYVec->set_speed(0.1);
+
+	VectorSheetZVec = TestGlui->add_spinner_to_panel(VectorSheetSettings, "ZVectorSheetVector", GLUI_SPINNER_FLOAT, &Framework::instance()->VectorSheetZVec);
+	VectorSheetZVec->set_float_limits(-1.0, 1.0);
+	VectorSheetZVec->set_speed(0.1);
 	//Final Setup for Glui - making it the main window
 	TestGlui->set_main_gfx_window(Framework::instance()->MainWindow);
 

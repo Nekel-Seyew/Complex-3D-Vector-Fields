@@ -638,11 +638,13 @@ void Framework::RestoreDefaults() {
 	useStrokes = 0;
 	useAnimation = 0;
 	useIsosurfaces = 0;
+	useVectorSheet = 0;
 	useJitter = 1;
 	useProbe = 0;
 	usePrism = 1;
 	NumPoints = 15;
 	ProbeXVal = ProbeYVal = ProbeZVal = 0.0;
+	VectorSheetTimeVal = VectorSheetXVec = VectorSheetYVec = VectorSheetZVec = VectorSheetXLoc = VectorSheetYLoc =  VectorSheetZLoc = 0.0;
 	spinVecMax = VECMAX;
 	spinVecMin = VECMIN;
 	visitstream = 0;

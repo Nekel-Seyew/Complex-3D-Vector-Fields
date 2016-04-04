@@ -251,6 +251,7 @@ public:
 	int useAnimation;
 	int useIsosurfaces;
 	int useStrokes;
+	int useVectorSheet;
 	int useJitter;
 	int useProbe;
 	int usePrism;
@@ -274,6 +275,8 @@ public:
 	//These are the Glui Values for Probe Manipulation:
 	float ProbeXVal, ProbeYVal, ProbeZVal;
 
+	//These are the GluiValues for the Vector Sheet:
+	float VectorSheetTimeVal, VectorSheetXLoc, VectorSheetYLoc, VectorSheetZLoc, VectorSheetXVec, VectorSheetYVec, VectorSheetZVec;
 	
 
 private:
