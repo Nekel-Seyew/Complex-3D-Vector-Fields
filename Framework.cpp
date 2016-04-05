@@ -123,15 +123,9 @@ vector3d * Framework::VectorAdvect(vector3d * inputVector) {
 vector3d* Framework::VectorAtLocation(float xCord, float yCord, float zCord) {
 	float vectorP[3];
 	vector3d* returnVec;
-	if (VectorEquation != NULL) {
-		VectorEquation->eval(xCord, yCord, zCord, vectorP);
-		returnVec = new vector3d(vectorP[0], vectorP[1], vectorP[2]);
-	}
-	else if (VDef->am_file()) {
-		vector3d* temp = new vector3d(xCord, yCord, zCord);
-		returnVec = VDef->get_vector_at_pos(temp);
-		delete temp;
-	}
+	vector3d* temp = new vector3d(xCord, yCord, zCord);
+	returnVec = VDef->get_vector_at_pos(temp);
+	delete temp;
 	//printf("The values of the returnVec are %f, %f, %f\n", returnVec->xyz()[0], returnVec->xyz()[1], returnVec->xyz()[2]);
 	return returnVec;
 }
@@ -423,6 +417,7 @@ void Framework::setUpPointsAndVectors() {
 	else {
 		VectorEquation = NULL;
 	}
+	InitLists();
 }
 
 void Framework::SetupVertexBuffers() {
