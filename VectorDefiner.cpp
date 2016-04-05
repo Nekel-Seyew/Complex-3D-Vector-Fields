@@ -8,6 +8,8 @@
 
 #include <ctime>
 #include <cstdlib>
+#include "nanoflann.hpp"
+
 //yes
 VectorDefiner::VectorDefiner()
 {
@@ -21,6 +23,10 @@ VectorDefiner::VectorDefiner()
 	this->max = NULL;
 	this->space = NULL;
 	this->data_trainer = NULL;
+
+	this->hashmap = new std::unordered_map<vector3d, vector3d*, vector3d::VectorHash, vector3d::VectorEqual>(1000, vector3d::VectorHash(), vector3d::VectorEqual());
+
+	this->index = NULL;
 }
 
 
@@ -148,12 +154,14 @@ void VectorDefiner::populate(std::vector<vector3d*>* space){
 				vector3d* vectorFiled = new vector3d(atof(eqrs[3].c_str()), atof(eqrs[4].c_str()), atof(eqrs[5].c_str()));
 				temp_space->push_back(spatial);
 				temp_vectors->push_back(vectorFiled);
+				//add to the hashmap!
+				//this->hashmap->insert(std::pair<vector3d, vector3d*>(*spatial, vectorFiled));
 			}
 			csv.close();//be polite
 		}
 		
 		//start training data
-		this->data_trainer = new DataSetTrainer(temp_space, temp_vectors);
+		/*this->data_trainer = new DataSetTrainer(temp_space, temp_vectors);
 		this->data_trainer->train_linear();
 
 		double errX = 0;
@@ -205,7 +213,14 @@ void VectorDefiner::populate(std::vector<vector3d*>* space){
 		std::cout << "THETA error: " << errY << std::endl;
 		std::cout << "PHI error: " << errZ << std::endl;
 		this->space = temp_space;*/
-		//this->vectors = temp_vectors;
+
+		this->space = temp_space;
+		this->vectors = temp_vectors;
+
+		//build everything to allow for nearest-neighbor search
+		this->pc2kd = new PC2KD(this);
+		this->index = new my_kd_tree_t(3 /*dim*/, *(this->pc2kd), nanoflann::KDTreeSingleIndexAdaptorParams(10 /* max leaf */));
+		this->index->buildIndex();
 		//all done
 	}else{
 		float* f = new float[3];
@@ -318,6 +333,35 @@ vector3d* VectorDefiner::get_vector_max() {
 bool VectorDefiner::am_file() {
 	return this->is_file;
 }
+
+//will always return a new vector. So this allocates memory. Remember that.
 vector3d* VectorDefiner::get_vector_at_pos(vector3d* vec) {
-	return this->data_trainer->get_from_linear(vec);
+	/*double len = 1e100;
+	size_t i = 0;
+	double dist;
+	for (size_t k = 0; k < this->space->size(); ++k) {
+		dist = vector3d::distance_sqr(vec, this->space->at(k));
+		if (dist < len) {
+			i = k;
+			len = dist;
+		}
+	}
+	return this->vectors->at(i);*/
+	if (this->is_file) {
+		const size_t num_results = 1;
+		size_t ret_index;
+		float out_dist_sqr;
+		nanoflann::KNNResultSet<float> resultSet(num_results);
+		resultSet.init(&ret_index, &out_dist_sqr);
+		this->index->findNeighbors(resultSet, vec->xyz(), nanoflann::SearchParams(10));
+
+		//vector3d nearest_point = *(this->space->at(ret_index));
+		//vector3d* nearest_point_vector_value = this->hashmap->at(nearest_point);
+
+		return new vector3d(this->vectors->at(ret_index));
+	}else{
+		float* out = new float[3];
+		out = this->eqr->eval(vec->xyz()[0], vec->xyz()[1], vec->xyz()[2], out);
+		return new vector3d(out, vector3d::rect);
+	}
 }

@@ -21,6 +21,12 @@ vector3d::vector3d(float* v, int mode){
 	this->abc[2] = v[2];
 	this->mode = mode;
 }
+vector3d::vector3d(vector3d* in) {
+	this->abc[0] = in->abc[0];
+	this->abc[1] = in->abc[1];
+	this->abc[2] = in->abc[2];
+	this->mode = in->mode;
+}
 	
 float* vector3d::xyz(){
 	if(mode == 0){
@@ -114,5 +120,13 @@ float vector3d::magsqr(){
 	}
 
 }
+
+double vector3d::distance_sqr(vector3d* a, vector3d* b) {
+	float* av = a->xyz();
+	float* bv = b->xyz();
+
+	return (av[0] - bv[0])*(av[0] - bv[0]) + (av[1]- bv[1])*(av[1] - bv[1]) + (av[1] - bv[1])*(av[1] - bv[1]);
+}
+
 
 

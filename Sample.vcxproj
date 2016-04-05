@@ -154,6 +154,7 @@
     <ClCompile Include="SweeneyTest.cpp" />
     <ClCompile Include="vector3d.cpp" />
     <ClCompile Include="VectorDefiner.cpp" />
+    <ClCompile Include="VectorDefinerKDAdaptor.cpp" />
     <ClCompile Include="Wrappers.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -311,6 +312,7 @@
     <ClInclude Include="HeatMapCenters.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="NameSpace.h" />
+    <ClInclude Include="nanoflann.hpp" />
     <ClInclude Include="RenderingEngine.h" />
     <ClInclude Include="RenderWindow.h" />
     <ClInclude Include="SphericalInterpolator.h" />
@@ -319,6 +321,7 @@
     <ClInclude Include="SweeneyTest.h" />
     <ClInclude Include="vector3d.h" />
     <ClInclude Include="VectorDefiner.h" />
+    <ClInclude Include="VectorDefinerKDAdaptor.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="fshader.glsl" />

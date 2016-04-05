@@ -6,12 +6,23 @@
 #include "vector3d.h"
 #include "equation.h"
 #include "DataSetTrainer.h"
+#include <unordered_map>
+
+#include "VectorDefinerKDAdaptor.h"
+
+//prototype for the class
+class VectorDefiner;
+
+typedef VectorDefinerKDAdaptor<VectorDefiner*> PC2KD;
+typedef nanoflann::KDTreeSingleIndexAdaptor< nanoflann::L2_Simple_Adaptor<float, PC2KD>, PC2KD, 3 /* dim */> my_kd_tree_t;
+
 class VectorDefiner {
+friend struct VectorDefinerKDAdaptor<VectorDefiner*>;
 protected:
 //yes
 	//biglist
-	std::vector<vector3d*>* vectors;
-	std::vector<vector3d*>* space;
+	std::vector<vector3d*>* vectors;//the vector field values
+	std::vector<vector3d*>* space; //positions in the vector field
 	std::vector<vector3d*>* culled_vectors;
 	std::vector<vector3d*>* culled_space;
 
@@ -26,6 +37,11 @@ protected:
 	//culled cache of min and max magintude vector
 	vector3d* cull_min;
 	vector3d* cull_max;
+
+	//hashmap
+	std::unordered_map<vector3d, vector3d*, vector3d::VectorHash, vector3d::VectorEqual>* hashmap;
+	PC2KD* pc2kd;
+	my_kd_tree_t*  index;
 
 	std::string replacer(std::string subject, const std::string& search, const std::string& replace);
 
@@ -47,6 +63,7 @@ public:
 	vector3d* get_vector_cull_max();
 	vector3d* get_vector_min();
 	vector3d* get_vector_max();
+
 
 	bool am_file();
 	vector3d* get_vector_at_pos(vector3d* vec);
