@@ -707,6 +707,8 @@ void Framework::RestoreDefaults() {
 	dotPointColorG = 1.0f;
 	dotPointColorB = 0.0f;
 	colorAsVelocity = 0;
+	traceDotPath = 1;
+	path = new std::vector<vector3d*>[100]();
 }
 
 void Framework::Run(int argc, char ** argv) {
@@ -1272,6 +1274,20 @@ void Framework::DrawDots() {
 			glVertex3f(vec[0], vec[1], vec[2]);
 			//Pass in a Vec3 Here to the Vertex Shader
 		}
+		//linepath
+		if (false) {
+			glLineWidth(1.5);
+			unsigned int maxgo = (this->path[i].size() % 2 == 0) ? (this->path[i].size()) : (this->path[i].size() - 1);
+			if (maxgo > 0) {
+				for (unsigned int k = 0; k < maxgo - 1; ++k) {
+					k = sqrt(vector3d::distance_sqr(this->path[i].at(k), this->path[i].at(k + 1))) / this->timestep;
+					float* pointcolor = Color(k, min, max);
+					glColor3f(pointcolor[0], pointcolor[1], pointcolor[2]);
+					glVertex3f(this->path[i].at(k)->xyz()[0], this->path[i].at(k)->xyz()[1], this->path[i].at(k)->xyz()[2]);
+					glVertex3f(this->path[i].at(k + 1)->xyz()[0], this->path[i].at(k + 1)->xyz()[1], this->path[i].at(k + 1)->xyz()[2]);
+				}
+			}
+		}
 	}
 	glEnd();
 }
@@ -1428,7 +1444,11 @@ void Framework::PhysicsUpdater(int value) {
 			vector3d* newv = VectorAdvect(&this->dot_points[i]);
 			this->old_dot_pos[i].set_this_to_be_passed_in_value(&this->dot_points[i]);
 			this->dot_points[i].set_this_to_be_passed_in_value(newv);
-			delete newv;
+			if (false && this->path[i].size() < 100) {
+				this->path[i].push_back(newv);
+			}else {
+				delete newv;
+			}
 		}
 	}
 	//printf("update of left corner x: %f y: %f z: %f\n", VecSheet[0][0].xyz()[0], VecSheet[0][0].xyz()[1], VecSheet[0][0].xyz()[2]);
