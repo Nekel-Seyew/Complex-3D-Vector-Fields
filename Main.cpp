@@ -146,6 +146,11 @@ void InitGlui() {
 	GLUI_Spinner * VectorSheetYVec;
 	GLUI_Spinner * VectorSheetZVec;
 
+	//dot point animation controls
+	GLUI_Spinner * dotPointColorSpinnerR;
+	GLUI_Spinner * dotPointColorSpinnerG;
+	GLUI_Spinner * dotPointColorSpinnerB;
+
 	//Strings for Sliders
 	char tempstr[128];
 	char xstr[128];
@@ -263,6 +268,8 @@ void InitGlui() {
 	OculusRollout = TestGlui->add_rollout_to_panel(OculusSettings, "Oculus Settings");
 	OculusRollout->set_w(200);
 	TestGlui->add_separator();
+
+	//Saving to an ObjFile Settings
 	ObjFileSettings = TestGlui->add_panel("Save .obj File Settings");
 	Framework::instance()-> SavedFileName = TestGlui->add_edittext_to_panel(ObjFileSettings, ".obj FileName:", GLUI_EDITTEXT_TEXT, Framework::instance()->ObjFileNameString);
 	Framework::instance()->SavedFileName->set_w(400);
@@ -348,8 +355,22 @@ void InitGlui() {
 	VectorSheetZVec = TestGlui->add_spinner_to_panel(VectorSheetSettings, "ZVectorSheetVector", GLUI_SPINNER_FLOAT, &Framework::instance()->VectorSheetZVec);
 	VectorSheetZVec->set_float_limits(-1.0, 1.0);
 	VectorSheetZVec->set_speed(0.1);
+
+	//animation items
+	TestGlui->add_checkbox_to_panel(settings, "Color As Velocity", &Framework::instance()->colorAsVelocity);
+	dotPointColorSpinnerR = TestGlui->add_spinner_to_panel(AnimationSettings, "Background Color R", GLUI_SPINNER_FLOAT, &Framework::instance()->dotPointColorR);
+	dotPointColorSpinnerR->set_float_limits(0.0, 1.0);
+	dotPointColorSpinnerR->set_speed(0.05);
+	dotPointColorSpinnerG = TestGlui->add_spinner_to_panel(AnimationSettings, "Background Color G", GLUI_SPINNER_FLOAT, &Framework::instance()->dotPointColorG);
+	dotPointColorSpinnerG->set_float_limits(0.0, 1.0);
+	dotPointColorSpinnerG->set_speed(0.05);
+	dotPointColorSpinnerB = TestGlui->add_spinner_to_panel(AnimationSettings, "Background Color B", GLUI_SPINNER_FLOAT, &Framework::instance()->dotPointColorB);
+	dotPointColorSpinnerB->set_float_limits(0.0, 1.0);
+	dotPointColorSpinnerB->set_speed(0.05);
+
 	//Final Setup for Glui - making it the main window
 	TestGlui->set_main_gfx_window(Framework::instance()->MainWindow);
+
 
 
 	// set the graphics window's idle function if needed:

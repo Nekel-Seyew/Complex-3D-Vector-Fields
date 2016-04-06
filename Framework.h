@@ -168,6 +168,7 @@ public:
 	vector3d * VectorAtLocation(float, float, float);
 	vector3d * VectorAdvect(vector3d *);
 	float * Color(float);
+	float * Color(float mag,float min,float max);
 	void InitLists();
 	float Unit(float*, float*);
 	void Cross(float*, float*, float*);
@@ -285,10 +286,14 @@ public:
 	vector3d VecSheet[10][10];
 
 	//animation points
+	float dotPointColorR, dotPointColorG, dotPointColorB;
 	vector3d dot_points[100];
 	unsigned int num_dot_points=100;
+	vector3d old_dot_pos[100];
+	float timestep = 0.1f; // this is what VectorAdvect uses as time step
 	void initDotPoints();
 	void DrawDots();
+	int colorAsVelocity;//really a bool though
 	
 	/*Physics-ish*/
 	void PhysicsUpdater(int value);

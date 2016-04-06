@@ -90,6 +90,39 @@ float * Framework::Color(float VecMag) {
 	return rgba;
 }
 
+float* Framework::Color(float mag, float min, float max) {
+	float hsv[3], rgb[3];
+	// finally draw the point if it passes all the tests
+	float divisor = (max - min);
+	if (ColorAlternate) {
+		if (divisor == 0) {
+			hsv[0] = 240. - 240.* ((max - mag) / 1.);
+		}
+		else {
+			hsv[0] = 240. - 240.* ((max - mag) / divisor);
+		}
+	}
+	else {
+
+		if (divisor == 0) {
+			hsv[0] = 240. - 240.* ((mag - min) / 1.);
+		}
+		else {
+			hsv[0] = 240. - 240.* ((mag - min) / divisor);
+		}
+
+	}
+	hsv[1] = 1.;
+	hsv[2] = 1.;
+	color::HsvRgb(hsv, rgb);
+	float rgba[4];
+	rgba[0] = rgb[0];
+	rgba[1] = rgb[1];
+	rgba[2] = rgb[2];
+	rgba[3] = vecAlphaVal;
+	return rgba;
+}
+
 vector3d * Framework::VectorAdvect(vector3d * inputVector) {
 	float TimeStep = 0.1;
 	float xa, ya, za;
@@ -670,6 +703,10 @@ void Framework::RestoreDefaults() {
 	vecAlphaVal = 0.5;
 	visitstream = 0;
 	ColorAlternate = 0;
+	dotPointColorR = 0.0f;
+	dotPointColorG = 1.0f;
+	dotPointColorB = 0.0f;
+	colorAsVelocity = 0;
 }
 
 void Framework::Run(int argc, char ** argv) {
@@ -1209,10 +1246,23 @@ void Framework::GenStreamline(float x, float y, float z)
 }
 
 void Framework::DrawDots() {
+	float min = sqrt(vector3d::distance_sqr(&this->dot_points[0], &this->old_dot_pos[0])) / this->timestep;
+	float max = min;
+	for (unsigned int i = 1; i < this->num_dot_points; ++i) {
+		float k = sqrt(vector3d::distance_sqr(&this->dot_points[i], &this->old_dot_pos[i])) / this->timestep;
+		min = (k < min) ? k : min;
+		max = (k > max) ? k : max;
+	}
 	glBegin(GL_POINTS);
 	srand(time(NULL));
 	for (int i = 0; i < this->num_dot_points; ++i) {
-		glColor3f(0.0f,1.0f,0.0f);//MAKE THEM GREEN, FOR GREAT GLORY
+		if (colorAsVelocity) {
+			float velocity = sqrt(vector3d::distance_sqr(&this->dot_points[i], &this->old_dot_pos[i])) / this->timestep;
+			float* pointcolor = Color(velocity,min,max);
+			glColor3f(pointcolor[0], pointcolor[1], pointcolor[2]);
+		}else {
+			glColor3f(dotPointColorR, dotPointColorG, dotPointColorB);
+		}
 		float *vec = this->dot_points[i].xyz();
 		if (useJitter) {
 			glVertex3f(vec[0] + ((rand() % 10 - 5) / 300.), vec[1] + ((rand() % 10 - 5) / 300.), vec[2] + ((rand() % 10 - 5) / 300.));
@@ -1377,6 +1427,7 @@ void Framework::PhysicsUpdater(int value) {
 	if (this->useAnimation) {
 		for (unsigned int i = 0; i < this->num_dot_points; ++i) {
 			vector3d* newv = VectorAdvect(&this->dot_points[i]);
+			this->old_dot_pos[i].set_this_to_be_passed_in_value(&this->dot_points[i]);
 			this->dot_points[i].set_this_to_be_passed_in_value(newv);
 			delete newv;
 		}
