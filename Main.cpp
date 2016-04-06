@@ -15,9 +15,9 @@ int MainWindow;
 #include "Framework.h"
 //#include "NameSpace.h"
 GLUI* TestGlui;
-const float SQRTTHREE = 1.732;
+const float SQRTTHREE = 1.732f;
 const float TRADIUSMIN = { 0.f };
-const float TRADIUSMAX = { SQRTTHREE };
+const float TRADIUSMAX = { 1.732f };
 const char * TRADIUSFORMAT = { "Radius-range: %5.2f - %5.2f" };
 float			TRadLowHigh[2] = { TRADIUSMIN, TRADIUSMAX }; //temperature highlow
 GLUI_HSlider *		TRadSlider; //temperature slider
@@ -32,8 +32,7 @@ void MySliders(int numSlide) {
 	char tempstr[128];
 	char radstr[128];
 	printf("In Callback, Value of RadLowHigh[0] is %f, RadLowHigh[1] is %f,  VecTest[0] is %f, VecTest[1] is %f\n", TRadLowHigh[0], TRadLowHigh[1], VecTest[0], VecTest[1]);
-	switch (numSlide)
-	{
+	switch (numSlide){
 	case(VecId) :
 		printf("Before: Vector Min is %f\n", Framework::instance()->VectorLowHigh[0]);
 		printf("Before: Vector Max is %f\n", Framework::instance()->VectorLowHigh[1]);
@@ -44,8 +43,8 @@ void MySliders(int numSlide) {
 		break;
 	case(RADID) :
 		printf("In RADID, Value of RadLowHigh[0] is %f, RadLowHigh[1] is %f,  VecTest[0] is %f, VecTest[1] is %f\n", TRadLowHigh[0], TRadLowHigh[1], VecTest[0], VecTest[1]);
-		TRadLowHigh[0] = VecTest[0];
-		TRadLowHigh[1] = VecTest[1];
+		//TRadLowHigh[0] = VecTest[0];
+		//TRadLowHigh[1] = VecTest[1];
 		sprintf(radstr, TRADIUSFORMAT, TRadLowHigh[0], TRadLowHigh[1]);
 		TRadLabel->set_text(radstr);
 		printf("After RadLowHigh and VecTest Set, Value of RadLowHigh[0] is %f, RadLowHigh[1] is %f,  VecTest[0] is %f, VecTest[1] is %f\n", TRadLowHigh[0], TRadLowHigh[1], VecTest[0], VecTest[1]);
@@ -279,10 +278,10 @@ void InitGlui() {
 	/*This is everything inside of the rollouts*/
 
 	//Arrow Settings: 
-	TRadLowHigh[0] = VecTest[0];
-	TRadLowHigh[1] = VecTest[1];
+	//TRadLowHigh[0] = VecTest[0];
+	//TRadLowHigh[1] = VecTest[1];
 	printf("Before Sliders are initialize, Value of RadLowHigh[0] is %f, RadLowHigh[1] is %f,  VecTest[0] is %f, VecTest[1] is %f\n", TRadLowHigh[0], TRadLowHigh[1], VecTest[0], VecTest[1]);
-	TRadSlider = TestGlui->add_slider_to_panel(ArrowSettings, true, GLUI_HSLIDER_FLOAT, VecTest, RADID, (GLUI_Update_CB)MySliders);
+	TRadSlider = TestGlui->add_slider_to_panel(ArrowSettings, true, GLUI_HSLIDER_FLOAT, VecTest, RADID, MySliders);
 	TRadSlider->set_float_limits(TRADIUSMIN, TRADIUSMAX);
 	TRadSlider->set_w(250);		// good slider width
 	sprintf(radstr, TRADIUSFORMAT, TRadLowHigh[0], TRadLowHigh[1]);
@@ -357,14 +356,15 @@ void InitGlui() {
 	VectorSheetZVec->set_speed(0.1);
 
 	//animation items
-	TestGlui->add_checkbox_to_panel(settings, "Color As Velocity", &Framework::instance()->colorAsVelocity);
-	dotPointColorSpinnerR = TestGlui->add_spinner_to_panel(AnimationSettings, "Background Color R", GLUI_SPINNER_FLOAT, &Framework::instance()->dotPointColorR);
+	TestGlui->add_checkbox_to_panel(AnimationSettings, "Color As Velocity", &Framework::instance()->colorAsVelocity);
+	//TestGlui->add_checkbox_to_panel(AnimationSettings, "TracePath", &Framework::instance()->traceDotPath);
+	dotPointColorSpinnerR = TestGlui->add_spinner_to_panel(AnimationSettings, "Dot Color R", GLUI_SPINNER_FLOAT, &Framework::instance()->dotPointColorR);
 	dotPointColorSpinnerR->set_float_limits(0.0, 1.0);
 	dotPointColorSpinnerR->set_speed(0.05);
-	dotPointColorSpinnerG = TestGlui->add_spinner_to_panel(AnimationSettings, "Background Color G", GLUI_SPINNER_FLOAT, &Framework::instance()->dotPointColorG);
+	dotPointColorSpinnerG = TestGlui->add_spinner_to_panel(AnimationSettings, "Dot Color G", GLUI_SPINNER_FLOAT, &Framework::instance()->dotPointColorG);
 	dotPointColorSpinnerG->set_float_limits(0.0, 1.0);
 	dotPointColorSpinnerG->set_speed(0.05);
-	dotPointColorSpinnerB = TestGlui->add_spinner_to_panel(AnimationSettings, "Background Color B", GLUI_SPINNER_FLOAT, &Framework::instance()->dotPointColorB);
+	dotPointColorSpinnerB = TestGlui->add_spinner_to_panel(AnimationSettings, "Dot Color B", GLUI_SPINNER_FLOAT, &Framework::instance()->dotPointColorB);
 	dotPointColorSpinnerB->set_float_limits(0.0, 1.0);
 	dotPointColorSpinnerB->set_speed(0.05);
 

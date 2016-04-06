@@ -25,6 +25,7 @@
 #include "vector3d.h"
 #include "color.h"
 #include <time.h>
+#include <vector>
 
 //This is for improved readability
 typedef glm::vec4 point4;
@@ -290,10 +291,12 @@ public:
 	vector3d dot_points[100];
 	unsigned int num_dot_points=100;
 	vector3d old_dot_pos[100];
+	std::vector<vector3d*>* path;
 	float timestep = 0.1f; // this is what VectorAdvect uses as time step
 	void initDotPoints();
 	void DrawDots();
 	int colorAsVelocity;//really a bool though
+	int traceDotPath;
 	
 	/*Physics-ish*/
 	void PhysicsUpdater(int value);
