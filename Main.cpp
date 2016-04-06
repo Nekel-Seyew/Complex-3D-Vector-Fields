@@ -170,6 +170,7 @@ void InitGlui() {
 	UserInputRollout = TestGlui->add_rollout("User Input  Options");
 	UserInput = TestGlui->add_panel_to_panel(UserInputRollout, "User Input Options");
 	TestGlui->add_checkbox_to_panel(UserInput, "Use Prism Space Definer", &Framework::instance()->usePrism);
+	TestGlui->add_checkbox_to_panel(UserInput, "Use Point Grid", &Framework::instance()->useGrid);
 	Framework::instance()->edittext = TestGlui->add_edittext_to_panel(UserInput, "Space Definer Equation:", GLUI_EDITTEXT_TEXT, Framework::instance()->SpaceDefinerString);
 	Framework::instance()->edittext->set_w(400);
 	Framework::instance()->edittext2 = TestGlui->add_edittext_to_panel(UserInput,"Vector Definer Equation:", GLUI_EDITTEXT_TEXT, Framework::instance()->VectorDefinerString);
@@ -367,6 +368,7 @@ void InitGlui() {
 	dotPointColorSpinnerB = TestGlui->add_spinner_to_panel(AnimationSettings, "Background Color B", GLUI_SPINNER_FLOAT, &Framework::instance()->dotPointColorB);
 	dotPointColorSpinnerB->set_float_limits(0.0, 1.0);
 	dotPointColorSpinnerB->set_speed(0.05);
+
 
 	//Final Setup for Glui - making it the main window
 	TestGlui->set_main_gfx_window(Framework::instance()->MainWindow);
