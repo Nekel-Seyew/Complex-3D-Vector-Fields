@@ -283,6 +283,12 @@ public:
 	float VectorSheetTimeVal=0, VectorSheetXLoc=0, VectorSheetYLoc=0, VectorSheetZLoc=0, VectorSheetXVec=0, VectorSheetYVec=0, VectorSheetZVec=1;
 	void initSheet();
 	vector3d VecSheet[10][10];
+
+	//animation points
+	vector3d dot_points[100];
+	unsigned int num_dot_points=100;
+	void initDotPoints();
+	void DrawDots();
 	
 	/*Physics-ish*/
 	void PhysicsUpdater(int value);

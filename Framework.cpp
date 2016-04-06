@@ -294,6 +294,7 @@ void Framework::Init1() {
 	//Only do this once for each specified list if you want to access the cullspace cullvector again use the corresponding cache returners
 	srand(time(NULL));
 	this->initSheet();
+	this->initDotPoints();
 	Framework::instance()->InitLists();
 }
 
@@ -425,6 +426,10 @@ void Framework::setUpPointsAndVectors() {
 		theVectors = this->VDef->get_cull_vectors_cache();
 		thePoints = this->VDef->get_cull_space_cache();
 		VectorEquation = NULL;
+	}
+	for (unsigned int i = 0; i < this->num_dot_points; i++) {
+		int p = rand() % this->thePoints->size();
+		this->dot_points[i].set_this_to_be_passed_in_value(this->thePoints->at(p));
 	}
 	InitLists();
 }
@@ -842,9 +847,13 @@ void Framework::Display() {
 	if (useProbe) {
 		DrawProbe();
 	}
-
+	//Draw vector Sheet
 	if (useVectorSheet) {
 		DrawSheet();
+	}
+	//animate those dots!
+	if (this->useAnimation) {
+		DrawDots();
 	}
 
 	//Insert comment here when this does something
@@ -1199,6 +1208,25 @@ void Framework::GenStreamline(float x, float y, float z)
 	glLineWidth(1.);
 }
 
+void Framework::DrawDots() {
+	glBegin(GL_POINTS);
+	srand(time(NULL));
+	for (int i = 0; i < this->num_dot_points; ++i) {
+		glColor3f(0.0f,1.0f,0.0f);//MAKE THEM GREEN, FOR GREAT GLORY
+		float *vec = this->dot_points[i].xyz();
+		if (useJitter) {
+			glVertex3f(vec[0] + ((rand() % 10 - 5) / 300.), vec[1] + ((rand() % 10 - 5) / 300.), vec[2] + ((rand() % 10 - 5) / 300.));
+			//printf("Jitter Jitter\n");
+		}
+		else {
+			//printf("No Jitter\n");
+			glVertex3f(vec[0], vec[1], vec[2]);
+			//Pass in a Vec3 Here to the Vertex Shader
+		}
+	}
+	glEnd();
+}
+
 //all we need this to do is to physically draw the sheet, which will bend and flex and stuff
 void Framework::DrawSheet() {
 	/*float VecSheet[10][10][3];
@@ -1346,7 +1374,17 @@ void Framework::PhysicsUpdater(int value) {
 			delete newv;
 		}
 	}
-	printf("update of left corner x: %f y: %f z: %f\n", VecSheet[0][0].xyz()[0], VecSheet[0][0].xyz()[1], VecSheet[0][0].xyz()[2]);
+	if (this->useAnimation) {
+		for (unsigned int i = 0; i < this->num_dot_points; ++i) {
+			vector3d* newv = VectorAdvect(&this->dot_points[i]);
+			this->dot_points[i].set_this_to_be_passed_in_value(newv);
+			delete newv;
+		}
+	}
+	//printf("update of left corner x: %f y: %f z: %f\n", VecSheet[0][0].xyz()[0], VecSheet[0][0].xyz()[1], VecSheet[0][0].xyz()[2]);
+}
+void Framework::initDotPoints() {
+	this->num_dot_points = 100;
 }
 
 void Framework::initSheet() {
