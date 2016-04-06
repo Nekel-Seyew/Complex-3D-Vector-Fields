@@ -1445,7 +1445,7 @@ void Framework::PhysicsUpdater(int value) {
 			vector3d* newv = VectorAdvect(&this->dot_points[i]);
 			this->old_dot_pos[i].set_this_to_be_passed_in_value(&this->dot_points[i]);
 			this->dot_points[i].set_this_to_be_passed_in_value(newv);
-			if (this->traceDotPath && this->path[i].size() < 100) {
+			if (false && this->path[i].size() < 100) {
 				this->path[i].push_back(newv);
 			}else {
 				delete newv;
