@@ -1026,7 +1026,6 @@ void Framework::DrawArrows() {
 		head[1] = xyz[1] + (veccompxyz[1] * ArrowLength) / 2.0;
 		head[2] = xyz[2] + (veccompxyz[2] * ArrowLength) / 2.0;
 
-
 		float u[3], v[3], w[3];		// arrow coordinate system
 									// set w direction in u-v-w coordinate system:
 
