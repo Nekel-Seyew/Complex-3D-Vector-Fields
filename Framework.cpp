@@ -695,6 +695,7 @@ void Framework::RestoreDefaults() {
 	useJitter = 1;
 	useProbe = 0;
 	usePrism = 1;
+	useGrid = 0;
 	NumPoints = 15;
 	ProbeXVal = ProbeYVal = ProbeZVal = 0.0;
 	VectorSheetTimeVal = VectorSheetXVec = VectorSheetYVec = VectorSheetZVec = VectorSheetXLoc = VectorSheetYLoc =  VectorSheetZLoc = 0.0;
