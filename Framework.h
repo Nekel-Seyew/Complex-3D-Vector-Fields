@@ -241,7 +241,9 @@ public:
 	float	TransXYZ[3];		// set by glui translation widgets
 	//Color Options Settings:
 	int ColorAlternate;
-	float backgroundColor;
+	float backgroundColorR;
+	float backgroundColorG;
+	float backgroundColorB;
 	float boxColor;
 	float axesColor;
 
@@ -265,6 +267,7 @@ public:
 	float ArrowLength;
 	float spinVecMin;
 	float spinVecMax;
+	float vecAlphaVal;
 
 	//These are the arrow slider controls:
 	const char * VECFORMAT = { "Vector Magnitude: %5.2f - %5.2f" };

@@ -57,13 +57,14 @@ public:
 	std::vector<vector3d*>* cull_vectors(float xmin, float xmax, float ymin, float ymax, float zmin, float zmax);
 	std::vector<vector3d*>* cull_space(float xmin, float xmax, float ymin, float ymax, float zmin, float zmax);
 
+	void cull_space_vectors_rand(unsigned int step, unsigned int num_in_step);
+
 	std::vector<vector3d*>* get_cull_vectors_cache();
 	std::vector<vector3d*>* get_cull_space_cache();
 	vector3d* get_vector_cull_min();
 	vector3d* get_vector_cull_max();
 	vector3d* get_vector_min();
 	vector3d* get_vector_max();
-
 
 	bool am_file();
 	vector3d* get_vector_at_pos(vector3d* vec);

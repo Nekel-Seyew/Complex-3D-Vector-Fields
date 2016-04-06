@@ -311,6 +311,30 @@ std::vector<vector3d*>* VectorDefiner::cull_space(float xmin, float xmax, float 
 	return vec;
 }
 
+void VectorDefiner::cull_space_vectors_rand(unsigned int step, unsigned int num_in_step) {
+	std::vector<vector3d*>* vec = new std::vector<vector3d*>();
+	std::vector<vector3d*>* space = new std::vector<vector3d*>();
+
+	for (unsigned int i = 0; i < this->space->size(); i+=step) {
+		for (unsigned int k = 0; k < num_in_step; ++k) {
+			int p = rand() % step;
+			if ((i + p) < this->space->size()) {
+				space->push_back(this->space->at(i + p));
+				vec->push_back(this->vectors->at(i + p));
+			}
+		}
+	}
+	if (this->culled_space != NULL) {
+		//delete this->culled_space;
+	}
+	this->culled_space = space;
+	if (this->culled_vectors != NULL) {
+		//delete this->culled_vectors;
+	}
+	this->culled_vectors = vec;
+
+}
+
 std::vector<vector3d*>* VectorDefiner::get_cull_vectors_cache(){
 	return this->culled_vectors;
 }

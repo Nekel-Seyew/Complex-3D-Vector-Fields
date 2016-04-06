@@ -82,7 +82,12 @@ float * Framework::Color(float VecMag) {
 	hsv[1] = 1.;
 	hsv[2] = 1.;
 	color::HsvRgb(hsv, rgb);
-	return rgb;
+	float rgba[4];
+	rgba[0] = rgb[0];
+	rgba[1] = rgb[1];
+	rgba[2] = rgb[2];
+	rgba[3] = vecAlphaVal;
+	return rgba;
 }
 
 vector3d * Framework::VectorAdvect(vector3d * inputVector) {
@@ -319,7 +324,7 @@ void Framework::InitGraphics1() {
 
 	// setup the clear values:
 
-	glClearColor(backgroundColor, backgroundColor, backgroundColor, 0.1f);
+	glClearColor(backgroundColorR, backgroundColorG, backgroundColorB, 0.1f);
 
 	glutSetWindow(MainWindow);
 
@@ -402,20 +407,23 @@ void Framework::InitGraphics2() {
 
 void Framework::setUpPointsAndVectors() {
 	if (usePrism) {
-		thePoints = SDef->prism(2., 10, 2., 10, 2., 10); //Change This Line to (6., 40, 6., 40, 6., 40) if you want to view a bigger dataset
+		thePoints = SDef->prism_rand(2., 10, 2., 10, 2., 10); //Change This Line to (6., 40, 6., 40, 6., 40) if you want to view a bigger dataset
 	}
 	else {
 		thePoints = SDef->uv_surface(SpaceInput, 0., 1., 0., 1., 30., 30.);
 	}
 	VDef->give_input(VectorInput);
 	VDef->populate(thePoints);
-	theVectors = VDef->cull_vectors(-10.0, 10.0, -10.0, 10.0, -10.0, 10.0);
-	thePoints = VDef->cull_space(-10.0, 10.0, -10.0, 10.0, -10.0, 10.0);
 	if (!VDef->am_file()) {
 		theEquation = new equation_factory();
 		VectorEquation = theEquation->vector_equation(VectorInput);
+		theVectors = VDef->cull_vectors(-10.0, 10.0, -10.0, 10.0, -10.0, 10.0);
+		thePoints = VDef->cull_space(-10.0, 10.0, -10.0, 10.0, -10.0, 10.0);
 	}
 	else {
+		this->VDef->cull_space_vectors_rand(1000, 10);
+		theVectors = this->VDef->get_cull_vectors_cache();
+		thePoints = this->VDef->get_cull_space_cache();
 		VectorEquation = NULL;
 	}
 	InitLists();
@@ -568,22 +576,31 @@ void Framework::InitLists() {
 	float zval;
 	int N = 5;
 	float streamstep = 2.0 / ((float)N - 1.0);
-	xval = -1.0; //assumes contained from -1 to 1
-	for (int i = 0; i < N; i++) {
-		yval = -1.0;
-		for (int j = 0; j < N; j++) {
-			zval = -1.0;
-			for (int k = 0; k < N; k++) {
-				float x, y, z;
-				x = xval;
-				y = yval;
-				z = zval;
-				GenStreamline(x, y, z);
-				zval += streamstep;
-			}
-			yval += streamstep;
+	if (this->VDef->am_file()) {//if we have data from a table
+		this->VDef->cull_space_vectors_rand(1000, 5);
+		std::vector<vector3d*>* points = this->VDef->get_cull_space_cache();
+		for (unsigned int i = 0; i < points->size(); ++i) {
+			vector3d* p = points->at(i);
+			GenStreamline(p->xyz()[0], p->xyz()[1], p->xyz()[2]);
 		}
-		xval += streamstep;
+	}else {//if it's an equation!
+		xval = -1.0; //assumes contained from -1 to 1
+		for (int i = 0; i < N; i++) {
+			yval = -1.0;
+			for (int j = 0; j < N; j++) {
+				zval = -1.0;
+				for (int k = 0; k < N; k++) {
+					float x, y, z;
+					x = xval;
+					y = yval;
+					z = zval;
+					GenStreamline(x, y, z);
+					zval += streamstep;
+				}
+				yval += streamstep;
+			}
+			xval += streamstep;
+		}
 	}
 	glEndList();
 
@@ -598,15 +615,17 @@ void Framework::BuildClasses() {
 void Framework::RestoreDefaults() {
 	ActiveButton = 0;
 	LeftButton = ROTATE;
-	backgroundColor = 0.1f;
+	backgroundColorR = 0.1f;
+	backgroundColorG = 0.1f;
+	backgroundColorB = 0.1f;
 	boxColor = 1.0f;
 	axesColor = 1.0f;
 	DepthCueOn = 1;
 	AxesOn = 1;
 	BoxOn = 1;
-	FOGCOLOR[0] = backgroundColor;
-	FOGCOLOR[1] = backgroundColor;
-	FOGCOLOR[2] = backgroundColor;
+	FOGCOLOR[0] = backgroundColorR;
+	FOGCOLOR[1] = backgroundColorG;
+	FOGCOLOR[2] = backgroundColorB;
 	FOGCOLOR[3] = 0.5; //Check and Talk with Bailey - originally this was 1 caused background to fade in all white
 	FOGMODE = { GL_LINEAR };
 	FOGDENSITY = { 0.30f };
@@ -643,6 +662,7 @@ void Framework::RestoreDefaults() {
 	VectorSheetTimeVal = VectorSheetXVec = VectorSheetYVec = VectorSheetZVec = VectorSheetXLoc = VectorSheetYLoc =  VectorSheetZLoc = 0.0;
 	spinVecMax = VECMAX;
 	spinVecMin = VECMIN;
+	vecAlphaVal = 0.5;
 	visitstream = 0;
 	ColorAlternate = 0;
 }
@@ -693,10 +713,10 @@ void Framework::Display() {
 	glutSetWindow(MainWindow);
 
 	//Sets the color to be the backgroundcolor specified by the spinner
-	glClearColor(backgroundColor, backgroundColor, backgroundColor, 0.f);
-	FOGCOLOR[0] = backgroundColor;
-	FOGCOLOR[1] = backgroundColor;
-	FOGCOLOR[2] = backgroundColor;
+	glClearColor(backgroundColorR, backgroundColorG, backgroundColorB, 0.f);
+	FOGCOLOR[0] = backgroundColorR;
+	FOGCOLOR[1] = backgroundColorG;
+	FOGCOLOR[2] = backgroundColorB;
 	// erase the background:
 
 	glDrawBuffer(GL_BACK);
@@ -906,7 +926,7 @@ void Framework::Display() {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	float colorFactor;
-	if (backgroundColor < 0.5) {
+	if ((backgroundColorR + backgroundColorG + backgroundColorB)/3 < 0.5) {
 		colorFactor = 1.0;
 	}
 	else {
@@ -949,7 +969,7 @@ void Framework::DrawArrows() {
 		if ((theVectors->at(i)->magnitude()  < spinVecMin) || (theVectors->at(i)->magnitude() > spinVecMax)) {
 			continue;
 		}
-		glColor3fv(Color((theVectors->at(i)->magnitude())));
+		glColor4fv(Color((theVectors->at(i)->magnitude())));
 		float tail[3], head[3];
 		float *xyz = thePoints->at(i)->xyz();
 		float *veccompxyz = theVectors->at(i)->xyz();

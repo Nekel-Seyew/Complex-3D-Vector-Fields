@@ -98,7 +98,9 @@ void InitGlui() {
 
 	//Color Options Settings:
 	GLUI_Rollout * ColorOptions;
-	GLUI_Spinner * backgroundColorSpinner;
+	GLUI_Spinner * backgroundColorSpinnerR;
+	GLUI_Spinner * backgroundColorSpinnerG;
+	GLUI_Spinner * backgroundColorSpinnerB;
 	GLUI_Spinner * boxColorSpinner;
 	//Graphics Options Settings:
 	GLUI_Panel * graphicsOptions;
@@ -124,6 +126,7 @@ void InitGlui() {
 	GLUI_Spinner * spinNumPoints;
 	GLUI_Spinner * spinMinVector;
 	GLUI_Spinner * spinMaxVector;
+	GLUI_Spinner * alphaVector;
 
 	//Isosurface Settings
 	GLUI_Spinner * spinNumContours;
@@ -212,9 +215,15 @@ void InitGlui() {
 	ColorOptions = TestGlui->add_rollout("Color Settings", 0);
 	TestGlui->add_checkbox_to_panel(ColorOptions, "Alternate Color Scheme", &Framework::instance()->ColorAlternate);
 	TestGlui->add_separator();
-	backgroundColorSpinner = TestGlui->add_spinner_to_panel(ColorOptions, "Background Color", GLUI_SPINNER_FLOAT, &Framework::instance()->backgroundColor);
-	backgroundColorSpinner->set_float_limits(0.0, 1.0);
-	backgroundColorSpinner ->set_speed(0.05);
+	backgroundColorSpinnerR = TestGlui->add_spinner_to_panel(ColorOptions, "Background Color R", GLUI_SPINNER_FLOAT, &Framework::instance()->backgroundColorR);
+	backgroundColorSpinnerR->set_float_limits(0.0, 1.0);
+	backgroundColorSpinnerR ->set_speed(0.05);
+	backgroundColorSpinnerG = TestGlui->add_spinner_to_panel(ColorOptions, "Background Color G", GLUI_SPINNER_FLOAT, &Framework::instance()->backgroundColorG);
+	backgroundColorSpinnerG->set_float_limits(0.0, 1.0);
+	backgroundColorSpinnerG->set_speed(0.05);
+	backgroundColorSpinnerB = TestGlui->add_spinner_to_panel(ColorOptions, "Background Color B", GLUI_SPINNER_FLOAT, &Framework::instance()->backgroundColorB);
+	backgroundColorSpinnerB->set_float_limits(0.0, 1.0);
+	backgroundColorSpinnerB->set_speed(0.05);
 	boxColorSpinner = TestGlui->add_spinner_to_panel(ColorOptions, "Box And Axes Color", GLUI_SPINNER_FLOAT, &Framework::instance()->boxColor);
 	boxColorSpinner->set_float_limits(0.0, 1.0);
 	boxColorSpinner->set_speed(0.05);
@@ -222,11 +231,11 @@ void InitGlui() {
 	//Graphics Options Panel:
 	graphicsOptions = TestGlui->add_panel("Grahics Options");
 	TestGlui->add_column_to_panel(graphicsOptions, 0);
-	TestGlui->add_checkbox_to_panel(graphicsOptions, "Use Arrows", &Framework::instance()-> useArrows);
-	TestGlui->add_checkbox_to_panel(graphicsOptions, "Use Animation", &Framework::instance()-> useAnimation);
+	TestGlui->add_checkbox_to_panel(graphicsOptions, "Use Arrows", &Framework::instance()->useArrows);
+	TestGlui->add_checkbox_to_panel(graphicsOptions, "Use Animation", &Framework::instance()->useAnimation);
 	TestGlui->add_column_to_panel(graphicsOptions, 0);
-	TestGlui->add_checkbox_to_panel(graphicsOptions, "Use Isosurfaces", &Framework::instance()-> useIsosurfaces);
-	TestGlui->add_checkbox_to_panel(graphicsOptions, "Use Points", &Framework::instance()-> usePoints);
+	TestGlui->add_checkbox_to_panel(graphicsOptions, "Use Isosurfaces", &Framework::instance()->useIsosurfaces);
+	TestGlui->add_checkbox_to_panel(graphicsOptions, "Use Points", &Framework::instance()->usePoints);
 	TestGlui->add_column_to_panel(graphicsOptions, 0);
 	TestGlui->add_checkbox_to_panel(graphicsOptions, "Use Streamlines", &Framework::instance()->useStreamlines);
 	TestGlui->add_checkbox_to_panel(graphicsOptions, "Use StrokeVisualization", &Framework::instance()->useStrokes);
@@ -268,7 +277,7 @@ void InitGlui() {
 	printf("Before Sliders are initialize, Value of RadLowHigh[0] is %f, RadLowHigh[1] is %f,  VecTest[0] is %f, VecTest[1] is %f\n", TRadLowHigh[0], TRadLowHigh[1], VecTest[0], VecTest[1]);
 	TRadSlider = TestGlui->add_slider_to_panel(ArrowSettings, true, GLUI_HSLIDER_FLOAT, VecTest, RADID, (GLUI_Update_CB)MySliders);
 	TRadSlider->set_float_limits(TRADIUSMIN, TRADIUSMAX);
-	TRadSlider->set_w(200);		// good slider width
+	TRadSlider->set_w(250);		// good slider width
 	sprintf(radstr, TRADIUSFORMAT, TRadLowHigh[0], TRadLowHigh[1]);
 	TRadLabel = TestGlui->add_statictext_to_panel(ArrowSettings, radstr);
 	printf("After Sliders are initialized, Value of RadLowHigh[0] is %f, RadLowHigh[1] is %f,  VecTest[0] is %f, VecTest[1] is %f\n", TRadLowHigh[0], TRadLowHigh[1], VecTest[0], VecTest[1]);
@@ -283,6 +292,10 @@ void InitGlui() {
 	spinMaxVector = TestGlui->add_spinner_to_panel(ArrowSettings, "Vector Magnitude Max", GLUI_SPINNER_FLOAT, &Framework::instance()->spinVecMax);
 	spinMaxVector->set_float_limits(Framework::instance()->spinVecMin, Framework::instance()->VECMAX);
 	spinMaxVector->set_speed(0.1);
+
+	alphaVector = TestGlui->add_spinner_to_panel(ArrowSettings, "Arrow Alpha", GLUI_SPINNER_FLOAT, &Framework::instance()->vecAlphaVal);
+	alphaVector->set_float_limits(0.0, 1.0);
+	alphaVector->set_speed(0.05);
 
 	//Streamline & Probe Settings:
 	TestGlui->add_checkbox_to_panel(StreamlineSettings, "Use Probe", &Framework::instance()->useProbe);

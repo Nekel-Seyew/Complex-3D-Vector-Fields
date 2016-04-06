@@ -12,7 +12,7 @@ void  color::HsvRgb(float hsv[3], float rgb[3]){
 
 	// guarantee valid input:
 
-	float h = hsv[0] / 60.;
+	float h = hsv[0] / 60.f;
 	while (h >= 6.f)	h -= 6.f;
 	while (h <  0.f) 	h += 6.f;
 
@@ -43,7 +43,7 @@ void  color::HsvRgb(float hsv[3], float rgb[3]){
 	float f = h - i;
 	float p = v * (1.f - s);
 	float q = v * (1.f - s*f);
-	float t = v * (1.f - (s * (1. - f)));
+	float t = v * (1.f - (s * (1.f - f)));
 
 	switch ((int)i){
 		case 0:

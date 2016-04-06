@@ -103,10 +103,9 @@ std::vector<vector3d*>* SpaceDefiner::prism_rand(float x_length, float x_num, fl
 	for(int x=0; x<x_num; ++x){
 		for(int y=0; y<y_num; ++y){
 			for(int z=0; z<z_num; ++z){
-				float rx = xleft + ((rand() % RAND_MAX)*x_length);
-				float ry = yleft + ((rand() % RAND_MAX)*y_length);
-				float rz = zleft + ((rand() % RAND_MAX)*z_length);
-
+				float rx = xleft + ((rand() % RAND_MAX) / (1.0f * RAND_MAX))*x_length;
+				float ry = yleft + ((rand() % RAND_MAX) / (1.0f * RAND_MAX))*y_length;
+				float rz = zleft + ((rand() % RAND_MAX) / (1.0f * RAND_MAX))*z_length;
 				vector3d* v = new vector3d(rx,ry,rz);
 				vec->push_back(v);
 			}
