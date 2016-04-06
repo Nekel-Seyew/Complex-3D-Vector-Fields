@@ -27,6 +27,13 @@ vector3d::vector3d(vector3d* in) {
 	this->abc[2] = in->abc[2];
 	this->mode = in->mode;
 }
+
+vector3d::vector3d() {
+	this->abc[0] = 0;
+	this->abc[1] = 0;
+	this->abc[2] = 0;
+	this->mode = 0;
+}
 	
 float* vector3d::xyz(){
 	if(mode == 0){
@@ -126,6 +133,32 @@ double vector3d::distance_sqr(vector3d* a, vector3d* b) {
 	float* bv = b->xyz();
 
 	return (av[0] - bv[0])*(av[0] - bv[0]) + (av[1]- bv[1])*(av[1] - bv[1]) + (av[1] - bv[1])*(av[1] - bv[1]);
+}
+
+void vector3d::set_this_to_be_passed_in_value(vector3d* in) {
+	this->abc[0] = in->abc[0];
+	this->abc[1] = in->abc[1];
+	this->abc[2] = in->abc[2];
+	this->mode = in->mode;
+}
+
+vector3d& vector3d::operator*=(const float rhs) {
+	this->abc[0] *= rhs;
+	this->abc[1] *= rhs;;
+	this->abc[2] *= rhs;
+	return *this;
+}
+vector3d& vector3d::operator/=(const float rhs) {
+	this->abc[0] /= rhs;
+	this->abc[1] /= rhs;
+	this->abc[2] /= rhs;
+	return *this;
+}
+
+void vector3d::nullify() {
+	this->abc[0] = 0;
+	this->abc[1] = 0;
+	this->abc[2] = 0;
 }
 
 

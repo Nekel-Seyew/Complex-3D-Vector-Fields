@@ -72,6 +72,12 @@
     <ClCompile Include="VectorDefinerKDAdaptor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="VectorUpdating.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Cloth.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="vector3d.h">
@@ -564,6 +570,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="VectorDefinerKDAdaptor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VectorUpdating.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Cloth.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="odeint-boost\boost\numeric\odeint.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

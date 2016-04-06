@@ -277,8 +277,12 @@ public:
 	float ProbeXVal, ProbeYVal, ProbeZVal;
 
 	//These are the GluiValues for the Vector Sheet:
-	float VectorSheetTimeVal, VectorSheetXLoc, VectorSheetYLoc, VectorSheetZLoc, VectorSheetXVec, VectorSheetYVec, VectorSheetZVec;
+	float VectorSheetTimeVal=0, VectorSheetXLoc=0, VectorSheetYLoc=0, VectorSheetZLoc=0, VectorSheetXVec=0, VectorSheetYVec=0, VectorSheetZVec=1;
+	void initSheet();
+	vector3d VecSheet[10][10];
 	
+	/*Physics-ish*/
+	void PhysicsUpdater(int value);
 
 private:
 		// Singleton Junk

@@ -361,6 +361,12 @@ void MouseButtonFuncl(int arg1, int arg2, int arg3, int arg4) {
 	Framework::instance()->MouseButton(arg1, arg2, arg3, arg4);
 }
 
+void PhysicsUpdater(int value) {
+	printf("Updater called\n");
+	Framework::instance()->PhysicsUpdater(value);
+	glutTimerFunc(16, PhysicsUpdater, value+1);
+}
+
 int main(int argc, char ** argv) {
 
 	//just here for compile checks. Remove when you want things to run
@@ -372,6 +378,7 @@ int main(int argc, char ** argv) {
 	glutMouseFunc(MouseButtonFuncl);
 	glutMotionFunc(MouseMotionFuncl);
 	glutKeyboardFunc(MainKeyboard);
+	glutTimerFunc(16, PhysicsUpdater, 0);
 	Framework::instance()->Init2();
 	InitGlui();
 	printf("After Init, Vector Min is %f\n", Framework::instance()->VectorLowHigh[0]);

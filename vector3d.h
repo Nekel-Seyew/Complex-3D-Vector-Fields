@@ -7,6 +7,7 @@ public:
 	vector3d(float a, float b, float c, int mode);
 	vector3d(float* v, int mode);
 	vector3d(vector3d* in);
+	vector3d();
 
 	//methods
 	float* xyz(); //rectangular
@@ -54,6 +55,14 @@ public:
 			return (lhsz == rhsx) && (lhsy == rhsy) && (lhsz == rhsz);
 		}
 	};
+
+	void set_this_to_be_passed_in_value(vector3d* in);
+	//sets all values to be 0
+	void nullify();
+
+	//operators
+	vector3d& operator*=(const float rhs);
+	vector3d& operator/=(const float rhs);
 
 private:
 	//variables

@@ -10,6 +10,7 @@
 #endif
 #include "Framework.h"
 #include "vector3d.h"
+#include "VectorUpdating.h"
 
 //Singleton instance reference function
 Framework* Framework::_instance = 0;
@@ -287,7 +288,7 @@ void Framework::Init1() {
 	setUpPointsAndVectors();
 	//Only do this once for each specified list if you want to access the cullspace cullvector again use the corresponding cache returners
 	srand(time(NULL));
-
+	this->initSheet();
 	Framework::instance()->InitLists();
 }
 
@@ -1178,8 +1179,9 @@ void Framework::GenStreamline(float x, float y, float z)
 	glLineWidth(1.);
 }
 
+//all we need this to do is to physically draw the sheet, which will bend and flex and stuff
 void Framework::DrawSheet() {
-	float VecSheet[10][10][3];
+	/*float VecSheet[10][10][3];
 	float Cross1[3];
 	float Cross2[3];
 	//Grab a perpendicular vector with 0 z 
@@ -1192,8 +1194,8 @@ void Framework::DrawSheet() {
 	Cross2[2] = (VectorSheetXVec * Cross1[1]) - (VectorSheetYVec * Cross1[0]);
 	Unit(Cross1, Cross1);
 	Unit(Cross2, Cross2);
-	printf("Cross1 = %f, %f, %f\n", Cross1[0], Cross1[1], Cross1[2]);
-	printf("Cross2 = %f, %f, %f\n", Cross2[0], Cross2[1], Cross2[2]);
+	//printf("Cross1 = %f, %f, %f\n", Cross1[0], Cross1[1], Cross1[2]);
+	//printf("Cross2 = %f, %f, %f\n", Cross2[0], Cross2[1], Cross2[2]);
 
 	//Place points
 	for (int i = 0; i < 10; i++){
@@ -1208,24 +1210,23 @@ void Framework::DrawSheet() {
 			VecSheet[i][j][1] += VectorSheetYLoc;
 			VecSheet[i][j][2] += VectorSheetZLoc;
 		}
-	}
+	}*/
+
 	//Insert Animation here?
 	//Draw the sheet
 	glBegin(GL_TRIANGLES);
-	glColor3f(0.1, 0.2, 0.3);
+		glColor3f(0.1, 0.2, 0.3);
+		for (int i = 0; i < 9; i++) {
+			for (int j = 0; j < 9; j++) {
+				glVertex3f(VecSheet[i][j].xyz()[0], VecSheet[i][j].xyz()[1], VecSheet[i][j].xyz()[2]);
+				glVertex3f(VecSheet[i + 1][j].xyz()[0], VecSheet[i + 1][j].xyz()[1], VecSheet[i + 1][j].xyz()[2]);
+				glVertex3f(VecSheet[i][j + 1].xyz()[0], VecSheet[i][j + 1].xyz()[1], VecSheet[i][j + 1].xyz()[2]);
 
-	for (int i = 0; i < 9; i++) {
-		for (int j = 0; j < 9; j++) {
-			glVertex3f(VecSheet[i][j][0], VecSheet[i][j][1], VecSheet[i][j][2]);
-			glVertex3f(VecSheet[i + 1][j][0], VecSheet[i + 1][j][1], VecSheet[i + 1][j][2]);
-			glVertex3f(VecSheet[i][j + 1][0], VecSheet[i][j + 1][1], VecSheet[i][j + 1][2]);
-
-			glVertex3f(VecSheet[i + 1][j][0], VecSheet[i + 1][j][1], VecSheet[i + 1][j][2]);
-			glVertex3f(VecSheet[i + 1][j + 1][0], VecSheet[i + 1][j + 1][1], VecSheet[i + 1][j + 1][2]);
-			glVertex3f(VecSheet[i][j + 1][0], VecSheet[i][j + 1][1], VecSheet[i][j + 1][2]);
+				glVertex3f(VecSheet[i + 1][j].xyz()[0], VecSheet[i + 1][j].xyz()[1], VecSheet[i + 1][j].xyz()[2]);
+				glVertex3f(VecSheet[i + 1][j + 1].xyz()[0], VecSheet[i + 1][j + 1].xyz()[1], VecSheet[i + 1][j + 1].xyz()[2]);
+				glVertex3f(VecSheet[i][j + 1].xyz()[0], VecSheet[i][j + 1].xyz()[1], VecSheet[i][j + 1].xyz()[2]);
+			}
 		}
-	}
-
 	glEnd();
 }
 
@@ -1315,4 +1316,55 @@ void Framework::MouseMotion(int x, int y){
 
 	glutSetWindow(MainWindow);
 	glutPostRedisplay();
+}
+
+void Framework::PhysicsUpdater(int value) {
+	for (int i = 0; i < 9; i++) {
+		for (int j = 0; j < 9; j++) {
+			vector3d* newv = VectorAdvect(&VecSheet[i][j]);
+			//VecSheet[i][j].set_this_to_be_passed_in_value(newv);
+			delete newv;
+		}
+	}
+	printf("update of left corner x: %f y: %f z: %f\n", VecSheet[0][0].xyz()[0], VecSheet[0][0].xyz()[1], VecSheet[0][0].xyz()[2]);
+}
+
+void Framework::initSheet() {
+	/*float Cross1[3];
+	float Cross2[3];
+	//Grab a perpendicular vector with 0 z 
+	Cross1[0] = -VectorSheetYVec;
+	Cross1[1] = VectorSheetXVec;
+	Cross1[2] = 0;
+	//Take the cross product to find the other perpendicular with z
+	Cross2[0] = (VectorSheetYVec * Cross1[2]) - (VectorSheetZVec * Cross1[1]);
+	Cross2[1] = (VectorSheetZVec * Cross1[0]) - (VectorSheetXVec * Cross1[2]);
+	Cross2[2] = (VectorSheetXVec * Cross1[1]) - (VectorSheetYVec * Cross1[0]);
+	Unit(Cross1, Cross1);
+	Unit(Cross2, Cross2);
+	//printf("Cross1 = %f, %f, %f\n", Cross1[0], Cross1[1], Cross1[2]);
+	//printf("Cross2 = %f, %f, %f\n", Cross2[0], Cross2[1], Cross2[2]);
+
+	//Place points
+	for (int i = 0; i < 10; i++) {
+		for (int j = 0; j < 10; j++) {
+			VecSheet[i][j].xyz()[0] = Cross1[0] * (i - 5);
+			VecSheet[i][j].xyz()[1] = Cross1[1] * (i - 5);
+			VecSheet[i][j].xyz()[2] = Cross1[2] * (i - 5);
+			VecSheet[i][j].xyz()[0] += Cross2[0] * (j - 5);
+			VecSheet[i][j].xyz()[1] += Cross2[1] * (j - 5);
+			VecSheet[i][j].xyz()[2] += Cross2[2] * (j - 5);
+			VecSheet[i][j].xyz()[0] += VectorSheetXLoc;
+			VecSheet[i][j].xyz()[1] += VectorSheetYLoc;
+			VecSheet[i][j].xyz()[2] += VectorSheetZLoc;
+		}
+	}*/
+	for (int i = 0; i < 10; i++) {
+		for (int j = 0; j < 10; j++) {
+			VecSheet[i][j].xyz()[0] = (i - 5) / 10.0f;
+			VecSheet[i][j].xyz()[1] = (i - 5) / 10.0f;
+			VecSheet[i][j].xyz()[2] = 0;
+		}
+	}
+
 }

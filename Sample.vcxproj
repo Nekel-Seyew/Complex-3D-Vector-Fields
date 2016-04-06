@@ -49,7 +49,7 @@
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>.\dlib-18.18;.\glm;$(IncludePath)</IncludePath>
+    <IncludePath>.\odeint-boost;.\glm;.\dlib-18.18;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>.\dlib-18.18;$(IncludePath)</IncludePath>
@@ -133,6 +133,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Cloth.cpp" />
     <ClCompile Include="color.cpp" />
     <ClCompile Include="ControlWindow.cpp" />
     <ClCompile Include="DataSetTrainer.cpp">
@@ -155,9 +156,11 @@
     <ClCompile Include="vector3d.cpp" />
     <ClCompile Include="VectorDefiner.cpp" />
     <ClCompile Include="VectorDefinerKDAdaptor.cpp" />
+    <ClCompile Include="VectorUpdating.cpp" />
     <ClCompile Include="Wrappers.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Cloth.h" />
     <ClInclude Include="color.h" />
     <ClInclude Include="ControlWindow.h" />
     <ClInclude Include="DataSetTrainer.h" />
@@ -313,6 +316,7 @@
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="NameSpace.h" />
     <ClInclude Include="nanoflann.hpp" />
+    <ClInclude Include="odeint-boost\boost\numeric\odeint.hpp" />
     <ClInclude Include="RenderingEngine.h" />
     <ClInclude Include="RenderWindow.h" />
     <ClInclude Include="SphericalInterpolator.h" />
@@ -322,6 +326,7 @@
     <ClInclude Include="vector3d.h" />
     <ClInclude Include="VectorDefiner.h" />
     <ClInclude Include="VectorDefinerKDAdaptor.h" />
+    <ClInclude Include="VectorUpdating.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="fshader.glsl" />
