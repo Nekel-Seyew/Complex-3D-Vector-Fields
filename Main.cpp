@@ -57,6 +57,14 @@ void MySliders(int numSlide) {
 void MyTextBoxes(int textbox) {
 	
 }
+void SpinnerCallback(int spinner) {
+	switch (spinner) {
+	case(0) :
+		Framework::instance()->InitLists();
+		glutPostRedisplay();
+		break;
+	}
+}
 void MyButtons(int button) {
 	switch (button) {
 	case(0) :
@@ -101,6 +109,7 @@ void InitGlui() {
 	GLUI_Spinner * backgroundColorSpinnerG;
 	GLUI_Spinner * backgroundColorSpinnerB;
 	GLUI_Spinner * boxColorSpinner;
+
 	//Graphics Options Settings:
 	GLUI_Panel * graphicsOptions;
 
@@ -130,8 +139,11 @@ void InitGlui() {
 	//Isosurface Settings
 	GLUI_Spinner * spinNumContours;
 
+	//Streamline Controls:
+	GLUI_Spinner * spinNumStreamlines;
+
 	//Probe Controls:
-	GLUI_Panel *probePanel;
+	GLUI_Panel * probePanel;
 	GLUI_Spinner * ProbeX;
 	GLUI_Spinner * ProbeY;
 	GLUI_Spinner * ProbeZ;
@@ -145,12 +157,12 @@ void InitGlui() {
 	GLUI_Spinner * VectorSheetYVec;
 	GLUI_Spinner * VectorSheetZVec;
 
-	//dot point animation controls
+	//dot point animation controls:
 	GLUI_Spinner * dotPointColorSpinnerR;
 	GLUI_Spinner * dotPointColorSpinnerG;
 	GLUI_Spinner * dotPointColorSpinnerB;
 
-	//Strings for Sliders
+	//Strings for Sliders:
 	char tempstr[128];
 	char xstr[128];
 	char ystr[128];
@@ -174,9 +186,6 @@ void InitGlui() {
 	Framework::instance()->edittext->set_w(400);
 	Framework::instance()->edittext2 = TestGlui->add_edittext_to_panel(UserInput,"Vector Definer Equation:", GLUI_EDITTEXT_TEXT, Framework::instance()->VectorDefinerString);
 	Framework::instance()->edittext2->set_w(400);
-	ReadInFileRollout = TestGlui->add_rollout_to_panel(UserInput, "Vector Field Data File Name (Crash Warning)", 0);
-	Framework::instance()->edittext3 = TestGlui->add_edittext_to_panel(ReadInFileRollout, "Vector Field Data File:  ", GLUI_EDITTEXT_TEXT, Framework::instance()->VectorDefinerString);
-	Framework::instance()->edittext3->set_w(400);
 	spinNumPoints = TestGlui->add_spinner_to_panel(UserInput, "NumPoints", GLUI_SPINNER_INT, &Framework::instance()->NumPoints);
 	spinNumPoints->set_float_limits(5.0, 30.0);
 	spinNumPoints->set_speed(0.1);
@@ -268,16 +277,6 @@ void InitGlui() {
 	OculusRollout = TestGlui->add_rollout_to_panel(OculusSettings, "Oculus Settings");
 	OculusRollout->set_w(200);
 	TestGlui->add_separator();
-
-	//Saving to an ObjFile Settings
-	ObjFileSettings = TestGlui->add_panel("Save .obj File Settings");
-	Framework::instance()-> SavedFileName = TestGlui->add_edittext_to_panel(ObjFileSettings, ".obj FileName:", GLUI_EDITTEXT_TEXT, Framework::instance()->ObjFileNameString);
-	Framework::instance()->SavedFileName->set_w(400);
-	TestGlui->add_button_to_panel(ObjFileSettings, "Save", 2, ((GLUI_Update_CB)MyButtons));
-
-
-	/*This is everything inside of the rollouts*/
-
 	//Arrow Settings: 
 	//TRadLowHigh[0] = VecTest[0];
 	//TRadLowHigh[1] = VecTest[1];
@@ -304,7 +303,13 @@ void InitGlui() {
 	alphaVector->set_float_limits(0.0, 1.0);
 	alphaVector->set_speed(0.05);
 
+
+
 	//Streamline & Probe Settings:
+	spinNumStreamlines = TestGlui->add_spinner_to_panel(StreamlineSettings, "Cubed Number of Streamlines", GLUI_SPINNER_INT, &Framework::instance()->NumStreamlines, 0, SpinnerCallback);
+	spinNumStreamlines -> set_float_limits(1, 10);
+	spinNumStreamlines -> set_speed(0.1);
+
 	TestGlui->add_checkbox_to_panel(StreamlineSettings, "Use Probe", &Framework::instance()->useProbe);
 	ProbeX = TestGlui->add_spinner_to_panel(StreamlineSettings, "XProbeValue", GLUI_SPINNER_FLOAT, &Framework::instance()->ProbeXVal);
 	ProbeX->set_float_limits(-1.0, 1.0);
@@ -369,11 +374,8 @@ void InitGlui() {
 	dotPointColorSpinnerB->set_float_limits(0.0, 1.0);
 	dotPointColorSpinnerB->set_speed(0.05);
 
-
 	//Final Setup for Glui - making it the main window
 	TestGlui->set_main_gfx_window(Framework::instance()->MainWindow);
-
-
 
 	// set the graphics window's idle function if needed:
 

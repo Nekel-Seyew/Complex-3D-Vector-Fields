@@ -59,12 +59,12 @@ float * Framework::Color(float VecMag) {
 	// finally draw the point if it passes all the tests
 	float divisor = (max - min);
 	if (ColorAlternate) {
-		if (divisor == 0) {
+		/*if (divisor == 0) {
 			hsv[0] = 240. - 240.* ((max - VecMag) / 1.);
 		}
 		else {
 			hsv[0] = 240. - 240.* ((max - VecMag) / divisor);
-		}
+		}*/
 	}
 	else {
 
@@ -122,6 +122,22 @@ float* Framework::Color(float mag, float min, float max) {
 	rgba[3] = vecAlphaVal;
 	return rgba;
 }
+/*
+float * ChemistryColor(float mag, float min, float max) {
+	float length = max - min;
+	midpointlength = 0.5 length;
+	if (mag < lowerlength){
+
+	}
+	else if (mag < middlelength){
+	
+	
+	}
+	else{
+
+
+	}
+}*/
 
 vector3d * Framework::VectorAdvect(vector3d * inputVector) {
 	float TimeStep = 0.1;
@@ -454,6 +470,9 @@ void Framework::setUpPointsAndVectors() {
 		theVectors = VDef->cull_vectors(-10.0, 10.0, -10.0, 10.0, -10.0, 10.0);
 		thePoints = VDef->cull_space(-10.0, 10.0, -10.0, 10.0, -10.0, 10.0);
 	}
+	else if (useGrid) {
+
+	}
 	else {
 		this->VDef->cull_space_vectors_rand(1000, 10);
 		theVectors = this->VDef->get_cull_vectors_cache();
@@ -612,7 +631,7 @@ void Framework::InitLists() {
 	float xval;
 	float yval;
 	float zval;
-	int N = 5;
+	int N = NumStreamlines;
 	float streamstep = 2.0 / ((float)N - 1.0);
 	if (this->VDef->am_file()) {//if we have data from a table
 		this->VDef->cull_space_vectors_rand(1000, 5);
@@ -696,6 +715,7 @@ void Framework::RestoreDefaults() {
 	useProbe = 0;
 	usePrism = 1;
 	useGrid = 0;
+	NumStreamlines = 3; /*This will be cubed*/
 	NumPoints = 15;
 	ProbeXVal = ProbeYVal = ProbeZVal = 0.0;
 	VectorSheetTimeVal = VectorSheetXVec = VectorSheetYVec = VectorSheetZVec = VectorSheetXLoc = VectorSheetYLoc =  VectorSheetZLoc = 0.0;
