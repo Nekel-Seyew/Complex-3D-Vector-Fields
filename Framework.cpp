@@ -11,6 +11,7 @@
 #include "Framework.h"
 #include "vector3d.h"
 #include "VectorUpdating.h"
+#include <cstring>
 
 //Singleton instance reference function
 Framework* Framework::_instance = 0;
@@ -171,6 +172,9 @@ vector3d * Framework::VectorAdvect(vector3d * inputVector) {
 	xc = xa + TimeStep * vx;
 	yc = ya + TimeStep * vy;
 	zc = za + TimeStep * vz;
+	//clean up the gosh darn memory, people, please!
+	delete firstOutputVector;
+	delete secondOutputVector;
 	vector3d* vectorReturn = new vector3d(xc, yc, zc);
 	return vectorReturn;
 }
@@ -486,7 +490,8 @@ void Framework::setUpPointsAndVectors() {
 		thePoints = this->VDef->get_cull_space_cache();
 		VectorEquation = NULL;
 	}
-	for (unsigned int i = 0; i < this->num_dot_points; i++) {
+	//randomly assign the dot_points number
+	for (unsigned int i = 0; i < 1000; i++) { //there is no more than 1000 dots to draw
 		int p = rand() % this->thePoints->size();
 		this->dot_points[i].set_this_to_be_passed_in_value(this->thePoints->at(p));
 	}
@@ -723,7 +728,7 @@ void Framework::RestoreDefaults() {
 	usePrism = 1;
 	useGrid = 0;
 	NumStreamlines = 3; /*This will be cubed*/
-	NumPoints = 15;
+	NumPoints = 100;
 	ProbeXVal = ProbeYVal = ProbeZVal = 0.0;
 	VectorSheetTimeVal = VectorSheetXVec = VectorSheetYVec = VectorSheetZVec = VectorSheetXLoc = VectorSheetYLoc =  VectorSheetZLoc = 0.0;
 	spinVecMax = VECMAX;
@@ -737,6 +742,7 @@ void Framework::RestoreDefaults() {
 	colorAsVelocity = 0;
 	traceDotPath = 1;
 	path = new std::vector<vector3d*>[100]();
+	num_dot_points = 100;
 }
 
 void Framework::Run(int argc, char ** argv) {
@@ -1255,9 +1261,9 @@ void Framework::GenStreamline(float x, float y, float z)
 	for (int m = 0; m < 100; m++)//change to MAXITERATIONS m = 100
 	{
 		float * coordsxyz = OriginalXYZ->xyz();
-		if (coordsxyz[0] < -2.0 || coordsxyz[0] > 2.0) break; //Eventually we want to tie this into the min and max for space? Kyle is there a way to do this?
-		if (coordsxyz[1] < -2.0 || coordsxyz[1] > 2.0) break;
-		if (coordsxyz[2] < -2.0 || coordsxyz[2]> 2.0) break;
+		if (coordsxyz[0] < -5.0 || coordsxyz[0] > 5.0) break; //Eventually we want to tie this into the min and max for space? Kyle is there a way to do this?
+		if (coordsxyz[1] < -5.0 || coordsxyz[1] > 5.0) break;
+		if (coordsxyz[2] < -5.0 || coordsxyz[2]> 5.0) break;
 		
 		//glVertex3f(x, y, z);
 		glVertex3f(coordsxyz[0], coordsxyz[1], coordsxyz[2]);
@@ -1467,6 +1473,9 @@ void Framework::PhysicsUpdater(int value) {
 			delete newv;
 		}
 	}
+	if (((int)this->NumPoints) != this->num_dot_points) { //increase (or decrease) number of dots
+		this->num_dot_points = ((int)this->NumPoints);
+	}
 	if (this->useAnimation) {
 		for (unsigned int i = 0; i < this->num_dot_points; ++i) {
 			vector3d* newv = VectorAdvect(&this->dot_points[i]);
@@ -1476,6 +1485,14 @@ void Framework::PhysicsUpdater(int value) {
 				this->path[i].push_back(newv);
 			}else {
 				delete newv;
+			}
+			float* xyz = this->dot_points[i].xyz();
+			if (   (xyz[0] > 5.0f || xyz[0] < -5.0f)
+				|| (xyz[1] > 5.0f || xyz[1] < -5.0f)
+				|| (xyz[2] > 5.0f || xyz[2] < -5.0f)) {
+				int p = rand() % this->thePoints->size();
+				this->dot_points[i].set_this_to_be_passed_in_value(this->thePoints->at(p));
+				this->old_dot_pos[i].set_this_to_be_passed_in_value(&this->dot_points[i]);
 			}
 		}
 	}

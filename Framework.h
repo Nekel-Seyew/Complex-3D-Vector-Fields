@@ -167,6 +167,7 @@ public:
 
 	//These are the Helper Functions for Graphics: 
 	vector3d * VectorAtLocation(float, float, float);
+	vector3d* VectorAtLocation(vector3d* pos);
 	vector3d * VectorAdvect(vector3d *);
 	float * Color(float);
 	float * Color(float mag,float min,float max);
@@ -193,7 +194,6 @@ public:
 	GLuint program;
 	GLuint buffer[2];
 	GLuint vao;
-	unsigned int NumPoints;
 
 	//This is the Isosurfaces Variables 
 	float numContours;
@@ -293,10 +293,11 @@ public:
 	vector3d VecSheet[10][10];
 
 	//animation points
+	float NumPoints;//max value is hardset at 1000
 	float dotPointColorR, dotPointColorG, dotPointColorB;
-	vector3d dot_points[100];
-	unsigned int num_dot_points=100;
-	vector3d old_dot_pos[100];
+	vector3d dot_points[1000];
+	int num_dot_points=100;
+	vector3d old_dot_pos[1000];
 	std::vector<vector3d*>* path;
 	float timestep = 0.1f; // this is what VectorAdvect uses as time step
 	void initDotPoints();
