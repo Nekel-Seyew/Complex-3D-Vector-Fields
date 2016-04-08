@@ -84,7 +84,7 @@ void MyButtons(int button) {
 		printf(".obj file saved");
 		break;
 	}
-	}
+}
 
 
 void InitGlui() {
@@ -186,9 +186,6 @@ void InitGlui() {
 	Framework::instance()->edittext->set_w(400);
 	Framework::instance()->edittext2 = TestGlui->add_edittext_to_panel(UserInput,"Vector Definer Equation:", GLUI_EDITTEXT_TEXT, Framework::instance()->VectorDefinerString);
 	Framework::instance()->edittext2->set_w(400);
-	spinNumPoints = TestGlui->add_spinner_to_panel(UserInput, "NumPoints", GLUI_SPINNER_INT, &Framework::instance()->NumPoints);
-	spinNumPoints->set_float_limits(5.0, 30.0);
-	spinNumPoints->set_speed(0.1);
 	TestGlui->add_button_to_panel(UserInput, "Redraw", 0, ((GLUI_Update_CB)MyButtons));
 	TestGlui->add_button_to_panel(UserInput, "Enter", 1, ((GLUI_Update_CB)MyButtons));
 	
@@ -373,6 +370,9 @@ void InitGlui() {
 	dotPointColorSpinnerB = TestGlui->add_spinner_to_panel(AnimationSettings, "Dot Color B", GLUI_SPINNER_FLOAT, &Framework::instance()->dotPointColorB);
 	dotPointColorSpinnerB->set_float_limits(0.0, 1.0);
 	dotPointColorSpinnerB->set_speed(0.05);
+	spinNumPoints = TestGlui->add_spinner_to_panel(UserInput, "NumPoints", GLUI_SPINNER_FLOAT, &Framework::instance()->NumPoints);
+	spinNumPoints->set_float_limits(5, 1000);
+	spinNumPoints->set_speed(0.5);
 
 	//Final Setup for Glui - making it the main window
 	TestGlui->set_main_gfx_window(Framework::instance()->MainWindow);
@@ -402,7 +402,7 @@ void MouseButtonFuncl(int arg1, int arg2, int arg3, int arg4) {
 void PhysicsUpdater(int value) {
 	//printf("Updater called\n");
 	Framework::instance()->PhysicsUpdater(value);
-	glutTimerFunc(16, PhysicsUpdater, value+1);
+	glutTimerFunc(16, PhysicsUpdater, value);
 	glutPostRedisplay();
 }
 
