@@ -184,6 +184,13 @@ vector3d* Framework::VectorAtLocation(float xCord, float yCord, float zCord) {
 	//printf("The values of the returnVec are %f, %f, %f\n", returnVec->xyz()[0], returnVec->xyz()[1], returnVec->xyz()[2]);
 	return returnVec;
 }
+vector3d* Framework::VectorAtLocation(vector3d* pos) {
+	vector3d* returnVec;
+	returnVec = VDef->get_vector_at_pos(pos);
+	//printf("The values of the returnVec are %f, %f, %f\n", returnVec->xyz()[0], returnVec->xyz()[1], returnVec->xyz()[2]);
+	return returnVec;
+}
+
 
 void Framework::Axes(float length) {
 	// the stroke characters 'X' 'Y' 'Z' :
