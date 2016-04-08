@@ -386,6 +386,8 @@ vector3d* VectorDefiner::get_vector_at_pos(vector3d* vec) {
 	}else{
 		float* out = new float[3];
 		out = this->eqr->eval(vec->xyz()[0], vec->xyz()[1], vec->xyz()[2], out);
-		return new vector3d(out, vector3d::rect);
+		vector3d* outv = new vector3d(out, vector3d::rect);
+		delete out;
+		return outv;
 	}
 }
