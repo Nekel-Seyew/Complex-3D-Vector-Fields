@@ -58,36 +58,55 @@ float * Framework::Color(float VecMag) {
 	float min = VDef->get_vector_cull_min()->magnitude();
 	float max = VDef->get_vector_cull_max()->magnitude();
 	// finally draw the point if it passes all the tests
-	float divisor = (max - min);
+	float range = (max - min);
+	float rgba[4];
 	if (ColorAlternate) {
-		/*if (divisor == 0) {
-			hsv[0] = 240. - 240.* ((max - VecMag) / 1.);
+		float firstThird = min + 0.33333 * range;
+		float secondThird = min + 0.66666 * range;
+		if (VecMag < firstThird) {
+			float interpR = (VecMag - min) / (firstThird - min);
+			rgba[0] = interpR;
+			rgba[1] = 0.;
+			rgba[2] = 0.;
+			rgba[3] = vecAlphaVal;
+		}
+		else if (VecMag < secondThird) {
+			float interpG = (VecMag - firstThird) / (secondThird - firstThird);
+			rgba[0] = 1.;
+			rgba[1] = interpG;
+			rgba[2] = 0.;
+			rgba[3] = vecAlphaVal;
+
 		}
 		else {
-			hsv[0] = 240. - 240.* ((max - VecMag) / divisor);
-		}*/
+			float interpB = (VecMag - secondThird) / (max - secondThird);
+			rgba[0] = 1.;
+			rgba[1] = 1.;
+			rgba[2] = interpB;
+			rgba[3] = vecAlphaVal;
+		}
 	}
 	else {
 
-		if (divisor == 0) {
+		if (range == 0) {
 			hsv[0] = 240. - 240.* ((VecMag - min) / 1.);
 		}
 		else {
-			hsv[0] = 240. - 240.* ((VecMag - min) / divisor);
+			hsv[0] = 240. - 240.* ((VecMag - min) / range);
 		}
-
+		hsv[1] = 1.;
+		hsv[2] = 1.;
+		color::HsvRgb(hsv, rgb);
+		
+		rgba[0] = rgb[0];
+		rgba[1] = rgb[1];
+		rgba[2] = rgb[2];
+		rgba[3] = vecAlphaVal;
 	}
 	//hsv[0] = 240.- 240.* (Nodes[i][j][k].vecLength - vecmax)/(vecmax - vecmin);
 	//hsv[0] = 240. - 240.* (vecmax - Nodes[i][j][k].t) / (vecmax - vecmin);
 	//hsv[0] = 240. - 240.* (TEMPMIN - Nodes[i][j][k].t) / (TEMPMAX - TEMPMIN);
-	hsv[1] = 1.;
-	hsv[2] = 1.;
-	color::HsvRgb(hsv, rgb);
-	float rgba[4];
-	rgba[0] = rgb[0];
-	rgba[1] = rgb[1];
-	rgba[2] = rgb[2];
-	rgba[3] = vecAlphaVal;
+
 	return rgba;
 }
 
