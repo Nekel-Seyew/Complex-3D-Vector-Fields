@@ -163,6 +163,7 @@ public:
 	void DrawPoints();
 	void DrawArrows();
 	void DrawProbe();
+	void DrawBlob();
 	void DrawSheet();
 
 	//These are the Helper Functions for Graphics: 
