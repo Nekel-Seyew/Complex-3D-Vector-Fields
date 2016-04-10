@@ -995,14 +995,24 @@ void Framework::Display() {
 			count++;
 		}
 		glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
-		glUseProgram(program);
 		glBindBuffer( GL_ARRAY_BUFFER, posSSbo );
 		glVertexPointer( 4, GL_FLOAT, 0, (void *)0 );
 		glEnableClientState( GL_VERTEX_ARRAY );
 		glDrawArrays( GL_QUADS, 0, NumPoints * NumPoints );
 		glDisableClientState( GL_VERTEX_ARRAY );
 		glBindBuffer( GL_ARRAY_BUFFER, 0 );
+		glUseProgram(0); 
+
+		glBegin(GL_POINTS);
+		glUseProgram(program);
+		glPointSize(10);
+		glBegin(GL_POINTS);
+		glColor3f(0., 1., 1.);
+		glVertex3f(0., 0., 0.);
+		glPointSize(4);
+		glEnd();
 		glUseProgram(0);
+		
 		
 	}
 
