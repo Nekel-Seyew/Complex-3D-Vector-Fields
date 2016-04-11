@@ -247,10 +247,12 @@ void InitGlui() {
 	TestGlui->add_column_to_panel(graphicsOptions, 0);
 	TestGlui->add_checkbox_to_panel(graphicsOptions, "Use Isosurfaces", &Framework::instance()->useIsosurfaces);
 	TestGlui->add_checkbox_to_panel(graphicsOptions, "Use Points", &Framework::instance()->usePoints);
-	TestGlui->add_column_to_panel(graphicsOptions, 0);
 	TestGlui->add_checkbox_to_panel(graphicsOptions, "Use Streamlines", &Framework::instance()->useStreamlines);
+	TestGlui->add_column_to_panel(graphicsOptions, 0);
 	TestGlui->add_checkbox_to_panel(graphicsOptions, "Use StrokeVisualization", &Framework::instance()->useStrokes);
+	TestGlui->add_checkbox_to_panel(graphicsOptions, "Use VectorBlob", &Framework::instance()->useVectorBlob);
 	TestGlui->add_checkbox_to_panel(graphicsOptions, "Use VectorSheet", &Framework::instance()->useVectorSheet);
+
 
 	CustomSettings = TestGlui->add_panel("", 0);
 	ArrowSettings = TestGlui->add_rollout_to_panel(CustomSettings, "Arrow Settings", 0);
@@ -265,7 +267,7 @@ void InitGlui() {
 	StreamlineSettings->set_w(200);
 	StrokesSettings = TestGlui->add_rollout_to_panel(CustomSettings, "Strokes Visualization Settings", 0);
 	StrokesSettings->set_w(200);
-	VectorBlobSettings = TestGlui->add_rollout_to_panel(CustomSettings, "Vector Sheet Settings", 0);
+	VectorBlobSettings = TestGlui->add_rollout_to_panel(CustomSettings, "Vector Blob Settings", 0);
 	VectorBlobSettings ->set_w(200);
 
 	//Oculus Rift Settings:

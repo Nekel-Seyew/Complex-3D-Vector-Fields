@@ -741,6 +741,7 @@ void Framework::RestoreDefaults() {
 	useStrokes = 0;
 	useAnimation = 0;
 	useIsosurfaces = 0;
+	useVectorBlob = 0; 
 	useVectorSheet = 0;
 	useJitter = 1;
 	useProbe = 0;
@@ -962,7 +963,7 @@ void Framework::Display() {
 		float rgb[3];
 		//glShadeModel(GL_SMOOTH);
 		//glBegin(GL_LINES);
-		int NumShaderPoints = 15;
+		int NumShaderPoints = 5;
 		GLuint posSSbo;
 		GLuint velSSbo;
 		glGenBuffers(1, &posSSbo);
@@ -974,10 +975,9 @@ void Framework::Display() {
 		float xval, yval;
 		float planestep = 2.0 / ((float)10 - 1.0);
 		xval = -1.0;
-		int NumPoints = 10;
+		yval = -1.0;
 		int count = 0;
-		for (int i = 0; i < (NumPoints * NumPoints); i++) {
-			yval = -1.0;
+		for (int i = 0; i < (NumShaderPoints * NumShaderPoints); i++) {
 				vector3d * tempVec = VectorAtLocation(xval, yval, testFloat);
 				float mag = tempVec->magnitude();
 				DynamicNow[i].x = xval;
@@ -996,7 +996,7 @@ void Framework::Display() {
 		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, (void *)0);
 		glEnableVertexAttribArray(0);
 		glEnableClientState( GL_VERTEX_ARRAY );
-		glDrawArrays( GL_QUADS, 0, NumPoints );
+		glDrawArrays( GL_QUADS, 0, NumShaderPoints );
 		glDisableClientState( GL_VERTEX_ARRAY );
 		glBindBuffer( GL_ARRAY_BUFFER, 0 );
 		glUseProgram(0); 
