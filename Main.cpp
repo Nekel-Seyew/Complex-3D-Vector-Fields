@@ -63,6 +63,10 @@ void SpinnerCallback(int spinner) {
 		Framework::instance()->InitLists();
 		glutPostRedisplay();
 		break;
+	case(1) :
+		Framework::instance()->InitBlob();
+		glutPostRedisplay();
+		break;
 	}
 }
 void MyButtons(int button) {
@@ -329,32 +333,32 @@ void InitGlui() {
 	spinNumContours->set_float_limits(0.0, 1.0);
 	spinNumContours->set_speed(0.1);
 
-	//VectorSheet Settings:
-	VectorBlobTime = TestGlui->add_spinner_to_panel(VectorBlobSettings, "Time Value", GLUI_SPINNER_INT, &Framework::instance()->VectorBlobTimeVal);
+	//VectorBlob Settings:
+	VectorBlobTime = TestGlui->add_spinner_to_panel(VectorBlobSettings, "Time Value", GLUI_SPINNER_INT, &Framework::instance()->VectorBlobTimeVal, 1, SpinnerCallback);
 	VectorBlobTime->set_int_limits(0, 100);
 	VectorBlobTime->set_speed(0.1);
 
-	VectorBlobXLoc = TestGlui->add_spinner_to_panel(VectorBlobSettings, "XVectorBlobLocation", GLUI_SPINNER_FLOAT, &Framework::instance()->VectorBlobXLoc);
+	VectorBlobXLoc = TestGlui->add_spinner_to_panel(VectorBlobSettings, "XVectorBlobLocation", GLUI_SPINNER_FLOAT, &Framework::instance()->VectorBlobXLoc, 1, SpinnerCallback);
 	VectorBlobXLoc->set_float_limits(-1.0, 1.0);
 	VectorBlobXLoc->set_speed(0.2);
 
-	VectorBlobYLoc = TestGlui->add_spinner_to_panel(VectorBlobSettings, "YVectorBlobLocation", GLUI_SPINNER_FLOAT, &Framework::instance()->VectorBlobYLoc);
+	VectorBlobYLoc = TestGlui->add_spinner_to_panel(VectorBlobSettings, "YVectorBlobLocation", GLUI_SPINNER_FLOAT, &Framework::instance()->VectorBlobYLoc, 1, SpinnerCallback);
 	VectorBlobYLoc->set_float_limits(-1.0, 1.0);
 	VectorBlobYLoc->set_speed(0.2);
 
-	VectorBlobZLoc = TestGlui->add_spinner_to_panel(VectorBlobSettings, "ZVectorBlobLocation", GLUI_SPINNER_FLOAT, &Framework::instance()->VectorBlobZLoc);
+	VectorBlobZLoc = TestGlui->add_spinner_to_panel(VectorBlobSettings, "ZVectorBlobLocation", GLUI_SPINNER_FLOAT, &Framework::instance()->VectorBlobZLoc, 1, SpinnerCallback);
 	VectorBlobZLoc->set_float_limits(-1.0, 1.0);
 	VectorBlobZLoc->set_speed(0.2);
 
-	VectorBlobXVec = TestGlui->add_spinner_to_panel(VectorBlobSettings, "XVectorBlobVector", GLUI_SPINNER_FLOAT, &Framework::instance()->VectorBlobXVec);
+	VectorBlobXVec = TestGlui->add_spinner_to_panel(VectorBlobSettings, "XVectorBlobVector", GLUI_SPINNER_FLOAT, &Framework::instance()->VectorBlobXVec, 1, SpinnerCallback);
 	VectorBlobXVec->set_float_limits(-1.0, 1.0);
 	VectorBlobXVec->set_speed(0.2);
 
-	VectorBlobYVec = TestGlui->add_spinner_to_panel(VectorBlobSettings, "YVectorBlobVector", GLUI_SPINNER_FLOAT, &Framework::instance()->VectorBlobYVec);
+	VectorBlobYVec = TestGlui->add_spinner_to_panel(VectorBlobSettings, "YVectorBlobVector", GLUI_SPINNER_FLOAT, &Framework::instance()->VectorBlobYVec, 1, SpinnerCallback);
 	VectorBlobYVec->set_float_limits(-1.0, 1.0);
 	VectorBlobYVec->set_speed(0.2);
 
-	VectorBlobZVec = TestGlui->add_spinner_to_panel(VectorBlobSettings, "ZVectorBlobVector", GLUI_SPINNER_FLOAT, &Framework::instance()->VectorBlobZVec);
+	VectorBlobZVec = TestGlui->add_spinner_to_panel(VectorBlobSettings, "ZVectorBlobVector", GLUI_SPINNER_FLOAT, &Framework::instance()->VectorBlobZVec, 1, SpinnerCallback);
 	VectorBlobZVec->set_float_limits(-1.0, 1.0);
 	VectorBlobZVec->set_speed(0.2);
 

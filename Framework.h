@@ -163,6 +163,7 @@ public:
 	void DrawPoints();
 	void DrawArrows();
 	void DrawProbe();
+	void InitBlob();
 	void DrawBlob();
 	void DrawSheet();
 
@@ -179,6 +180,7 @@ public:
 	//These are the Gluints that correspond to the Lists in InitLists:
 	GLuint	AxesList;			
 	GLuint StreamlineList;
+	GLuint BlobList;
 
 
 	//Streamline Function and Related Variables
