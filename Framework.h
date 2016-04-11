@@ -288,6 +288,11 @@ public:
 	//These are the Glui Values For Streamlines:
 	int NumStreamlines;
 
+	//These are the GluiValues for the Vector Blob:
+	int VectorBlobTimeVal; 
+	
+	vector3d VecBlob[10][10];
+	float VectorBlobXLoc, VectorBlobYLoc, VectorBlobZLoc, VectorBlobXVec, VectorBlobYVec, VectorBlobZVec;
 	//These are the GluiValues for the Vector Sheet:
 	float VectorSheetTimeVal=0, VectorSheetXLoc=0, VectorSheetYLoc=0, VectorSheetZLoc=0, VectorSheetXVec=0, VectorSheetYVec=0, VectorSheetZVec=1;
 	void initSheet();

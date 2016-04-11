@@ -121,7 +121,7 @@ void InitGlui() {
 	GLUI_Rollout * PointsSettings;
 	GLUI_Rollout * StrokesSettings;
 	GLUI_Rollout * StreamlineSettings;
-	GLUI_Rollout * VectorSheetSettings; 
+	GLUI_Rollout * VectorBlobSettings; 
 	//Oculus Settings:
 	GLUI_Panel * OculusSettings;
 	GLUI_Rollout * OculusRollout;
@@ -149,13 +149,13 @@ void InitGlui() {
 	GLUI_Spinner * ProbeZ;
 
 	//Vector Sheet Controls:
-	GLUI_Spinner * VectorSheetTime;
-	GLUI_Spinner * VectorSheetXLoc;
-	GLUI_Spinner * VectorSheetYLoc;
-	GLUI_Spinner * VectorSheetZLoc;
-	GLUI_Spinner * VectorSheetXVec;
-	GLUI_Spinner * VectorSheetYVec;
-	GLUI_Spinner * VectorSheetZVec;
+	GLUI_Spinner * VectorBlobTime;
+	GLUI_Spinner * VectorBlobXLoc;
+	GLUI_Spinner * VectorBlobYLoc;
+	GLUI_Spinner * VectorBlobZLoc;
+	GLUI_Spinner * VectorBlobXVec;
+	GLUI_Spinner * VectorBlobYVec;
+	GLUI_Spinner * VectorBlobZVec;
 
 	//dot point animation controls:
 	GLUI_Spinner * dotPointColorSpinnerR;
@@ -265,8 +265,8 @@ void InitGlui() {
 	StreamlineSettings->set_w(200);
 	StrokesSettings = TestGlui->add_rollout_to_panel(CustomSettings, "Strokes Visualization Settings", 0);
 	StrokesSettings->set_w(200);
-	VectorSheetSettings = TestGlui->add_rollout_to_panel(CustomSettings, "Vector Sheet Settings", 0);
-	VectorSheetSettings ->set_w(200);
+	VectorBlobSettings = TestGlui->add_rollout_to_panel(CustomSettings, "Vector Sheet Settings", 0);
+	VectorBlobSettings ->set_w(200);
 
 	//Oculus Rift Settings:
 	OculusSettings = TestGlui->add_panel("Oculus Rift"); 
@@ -330,33 +330,33 @@ void InitGlui() {
 	spinNumContours->set_speed(0.1);
 
 	//VectorSheet Settings:
-	VectorSheetTime = TestGlui->add_spinner_to_panel(VectorSheetSettings, "Time Value", GLUI_SPINNER_FLOAT, &Framework::instance()->VectorSheetTimeVal);
-	VectorSheetTime->set_float_limits(-10.0, 10.0);
-	VectorSheetTime->set_speed(0.1);
+	VectorBlobTime = TestGlui->add_spinner_to_panel(VectorBlobSettings, "Time Value", GLUI_SPINNER_INT, &Framework::instance()->VectorBlobTimeVal);
+	VectorBlobTime->set_int_limits(0, 100);
+	VectorBlobTime->set_speed(0.1);
 
-	VectorSheetXLoc = TestGlui->add_spinner_to_panel(VectorSheetSettings, "XVectorSheetLocation", GLUI_SPINNER_FLOAT, &Framework::instance()->VectorSheetXLoc);
-	VectorSheetXLoc->set_float_limits(-1.0, 1.0);
-	VectorSheetXLoc->set_speed(0.1);
+	VectorBlobXLoc = TestGlui->add_spinner_to_panel(VectorBlobSettings, "XVectorBlobLocation", GLUI_SPINNER_FLOAT, &Framework::instance()->VectorBlobXLoc);
+	VectorBlobXLoc->set_float_limits(-1.0, 1.0);
+	VectorBlobXLoc->set_speed(0.2);
 
-	VectorSheetYLoc = TestGlui->add_spinner_to_panel(VectorSheetSettings, "YVectorSheetLocation", GLUI_SPINNER_FLOAT, &Framework::instance()->VectorSheetYLoc);
-	VectorSheetYLoc->set_float_limits(-1.0, 1.0);
-	VectorSheetYLoc->set_speed(0.1);
+	VectorBlobYLoc = TestGlui->add_spinner_to_panel(VectorBlobSettings, "YVectorBlobLocation", GLUI_SPINNER_FLOAT, &Framework::instance()->VectorBlobYLoc);
+	VectorBlobYLoc->set_float_limits(-1.0, 1.0);
+	VectorBlobYLoc->set_speed(0.2);
 
-	VectorSheetZLoc = TestGlui->add_spinner_to_panel(VectorSheetSettings, "ZVectorSheetLocation", GLUI_SPINNER_FLOAT, &Framework::instance()->VectorSheetZLoc);
-	VectorSheetZLoc->set_float_limits(-1.0, 1.0);
-	VectorSheetZLoc->set_speed(0.1);
+	VectorBlobZLoc = TestGlui->add_spinner_to_panel(VectorBlobSettings, "ZVectorBlobLocation", GLUI_SPINNER_FLOAT, &Framework::instance()->VectorBlobZLoc);
+	VectorBlobZLoc->set_float_limits(-1.0, 1.0);
+	VectorBlobZLoc->set_speed(0.2);
 
-	VectorSheetXVec = TestGlui->add_spinner_to_panel(VectorSheetSettings, "XVectorSheetVector", GLUI_SPINNER_FLOAT, &Framework::instance()->VectorSheetXVec);
-	VectorSheetXVec->set_float_limits(-1.0, 1.0);
-	VectorSheetXVec->set_speed(0.1);
+	VectorBlobXVec = TestGlui->add_spinner_to_panel(VectorBlobSettings, "XVectorBlobVector", GLUI_SPINNER_FLOAT, &Framework::instance()->VectorBlobXVec);
+	VectorBlobXVec->set_float_limits(-1.0, 1.0);
+	VectorBlobXVec->set_speed(0.2);
 
-	VectorSheetYVec = TestGlui->add_spinner_to_panel(VectorSheetSettings, "YVectorSheetVector", GLUI_SPINNER_FLOAT, &Framework::instance()->VectorSheetYVec);
-	VectorSheetYVec->set_float_limits(-1.0, 1.0);
-	VectorSheetYVec->set_speed(0.1);
+	VectorBlobYVec = TestGlui->add_spinner_to_panel(VectorBlobSettings, "YVectorBlobVector", GLUI_SPINNER_FLOAT, &Framework::instance()->VectorBlobYVec);
+	VectorBlobYVec->set_float_limits(-1.0, 1.0);
+	VectorBlobYVec->set_speed(0.2);
 
-	VectorSheetZVec = TestGlui->add_spinner_to_panel(VectorSheetSettings, "ZVectorSheetVector", GLUI_SPINNER_FLOAT, &Framework::instance()->VectorSheetZVec);
-	VectorSheetZVec->set_float_limits(-1.0, 1.0);
-	VectorSheetZVec->set_speed(0.1);
+	VectorBlobZVec = TestGlui->add_spinner_to_panel(VectorBlobSettings, "ZVectorBlobVector", GLUI_SPINNER_FLOAT, &Framework::instance()->VectorBlobZVec);
+	VectorBlobZVec->set_float_limits(-1.0, 1.0);
+	VectorBlobZVec->set_speed(0.2);
 
 	//animation items
 	TestGlui->add_checkbox_to_panel(AnimationSettings, "Color As Velocity", &Framework::instance()->colorAsVelocity);

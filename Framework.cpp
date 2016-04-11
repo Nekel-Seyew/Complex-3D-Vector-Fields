@@ -699,6 +699,8 @@ void Framework::BuildClasses() {
 
 //sets initial values of variables
 void Framework::RestoreDefaults() {
+	VectorSheetTimeVal = 0;
+	VectorBlobXVec = VectorBlobYVec = VectorBlobZVec = VectorBlobXLoc = VectorBlobYLoc = VectorBlobZLoc = 0.0;
 	ActiveButton = 0;
 	LeftButton = ROTATE;
 	backgroundColorR = 0.1f;
@@ -1358,17 +1360,17 @@ void Framework::DrawDots() {
 }
 
 void Framework::DrawBlob() {
-	float VecSheet[10][10][3];
+	float VecBlob[10][10][3];
 	float Cross1[3];
 	float Cross2[3];
 	//Grab a perpendicular vector with 0 z
-	Cross1[0] = -VectorSheetYVec;
-	Cross1[1] = VectorSheetXVec;
+	Cross1[0] = -VectorBlobYVec;
+	Cross1[1] = VectorBlobXVec;
 	Cross1[2] = 0;
 	//Take the cross product to find the other perpendicular with z
-	Cross2[0] = (VectorSheetYVec * Cross1[2]) - (VectorSheetZVec * Cross1[1]);
-	Cross2[1] = (VectorSheetZVec * Cross1[0]) - (VectorSheetXVec * Cross1[2]);
-	Cross2[2] = (VectorSheetXVec * Cross1[1]) - (VectorSheetYVec * Cross1[0]);
+	Cross2[0] = (VectorBlobYVec * Cross1[2]) - (VectorBlobZVec * Cross1[1]);
+	Cross2[1] = (VectorBlobZVec * Cross1[0]) - (VectorBlobXVec * Cross1[2]);
+	Cross2[2] = (VectorBlobXVec * Cross1[1]) - (VectorBlobYVec * Cross1[0]);
 	Unit(Cross1, Cross1);
 	Unit(Cross2, Cross2);
 	//printf("Cross1 = %f, %f, %f\n", Cross1[0], Cross1[1], Cross1[2]);
@@ -1377,31 +1379,31 @@ void Framework::DrawBlob() {
 	//Place points
 	for (int i = 0; i < 10; i++){
 		for (int j = 0; j < 10; j++) {
-			VecSheet[i][j][0] = Cross1[0] * (i - 5) / 10;
-			VecSheet[i][j][1] = Cross1[1] * (i - 5) / 10;
-			VecSheet[i][j][2] = Cross1[2] * (i - 5) / 10;
-			VecSheet[i][j][0] += Cross2[0] * (j - 5) / 10;
-			VecSheet[i][j][1] += Cross2[1] * (j - 5) / 10;
-			VecSheet[i][j][2] += Cross2[2] * (j - 5) / 10;
-			VecSheet[i][j][0] += VectorSheetXLoc;
-			VecSheet[i][j][1] += VectorSheetYLoc;
-			VecSheet[i][j][2] += VectorSheetZLoc;
+			VecBlob[i][j][0] = Cross1[0] * (i - 5) / 10;
+			VecBlob[i][j][1] = Cross1[1] * (i - 5) / 10;
+			VecBlob[i][j][2] = Cross1[2] * (i - 5) / 10;
+			VecBlob[i][j][0] += Cross2[0] * (j - 5) / 10;
+			VecBlob[i][j][1] += Cross2[1] * (j - 5) / 10;
+			VecBlob[i][j][2] += Cross2[2] * (j - 5) / 10;
+			VecBlob[i][j][0] += VectorBlobXLoc;
+			VecBlob[i][j][1] += VectorBlobYLoc;
+			VecBlob[i][j][2] += VectorBlobZLoc;
 		}
 	}
 
 	//Insert Animation here?
-	//Draw the sheet
+	//Draw the Blob
 	glBegin(GL_TRIANGLES);
 	glColor3f(0.1, 0.2, 0.3);
 	for (int i = 0; i < 9; i++) {
 		for (int j = 0; j < 9; j++) {
-			glVertex3f(VecSheet[i][j][0], VecSheet[i][j][1], VecSheet[i][j][2]);
-			glVertex3f(VecSheet[i + 1][j][0], VecSheet[i + 1][j][1], VecSheet[i + 1][j][2]);
-			glVertex3f(VecSheet[i][j + 1][0], VecSheet[i][j + 1][1], VecSheet[i][j + 1][2]);
+			glVertex3f(VecBlob[i][j][0], VecBlob[i][j][1], VecBlob[i][j][2]);
+			glVertex3f(VecBlob[i + 1][j][0], VecBlob[i + 1][j][1], VecBlob[i + 1][j][2]);
+			glVertex3f(VecBlob[i][j + 1][0], VecBlob[i][j + 1][1], VecBlob[i][j + 1][2]);
 
-			glVertex3f(VecSheet[i + 1][j][0], VecSheet[i + 1][j][1], VecSheet[i + 1][j][2]);
-			glVertex3f(VecSheet[i + 1][j + 1][0], VecSheet[i + 1][j + 1][1], VecSheet[i + 1][j + 1][2]);
-			glVertex3f(VecSheet[i][j + 1][0], VecSheet[i][j + 1][1], VecSheet[i][j + 1][2]);
+			glVertex3f(VecBlob[i + 1][j][0], VecBlob[i + 1][j][1], VecBlob[i + 1][j][2]);
+			glVertex3f(VecBlob[i + 1][j + 1][0], VecBlob[i + 1][j + 1][1], VecBlob[i + 1][j + 1][2]);
+			glVertex3f(VecBlob[i][j + 1][0], VecBlob[i][j + 1][1], VecBlob[i][j + 1][2]);
 		}
 	}
 	glEnd();
