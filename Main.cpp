@@ -338,7 +338,7 @@ void InitGlui() {
 	//VectorBlob Settings:
 	VectorBlobTime = TestGlui->add_spinner_to_panel(VectorBlobSettings, "Time Value", GLUI_SPINNER_INT, &Framework::instance()->VectorBlobTimeVal, 1, SpinnerCallback);
 	VectorBlobTime->set_int_limits(0, 100);
-	VectorBlobTime->set_speed(0.1);
+	VectorBlobTime->set_speed(0.5);
 
 	VectorBlobXLoc = TestGlui->add_spinner_to_panel(VectorBlobSettings, "XVectorBlobLocation", GLUI_SPINNER_FLOAT, &Framework::instance()->VectorBlobXLoc, 1, SpinnerCallback);
 	VectorBlobXLoc->set_float_limits(-1.0, 1.0);

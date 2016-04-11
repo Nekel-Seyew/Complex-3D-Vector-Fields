@@ -1357,40 +1357,50 @@ void Framework::InitBlob() {
 	float VecBlob[10][10][3];
 	float Cross1[3];
 	float Cross2[3];
-	//Grab a perpendicular vector with 0 z
-	Cross1[0] = -VectorBlobYVec;
-	Cross1[1] = VectorBlobXVec;
-	Cross1[2] = 0;
-	//Take the cross product to find the other perpendicular with z
-	Cross2[0] = (VectorBlobYVec * Cross1[2]) - (VectorBlobZVec * Cross1[1]);
-	Cross2[1] = (VectorBlobZVec * Cross1[0]) - (VectorBlobXVec * Cross1[2]);
-	Cross2[2] = (VectorBlobXVec * Cross1[1]) - (VectorBlobYVec * Cross1[0]);
-	Unit(Cross1, Cross1);
-	Unit(Cross2, Cross2);
-	//printf("Cross1 = %f, %f, %f\n", Cross1[0], Cross1[1], Cross1[2]);
-	//printf("Cross2 = %f, %f, %f\n", Cross2[0], Cross2[1], Cross2[2]);
 
-	//Place points
-	for (int i = 0; i < 10; i++) {
-		for (int j = 0; j < 10; j++) {
-			VecBlob[i][j][0] = Cross1[0] * (i - 5) / 10;
-			VecBlob[i][j][1] = Cross1[1] * (i - 5) / 10;
-			VecBlob[i][j][2] = Cross1[2] * (i - 5) / 10;
-			VecBlob[i][j][0] += Cross2[0] * (j - 5) / 10;
-			VecBlob[i][j][1] += Cross2[1] * (j - 5) / 10;
-			VecBlob[i][j][2] += Cross2[2] * (j - 5) / 10;
-			VecBlob[i][j][0] += VectorBlobXLoc;
-			VecBlob[i][j][1] += VectorBlobYLoc;
-			VecBlob[i][j][2] += VectorBlobZLoc;
+	if((OldVectorBlobTimeVal == VectorBlobTimeVal - 1) || (OldVectorBlobTimeVal == VectorBlobTimeVal + 1)) {
+		for (int i = 0; i < 10; i++) {
+			for (int j = 0; j < 10; j++) {
+				VecBlob[i][j][0] = OldVecBlob[i][j][0];
+				VecBlob[i][j][1] = OldVecBlob[i][j][1];
+				VecBlob[i][j][2] = OldVecBlob[i][j][2];
+			}
+		}
+	} 
+	else {
+		//Grab a perpendicular vector with 0 z
+		Cross1[0] = -VectorBlobYVec;
+		Cross1[1] = VectorBlobXVec;
+		Cross1[2] = 0;
+		//Take the cross product to find the other perpendicular with z
+		Cross2[0] = (VectorBlobYVec * Cross1[2]) - (VectorBlobZVec * Cross1[1]);
+		Cross2[1] = (VectorBlobZVec * Cross1[0]) - (VectorBlobXVec * Cross1[2]);
+		Cross2[2] = (VectorBlobXVec * Cross1[1]) - (VectorBlobYVec * Cross1[0]);
+		Unit(Cross1, Cross1);
+		Unit(Cross2, Cross2);
+		//printf("Cross1 = %f, %f, %f\n", Cross1[0], Cross1[1], Cross1[2]);
+		//printf("Cross2 = %f, %f, %f\n", Cross2[0], Cross2[1], Cross2[2]);
+
+		//Place points
+		for (int i = 0; i < 10; i++) {
+			for (int j = 0; j < 10; j++) {
+				VecBlob[i][j][0] = Cross1[0] * (i - 5) / 10;
+				VecBlob[i][j][1] = Cross1[1] * (i - 5) / 10;
+				VecBlob[i][j][2] = Cross1[2] * (i - 5) / 10;
+				VecBlob[i][j][0] += Cross2[0] * (j - 5) / 10;
+				VecBlob[i][j][1] += Cross2[1] * (j - 5) / 10;
+				VecBlob[i][j][2] += Cross2[2] * (j - 5) / 10;
+				VecBlob[i][j][0] += VectorBlobXLoc;
+				VecBlob[i][j][1] += VectorBlobYLoc;
+				VecBlob[i][j][2] += VectorBlobZLoc;
+			}
 		}
 	}
-
 	//increment along stream
-	for (int i = 0; i < 10; i++) {
-		for (int j = 0; j < 10; j++) {
-			vector3d * OriginalXYZ = new vector3d(VecBlob[i][j][0], VecBlob[i][j][1], VecBlob[i][j][2]);
-			for (int m = 0; m < VectorBlobTimeVal; m++)//change to MAXITERATIONS m = 100
-			{
+	if (OldVectorBlobTimeVal == VectorBlobTimeVal - 1) {
+		for (int i = 0; i < 10; i++) {
+			for (int j = 0; j < 10; j++) {
+				vector3d * OriginalXYZ = new vector3d(VecBlob[i][j][0], VecBlob[i][j][1], VecBlob[i][j][2]);
 				float * coordsxyz = OriginalXYZ->xyz();
 				if (coordsxyz[0] < -5.0 || coordsxyz[0] > 5.0) break; //Eventually we want to tie this into the min and max for space? Kyle is there a way to do this?
 				if (coordsxyz[1] < -5.0 || coordsxyz[1] > 5.0) break;
@@ -1407,11 +1417,65 @@ void Framework::InitBlob() {
 				}//what should I make SOME_TOLERANCE? needs more tolerance around 0.00001
 				OriginalXYZ = VectorAdvect(OriginalXYZ, 0.1);
 				//printf("Printing out a streamlinevertex %8.2f %8.2f %8.2f\n", x, y, z);
-
+				VecBlob[i][j][0] = OriginalXYZ->xyz()[0];
+				VecBlob[i][j][1] = OriginalXYZ->xyz()[1];
+				VecBlob[i][j][2] = OriginalXYZ->xyz()[2];
 			}
-			VecBlob[i][j][0] = OriginalXYZ->xyz()[0];
-			VecBlob[i][j][1] = OriginalXYZ->xyz()[1];
-			VecBlob[i][j][2] = OriginalXYZ->xyz()[2];
+		}
+	}
+	else if (OldVectorBlobTimeVal == VectorBlobTimeVal + 1) {
+		for (int i = 0; i < 10; i++) {
+			for (int j = 0; j < 10; j++) {
+				vector3d * OriginalXYZ = new vector3d(VecBlob[i][j][0], VecBlob[i][j][1], VecBlob[i][j][2]);
+				float * coordsxyz = OriginalXYZ->xyz();
+				if (coordsxyz[0] < -5.0 || coordsxyz[0] > 5.0) break; //Eventually we want to tie this into the min and max for space? Kyle is there a way to do this?
+				if (coordsxyz[1] < -5.0 || coordsxyz[1] > 5.0) break;
+				if (coordsxyz[2] < -5.0 || coordsxyz[2]> 5.0) break;
+
+				//glVertex3f(x, y, z);
+				//---glVertex3f(coordsxyz[0], coordsxyz[1], coordsxyz[2]);
+				//printf("Printing out a streamlinevertex %8.2f %8.2f %8.2f\n", x, y, z );
+				vector3d * vectorStream = VectorAtLocation(VecBlob[i][j][0], VecBlob[i][j][1], VecBlob[i][j][2]);
+				float *Svec = vectorStream->xyz();
+				if (sqrt(SQR(Svec[0]) + SQR(Svec[1]) + SQR(Svec[2])) < 0.000001) {
+					//printf("Too small!\n");
+					break;
+				}//what should I make SOME_TOLERANCE? needs more tolerance around 0.00001
+				OriginalXYZ = VectorAdvect(OriginalXYZ, -0.1);
+				//printf("Printing out a streamlinevertex %8.2f %8.2f %8.2f\n", x, y, z);
+				VecBlob[i][j][0] = OriginalXYZ->xyz()[0];
+				VecBlob[i][j][1] = OriginalXYZ->xyz()[1];
+				VecBlob[i][j][2] = OriginalXYZ->xyz()[2];
+			}
+		}
+	}
+	else {
+		for (int i = 0; i < 10; i++) {
+			for (int j = 0; j < 10; j++) {
+				vector3d * OriginalXYZ = new vector3d(VecBlob[i][j][0], VecBlob[i][j][1], VecBlob[i][j][2]);
+				for (int m = 0; m < VectorBlobTimeVal; m++) {//change to MAXITERATIONS m = 100
+					float * coordsxyz = OriginalXYZ->xyz();
+					if (coordsxyz[0] < -5.0 || coordsxyz[0] > 5.0) break; //Eventually we want to tie this into the min and max for space? Kyle is there a way to do this?
+					if (coordsxyz[1] < -5.0 || coordsxyz[1] > 5.0) break;
+					if (coordsxyz[2] < -5.0 || coordsxyz[2]> 5.0) break;
+
+					//glVertex3f(x, y, z);
+					//---glVertex3f(coordsxyz[0], coordsxyz[1], coordsxyz[2]);
+					//printf("Printing out a streamlinevertex %8.2f %8.2f %8.2f\n", x, y, z );
+					vector3d * vectorStream = VectorAtLocation(VecBlob[i][j][0], VecBlob[i][j][1], VecBlob[i][j][2]);
+					float *Svec = vectorStream->xyz();
+					if (sqrt(SQR(Svec[0]) + SQR(Svec[1]) + SQR(Svec[2])) < 0.000001) {
+						//printf("Too small!\n");
+						break;
+					}//what should I make SOME_TOLERANCE? needs more tolerance around 0.00001
+					OriginalXYZ = VectorAdvect(OriginalXYZ, 0.1);
+					//printf("Printing out a streamlinevertex %8.2f %8.2f %8.2f\n", x, y, z);
+
+				}
+				VecBlob[i][j][0] = OriginalXYZ->xyz()[0];
+				VecBlob[i][j][1] = OriginalXYZ->xyz()[1];
+				VecBlob[i][j][2] = OriginalXYZ->xyz()[2];
+			}
 		}
 	}
 	//Insert Animation here?
@@ -1419,7 +1483,7 @@ void Framework::InitBlob() {
 	BlobList = glGenLists(2);
 	glNewList(BlobList, GL_COMPILE);
 	glBegin(GL_TRIANGLES);
-	glColor3f(0.1, 0.2, 0.3);
+	glColor3f(0.0, 0.75, 0.75);
 	for (int i = 0; i < 9; i++) {
 		for (int j = 0; j < 9; j++) {
 			glVertex3f(VecBlob[i][j][0], VecBlob[i][j][1], VecBlob[i][j][2]);
@@ -1433,6 +1497,14 @@ void Framework::InitBlob() {
 	}
 	glEnd();
 	glEndList();
+	OldVectorBlobTimeVal = VectorBlobTimeVal;
+	for (int i = 0; i < 10; i++) {
+		for (int j = 0; j < 10; j++) {
+			OldVecBlob[i][j][0] = VecBlob[i][j][0];
+			OldVecBlob[i][j][1] = VecBlob[i][j][1];
+			OldVecBlob[i][j][2] = VecBlob[i][j][2];
+		}
+	}
 }
 
 /*void Framework::DrawBlob() {
