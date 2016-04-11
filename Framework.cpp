@@ -1385,6 +1385,35 @@ void Framework::DrawBlob() {
 		}
 	}
 
+	//increment along stream
+	for (int i = 0; i < 10; i++) {
+		for (int j = 0; j < 10; j++) {
+			vector3d * OriginalXYZ = new vector3d(VecBlob[i][j][0], VecBlob[i][j][1], VecBlob[i][j][2]);
+			for (int m = 0; m < VectorBlobTimeVal; m++)//change to MAXITERATIONS m = 100
+			{
+				float * coordsxyz = OriginalXYZ->xyz();
+				if (coordsxyz[0] < -5.0 || coordsxyz[0] > 5.0) break; //Eventually we want to tie this into the min and max for space? Kyle is there a way to do this?
+				if (coordsxyz[1] < -5.0 || coordsxyz[1] > 5.0) break;
+				if (coordsxyz[2] < -5.0 || coordsxyz[2]> 5.0) break;
+
+				//glVertex3f(x, y, z);
+				//---glVertex3f(coordsxyz[0], coordsxyz[1], coordsxyz[2]);
+				//printf("Printing out a streamlinevertex %8.2f %8.2f %8.2f\n", x, y, z );
+				vector3d * vectorStream = VectorAtLocation(VecBlob[i][j][0], VecBlob[i][j][1], VecBlob[i][j][2]);
+				float *Svec = vectorStream->xyz();
+				if (sqrt(SQR(Svec[0]) + SQR(Svec[1]) + SQR(Svec[2])) < 0.000001) {
+					//printf("Too small!\n");
+					break;
+				}//what should I make SOME_TOLERANCE? needs more tolerance around 0.00001
+				OriginalXYZ = VectorAdvect(OriginalXYZ);
+				//printf("Printing out a streamlinevertex %8.2f %8.2f %8.2f\n", x, y, z);
+
+			}
+			VecBlob[i][j][0] = OriginalXYZ->xyz()[0];
+			VecBlob[i][j][1] = OriginalXYZ->xyz()[1];
+			VecBlob[i][j][2] = OriginalXYZ->xyz()[2];
+		}
+	}
 	//Insert Animation here?
 	//Draw the Blob
 	glBegin(GL_TRIANGLES);
