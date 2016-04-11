@@ -293,7 +293,9 @@ public:
 
 	//These are the GluiValues for the Vector Blob:
 	int VectorBlobTimeVal; 
-	vector3d VecBlob[10][10];
+	int OldVectorBlobTimeVal;
+	float OldVecBlob[10][10][3];
+	//vector3d VecBlob[10][10];
 	float VectorBlobXLoc, VectorBlobYLoc, VectorBlobZLoc, VectorBlobXVec, VectorBlobYVec, VectorBlobZVec;
 
 	//These are the GluiValues for the Vector Sheet:
