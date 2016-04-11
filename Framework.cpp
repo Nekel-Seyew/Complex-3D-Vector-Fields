@@ -962,22 +962,14 @@ void Framework::Display() {
 		float rgb[3];
 		//glShadeModel(GL_SMOOTH);
 		//glBegin(GL_LINES);
-		glUseProgram(program);
-		printf("Shader Program Running\n");
-		glPointSize(10);
-		glBegin(GL_POINTS);
-		glColor3f(0., 1., 1.);
-		glVertex3f(0., 0., 0.);
-		glPointSize(4);
-		glEnd();
-		glUseProgram(0);
+		int NumShaderPoints = 15;
 		GLuint posSSbo;
 		GLuint velSSbo;
 		glGenBuffers(1, &posSSbo);
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, posSSbo);
-		glBufferData(GL_SHADER_STORAGE_BUFFER, NumPoints * sizeof(posShader), NULL, GL_STATIC_DRAW);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, NumShaderPoints * sizeof(posShader), NULL, GL_STATIC_DRAW);
 		GLint bufMask = GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT; // the invalidate makes a big difference when re-writing
-		posShader * DynamicNow = (posShader *) glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, NumPoints * sizeof(struct posShader), bufMask);
+		posShader * DynamicNow = (posShader *) glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, NumShaderPoints * sizeof(struct posShader), bufMask);
 		float testFloat = 0.; //This will be passed in by Glui - modifications can happen later
 		float xval, yval;
 		float planestep = 2.0 / ((float)10 - 1.0);
@@ -1000,9 +992,11 @@ void Framework::Display() {
 		}
 		glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 		glBindBuffer( GL_ARRAY_BUFFER, posSSbo );
-		glVertexPointer( 4, GL_FLOAT, 0, (void *)0 );
+		//glVertexPointer( 4, GL_FLOAT, 0, (void *)0 );
+		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, (void *)0);
+		glEnableVertexAttribArray(0);
 		glEnableClientState( GL_VERTEX_ARRAY );
-		glDrawArrays( GL_QUADS, 0, NumPoints * NumPoints );
+		glDrawArrays( GL_QUADS, 0, NumPoints );
 		glDisableClientState( GL_VERTEX_ARRAY );
 		glBindBuffer( GL_ARRAY_BUFFER, 0 );
 		glUseProgram(0); 
