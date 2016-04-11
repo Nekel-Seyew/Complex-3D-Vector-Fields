@@ -170,7 +170,7 @@ public:
 	//These are the Helper Functions for Graphics: 
 	vector3d * VectorAtLocation(float, float, float);
 	vector3d* VectorAtLocation(vector3d* pos);
-	vector3d * VectorAdvect(vector3d *);
+	vector3d * VectorAdvect(vector3d *, float);
 	float * Color(float);
 	float * Color(float mag,float min,float max);
 	void InitLists();
