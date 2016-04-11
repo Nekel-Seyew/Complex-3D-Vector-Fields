@@ -976,7 +976,6 @@ void Framework::Display() {
 		float planestep = 2.0 / ((float)10 - 1.0);
 		xval = -1.0;
 		yval = -1.0;
-		int count = 0;
 		for (int i = 0; i < (NumShaderPoints * NumShaderPoints); i++) {
 				vector3d * tempVec = VectorAtLocation(xval, yval, testFloat);
 				float mag = tempVec->magnitude();
@@ -985,10 +984,7 @@ void Framework::Display() {
 				DynamicNow[i].z = testFloat;
 				DynamicNow[i].m = mag;
 				yval += planestep;
-			if (count % 2 == 0) {
 				xval += planestep;
-			}
-			count++;
 		}
 		glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 		glBindBuffer( GL_ARRAY_BUFFER, posSSbo );
