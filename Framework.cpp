@@ -968,23 +968,27 @@ void Framework::Display() {
 		GLuint velSSbo;
 		glGenBuffers(1, &posSSbo);
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, posSSbo);
-		glBufferData(GL_SHADER_STORAGE_BUFFER, NumShaderPoints * sizeof(posShader), NULL, GL_STATIC_DRAW);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, (NumShaderPoints * NumShaderPoints) * sizeof(posShader), NULL, GL_STATIC_DRAW);
 		GLint bufMask = GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT; // the invalidate makes a big difference when re-writing
 		posShader * DynamicNow = (posShader *) glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, NumShaderPoints * sizeof(struct posShader), bufMask);
 		float testFloat = 0.; //This will be passed in by Glui - modifications can happen later
 		float xval, yval;
-		float planestep = 2.0 / ((float)10 - 1.0);
+		float planestep = 2.0 / (NumShaderPoints * NumShaderPoints);
 		xval = -1.0;
 		yval = -1.0;
-		for (int i = 0; i < (NumShaderPoints * NumShaderPoints); i++) {
+		glColor3f(1., 0., 0.);
+		for (int i = 0; i < (NumShaderPoints); i++) {
+			for (int j = 0; j < NumShaderPoints; j++) {
 				vector3d * tempVec = VectorAtLocation(xval, yval, testFloat);
 				float mag = tempVec->magnitude();
-				DynamicNow[i].x = xval;
-				DynamicNow[i].y = yval;
-				DynamicNow[i].z = testFloat;
-				DynamicNow[i].m = mag;
-				yval += planestep;
+				int index = i * j + j;
+				DynamicNow[index].x = xval;
+				DynamicNow[index].y = yval;
+				DynamicNow[index].z = testFloat;
+				//DynamicNow[i].m = mag;
 				xval += planestep;
+			}
+			yval += planestep;
 		}
 		glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 		glBindBuffer( GL_ARRAY_BUFFER, posSSbo );

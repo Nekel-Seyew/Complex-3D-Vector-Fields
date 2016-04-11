@@ -62,7 +62,7 @@ struct node {//This is used in the Space Definer Code
 };
 struct posShader
 {//This Struct is For Using Shaders
-	float x, y, z, m; // m is magnitude
+	float x, y, z; // m is magnitude
 };
 
 struct VectorNode {
