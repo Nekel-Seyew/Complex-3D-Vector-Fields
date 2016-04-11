@@ -159,8 +159,8 @@ float * ChemistryColor(float mag, float min, float max) {
 	}
 }*/
 
-vector3d * Framework::VectorAdvect(vector3d * inputVector) {
-	float TimeStep = 0.1;
+vector3d * Framework::VectorAdvect(vector3d * inputVector, float TimeStep) {
+	//float TimeStep = 0.1;
 	float xa, ya, za;
 	float xb, yb, zb;
 	float vxa, vya, vza;
@@ -1212,7 +1212,7 @@ void Framework::DrawProbe() {
 		ynextvalues[l] = ProbeYVal;
 		znextvalues[l] = ProbeZVal;
 		vector3d * NextVector = new vector3d(xnextvalues[l], ynextvalues[l], znextvalues[l]);
-		NextVector = VectorAdvect(NextVector); //change this line
+		NextVector = VectorAdvect(NextVector, 0.1); //change this line
 		float  * newValues = NextVector->xyz();
 		xnextvalues[l] = newValues[0];
 		ynextvalues[l] = newValues[1];
@@ -1258,7 +1258,7 @@ void Framework::DrawProbe() {
 		//advect next
 		for (int p = 0; p < 10; p++) {
 			vector3d * NextVector = new vector3d(xnextvalues[p], ynextvalues[p], znextvalues[p]);
-			NextVector = VectorAdvect(NextVector); //change this line
+			NextVector = VectorAdvect(NextVector, 0.1); //change this line
 			float  * newValues = NextVector->xyz();
 			xnextvalues[p] = newValues[0];
 			ynextvalues[p] = newValues[1];
@@ -1296,7 +1296,7 @@ void Framework::GenStreamline(float x, float y, float z)
 		if (sqrt(SQR(Svec[0]) + SQR(Svec[1]) + SQR(Svec[2])) < 0.000001) {
 			//printf("Too small!\n");
 			break; }//what should I make SOME_TOLERANCE? needs more tolerance around 0.00001
-		OriginalXYZ = VectorAdvect(OriginalXYZ);
+		OriginalXYZ = VectorAdvect(OriginalXYZ, 0.1);
 		//printf("Printing out a streamlinevertex %8.2f %8.2f %8.2f\n", x, y, z);
 	}
 	glEnd();
@@ -1401,7 +1401,7 @@ void Framework::InitBlob() {
 					//printf("Too small!\n");
 					break;
 				}//what should I make SOME_TOLERANCE? needs more tolerance around 0.00001
-				OriginalXYZ = VectorAdvect(OriginalXYZ);
+				OriginalXYZ = VectorAdvect(OriginalXYZ, 0.1);
 				//printf("Printing out a streamlinevertex %8.2f %8.2f %8.2f\n", x, y, z);
 
 			}
@@ -1652,7 +1652,7 @@ void Framework::MouseMotion(int x, int y){
 void Framework::PhysicsUpdater(int value) {
 	for (int i = 0; i < 9; i++) {
 		for (int j = 0; j < 9; j++) {
-			vector3d* newv = VectorAdvect(&VecSheet[i][j]);
+			vector3d* newv = VectorAdvect(&VecSheet[i][j], 0.1);
 			//VecSheet[i][j].set_this_to_be_passed_in_value(newv);
 			delete newv;
 		}
@@ -1662,7 +1662,7 @@ void Framework::PhysicsUpdater(int value) {
 	}
 	if (this->useAnimation) {
 		for (unsigned int i = 0; i < this->num_dot_points; ++i) {
-			vector3d* newv = VectorAdvect(&this->dot_points[i]);
+			vector3d* newv = VectorAdvect(&this->dot_points[i], 0.1);
 			this->old_dot_pos[i].set_this_to_be_passed_in_value(&this->dot_points[i]);
 			this->dot_points[i].set_this_to_be_passed_in_value(newv);
 			if (false && this->path[i].size() < 100) {
