@@ -27,6 +27,8 @@ GLUI_StaticText *	RadLabel2; //temperature static text label
 #define RADID 2
 float VecTest[2] = { 0.f, 10.f };
 
+GLUI_Spinner * VectorBlobTime;
+
 void MySliders(int numSlide) {
 	//printf("Slider #%d\n", numSlide);
 	char tempstr[128];
@@ -64,6 +66,8 @@ void SpinnerCallback(int spinner) {
 		glutPostRedisplay();
 		break;
 	case(1) :
+		VectorBlobTime->set_int_val(0);
+	case(2) :
 		Framework::instance()->InitBlob();
 		glutPostRedisplay();
 		break;
@@ -153,7 +157,7 @@ void InitGlui() {
 	GLUI_Spinner * ProbeZ;
 
 	//Vector Sheet Controls:
-	GLUI_Spinner * VectorBlobTime;
+	//GLUI_Spinner * VectorBlobTime;
 	GLUI_Spinner * VectorBlobXLoc;
 	GLUI_Spinner * VectorBlobYLoc;
 	GLUI_Spinner * VectorBlobZLoc;
@@ -336,7 +340,7 @@ void InitGlui() {
 	spinNumContours->set_speed(0.1);
 
 	//VectorBlob Settings:
-	VectorBlobTime = TestGlui->add_spinner_to_panel(VectorBlobSettings, "Time Value", GLUI_SPINNER_INT, &Framework::instance()->VectorBlobTimeVal, 1, SpinnerCallback);
+	VectorBlobTime = TestGlui->add_spinner_to_panel(VectorBlobSettings, "Time Value", GLUI_SPINNER_INT, &Framework::instance()->VectorBlobTimeVal, 2, SpinnerCallback);
 	VectorBlobTime->set_int_limits(0, 100);
 	VectorBlobTime->set_speed(0.5);
 
