@@ -972,24 +972,29 @@ void Framework::Display() {
 		GLint bufMask = GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT; // the invalidate makes a big difference when re-writing
 		posShader * DynamicNow = (posShader *) glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, NumShaderPoints * sizeof(struct posShader), bufMask);
 		float testFloat = 0.; //This will be passed in by Glui - modifications can happen later
-		float xval, yval;
+		float xval, yval, zval;
 		float planestep = 2.0 / (NumShaderPoints * NumShaderPoints);
 		xval = -1.0;
 		yval = -1.0;
+		zval = -1.0;
 		glColor3f(1., 0., 0.);
 		for (int i = 0; i < (NumShaderPoints); i++) {
 			for (int j = 0; j < NumShaderPoints; j++) {
-				vector3d * tempVec = VectorAtLocation(xval, yval, testFloat);
+				vector3d * tempVec = VectorAtLocation(xval, yval, zval);
 				float mag = tempVec->magnitude();
 				int index = i * j + j;
-				DynamicNow[index].x = xval;
-				DynamicNow[index].y = yval;
-				DynamicNow[index].z = testFloat;
+				DynamicNow[index].x = xval * 0.1;
+				DynamicNow[index].y = yval * 0.1;
+				DynamicNow[index].z = zval * 0.1;
+				//DynamicNow[index].m = 1.0;
+
 				//DynamicNow[i].m = mag;
 				xval += planestep;
+				zval += planestep;
 			}
 			yval += planestep;
 		}
+		glUseProgram(program);
 		glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 		glBindBuffer( GL_ARRAY_BUFFER, posSSbo );
 		//glVertexPointer( 4, GL_FLOAT, 0, (void *)0 );
@@ -999,6 +1004,7 @@ void Framework::Display() {
 		glDrawArrays( GL_QUADS, 0, NumShaderPoints );
 		glDisableClientState( GL_VERTEX_ARRAY );
 		glBindBuffer( GL_ARRAY_BUFFER, 0 );
+		glutWireSphere(0.5, 5, 5);
 		glUseProgram(0); 
 
 		glBegin(GL_POINTS);

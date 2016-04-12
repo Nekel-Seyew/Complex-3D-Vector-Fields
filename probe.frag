@@ -5,8 +5,9 @@
 //uniform float		uTol;
 //uniform sampler3D	TexUnit;
 
-in vec4			vECposition;
-
+in vec4  vColor;
+in float vLightIntensity;
+in vec3 vECposition;
 
 
 
@@ -118,5 +119,6 @@ main( )
 	float t = ( scalar - SMIN ) / ( SMAX - SMIN );
 	vec3 rgb = Rainbow( t );
 
-	gl_FragColor = vec4( rgb, 1. );
+	//gl_FragColor = vec4( rgb, 1. );
+	gl_FragColor = vec4(0., 1., 0., 1);
 }
