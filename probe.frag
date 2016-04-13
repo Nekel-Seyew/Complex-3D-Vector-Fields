@@ -120,5 +120,5 @@ main( )
 	vec3 rgb = Rainbow( t );
 
 	//gl_FragColor = vec4( rgb, 1. );
-	gl_FragColor = vec4(0., 1., 0., 1);
+	gl_FragColor = vec4(0., 1., 1., 1);
 }
