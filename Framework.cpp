@@ -963,17 +963,17 @@ void Framework::Display() {
 		float rgb[3];
 		//glShadeModel(GL_SMOOTH);
 		//glBegin(GL_LINES);
-		int NumShaderPoints = 5;
+		int NumShaderPoints = 10;
 		GLuint posSSbo;
 		GLuint velSSbo;
 		glGenBuffers(1, &posSSbo);
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, posSSbo);
-		glBufferData(GL_SHADER_STORAGE_BUFFER, (NumShaderPoints * NumShaderPoints) * sizeof(posShader), NULL, GL_STATIC_DRAW);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, (NumShaderPoints * NumShaderPoints) * 4 * sizeof(posShader), NULL, GL_STATIC_DRAW);
 		GLint bufMask = GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT; // the invalidate makes a big difference when re-writing
-		posShader * DynamicNow = (posShader *) glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, (NumShaderPoints * NumShaderPoints) * sizeof(struct posShader), bufMask);
+		posShader * DynamicNow = (posShader *) glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, (NumShaderPoints * NumShaderPoints) * 4 * sizeof(struct posShader), bufMask);
 		float testFloat = 0.; //This will be passed in by Glui - modifications can happen later
 		float xval, yval, zval;
-		float planestep = 2.0 / (NumShaderPoints * NumShaderPoints);
+		float planestep = 2.0 / NumShaderPoints;
 		xval = -1.0;
 		yval = -1.0;
 		zval = testFloat;
@@ -986,23 +986,24 @@ void Framework::Display() {
 				DynamicNow[count].x = xval;
 				DynamicNow[count].y = yval;
 				DynamicNow[count].z = zval;
+				count++;
 
 				//vectex1
-				count++;
 				DynamicNow[count].x = xval + planestep;
 				DynamicNow[count].y = yval;
 				DynamicNow[count].z = zval;
-
 				count++;
+
 				DynamicNow[count].x = xval + planestep;
 				DynamicNow[count].y = yval + planestep;
 				DynamicNow[count].z = zval;
+				count++;
 
 				//vertex2
-				count++;
 				DynamicNow[count].x = xval;
 				DynamicNow[count].y = yval + planestep;
 				DynamicNow[count].z = zval;
+				count++;
 
 				//DynamicNow[index].m = 1.0;
 
@@ -1010,6 +1011,7 @@ void Framework::Display() {
 				xval += planestep;
 				//zval += planestep;
 			}
+			xval = -1.0;
 			yval += planestep;
 		}
 		glUseProgram(program);
@@ -1019,7 +1021,7 @@ void Framework::Display() {
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
 		glEnableVertexAttribArray(0);
 		glEnableClientState( GL_VERTEX_ARRAY );
-		glDrawArrays( GL_QUADS, 0, NumShaderPoints * NumShaderPoints);
+		glDrawArrays( GL_QUADS, 0, NumShaderPoints * NumShaderPoints * 4);
 		glDisableClientState( GL_VERTEX_ARRAY );
 		glBindBuffer( GL_ARRAY_BUFFER, 0 );
 		glutWireSphere(0.5, 5, 5);
