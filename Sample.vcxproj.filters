@@ -897,8 +897,8 @@
       <Filter>Header Files</Filter>
     </None>
     <None Include="probe.frag" />
-    <None Include="probe.glsl" />
     <None Include="probe.vert" />
     <None Include="vshader.glsl" />
+    <None Include="probe1.vert" />
   </ItemGroup>
 </Project>

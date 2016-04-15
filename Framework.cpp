@@ -540,7 +540,7 @@ void Framework::SetupVertexBuffers() {
 void Framework::SetUpShaders() {
 	GLenum err = glewInit();
 	//Creating Vertex Shader
-	FILE *fpv = fopen("probe.glsl", "rb");
+	FILE *fpv = fopen("probe1.vert", "rb");
 	if (fpv == NULL) {}
 	fseek(fpv, 0, SEEK_END);
 	int vnumBytes = ftell(fpv); // length of file
@@ -969,10 +969,12 @@ void Framework::Display() {
 		GLuint posSSbo;
 		GLuint velSSbo;
 		glGenBuffers(1, &posSSbo);
-		glBindBuffer(GL_SHADER_STORAGE_BUFFER, posSSbo);
-		glBufferData(GL_SHADER_STORAGE_BUFFER, (NumShaderPoints * NumShaderPoints) * 4 * sizeof(posShader), NULL, GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, posSSbo);
+		glBufferData(GL_ARRAY_BUFFER, (NumShaderPoints * NumShaderPoints) * 4 * sizeof(posShader), NULL, GL_STATIC_DRAW);
 		GLint bufMask = GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT; // the invalidate makes a big difference when re-writing
-		posShader * DynamicNow = (posShader *) glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, (NumShaderPoints * NumShaderPoints) * 4 * sizeof(struct posShader), bufMask);
+		posShader * DynamicNow = (posShader *) glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+		
+		
 		float testFloat = 0.; //This will be passed in by Glui - modifications can happen later
 		float xval, yval, zval;
 		float planestep = 2.0 / NumShaderPoints;
@@ -985,26 +987,38 @@ void Framework::Display() {
 			for (int j = 0; j < NumShaderPoints; j++) {
 				//vertex 0
 				//printf("Xval is %f, Yval is %f, Zval is %f\n", xval, yval, zval);
+				vector3d * tempVec = VectorAtLocation(xval, yval, zval);
+				float mag = tempVec->magnitude();
 				DynamicNow[count].x = xval;
 				DynamicNow[count].y = yval;
 				DynamicNow[count].z = zval;
+				DynamicNow[count].m = mag;
 				count++;
 
 				//vectex1
+				tempVec = VectorAtLocation(xval, yval, zval);
+				mag = tempVec->magnitude();
 				DynamicNow[count].x = xval + planestep;
 				DynamicNow[count].y = yval;
 				DynamicNow[count].z = zval;
+				DynamicNow[count].m = mag;
 				count++;
 
+				tempVec = VectorAtLocation(xval, yval, zval);
+				mag = tempVec->magnitude();
 				DynamicNow[count].x = xval + planestep;
 				DynamicNow[count].y = yval + planestep;
 				DynamicNow[count].z = zval;
+				DynamicNow[count].m = mag;
 				count++;
 
 				//vertex2
+				tempVec = VectorAtLocation(xval, yval, zval);
+				mag = tempVec->magnitude();
 				DynamicNow[count].x = xval;
 				DynamicNow[count].y = yval + planestep;
 				DynamicNow[count].z = zval;
+				DynamicNow[count].m = mag;
 				count++;
 
 				//DynamicNow[index].m = 1.0;
@@ -1016,12 +1030,15 @@ void Framework::Display() {
 			xval = -1.0;
 			yval += planestep;
 		}
+		
+		glUnmapBuffer(GL_ARRAY_BUFFER);
 		glUseProgram(program);
-		glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 		glBindBuffer( GL_ARRAY_BUFFER, posSSbo );
 		//glVertexPointer( 4, GL_FLOAT, 0, (void *)0 );
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
-		glEnableVertexAttribArray(0);
+		//GLuint vPosition = glGetAttribLocation(program, "vPosition");
+		//glEnableVertexAttribArray(vPosition);
+		//glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 0, (void *)0);
+		glVertexPointer(4, GL_FLOAT, 0, (void *)0);
 		glEnableClientState( GL_VERTEX_ARRAY );
 		glDrawArrays( GL_QUADS, 0, NumShaderPoints * NumShaderPoints * 4);
 		glDisableClientState( GL_VERTEX_ARRAY );

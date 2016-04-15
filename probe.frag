@@ -8,7 +8,7 @@
 in vec4  vColor;
 in float vLightIntensity;
 in vec3 vECposition;
-
+in float vecMag;
 
 
 vec3
@@ -87,7 +87,8 @@ main( )
 	//uniform sampler3D	TexUnit;
 	vec3 stp = ( vECposition.xyz + 1. ) / 2.;
 	// maps [-1.,1.] to [0.,1.]
-
+	float scalar = vecMag; //Change back to vecMag
+	/*
 	if( any(    lessThan( stp, vec3(0.,0.,0.) ) ) )
 	{
 		discard;
@@ -100,7 +101,6 @@ main( )
 
 	//vec4 rgba = texture3D( TexUnit, stp );
 	vec4 rgba = vec4(1., 0. , 0., 1.);
-	float scalar = rgba.r;
 
 	if( scalar < uMin )
 		discard;
@@ -114,11 +114,12 @@ main( )
 	float scalar10 = float( 10*int( (scalar+5.)/10. ) );
 	if( abs( scalar - scalar10 ) > uTol )
 		discard;
+	*/
 	float SMIN =   0.;
 	float SMAX = 120.;
 	float t = ( scalar - SMIN ) / ( SMAX - SMIN );
 	vec3 rgb = Rainbow( t );
 
-	//gl_FragColor = vec4( rgb, 1. );
-	gl_FragColor = vec4(0., 1., 1., 1);
+	gl_FragColor = vec4( rgb, 1. );
+	//gl_FragColor = vec4(0., 1., 1., 1);
 }
