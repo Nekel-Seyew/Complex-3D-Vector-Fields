@@ -146,7 +146,7 @@ void InitGlui() {
 
 	//Isosurface Settings
 	GLUI_Spinner * spinNumContours;
-
+	GLUI_Spinner * spinZPlaneVal;
 	//Streamline Controls:
 	GLUI_Spinner * spinNumStreamlines;
 
@@ -338,6 +338,9 @@ void InitGlui() {
 	spinNumContours = TestGlui->add_spinner_to_panel(IsosurfaceSettings, "NumContours", GLUI_SPINNER_FLOAT, &Framework::instance()->numContours);
 	spinNumContours->set_float_limits(0.0, 1.0);
 	spinNumContours->set_speed(0.1);
+	spinZPlaneVal = TestGlui ->add_spinner_to_panel(IsosurfaceSettings, "Z Plane Value", GLUI_SPINNER_FLOAT, &Framework::instance()->XYPlanesZval);
+	spinZPlaneVal->set_float_limits(-1.0, 1.0);
+	spinZPlaneVal->set_speed(0.1);
 
 	//VectorBlob Settings:
 	VectorBlobTime = TestGlui->add_spinner_to_panel(VectorBlobSettings, "Time Value", GLUI_SPINNER_INT, &Framework::instance()->VectorBlobTimeVal, 2, SpinnerCallback);
