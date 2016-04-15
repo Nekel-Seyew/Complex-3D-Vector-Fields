@@ -701,7 +701,9 @@ void Framework::BuildClasses() {
 void Framework::RestoreDefaults() {
 	VectorSheetTimeVal = 0;
 	VectorBlobXVec = VectorBlobYVec = VectorBlobZVec = VectorBlobXLoc = VectorBlobYLoc = VectorBlobZLoc = 0.0;
+	VectorBlobTimeVal = 0; 
 	ActiveButton = 0;
+	XYPlanesZval = 0;
 	LeftButton = ROTATE;
 	backgroundColorR = 0.1f;
 	backgroundColorG = 0.1f;
@@ -976,13 +978,13 @@ void Framework::Display() {
 		float planestep = 2.0 / NumShaderPoints;
 		xval = -1.0;
 		yval = -1.0;
-		zval = testFloat;
+		zval = XYPlanesZval;
 		glColor3f(1., 0., 0.);
 		int count = 0;
 		for (int i = 0; i < (NumShaderPoints); i++) {
 			for (int j = 0; j < NumShaderPoints; j++) {
 				//vertex 0
-				printf("Xval is %f, Yval is %f, Zval is %f\n", xval, yval, zval);
+				//printf("Xval is %f, Yval is %f, Zval is %f\n", xval, yval, zval);
 				DynamicNow[count].x = xval;
 				DynamicNow[count].y = yval;
 				DynamicNow[count].z = zval;
