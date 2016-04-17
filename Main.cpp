@@ -287,6 +287,7 @@ void InitGlui() {
 	//Arrow Settings: 
 	//TRadLowHigh[0] = VecTest[0];
 	//TRadLowHigh[1] = VecTest[1];
+	/*
 	printf("Before Sliders are initialize, Value of RadLowHigh[0] is %f, RadLowHigh[1] is %f,  VecTest[0] is %f, VecTest[1] is %f\n", TRadLowHigh[0], TRadLowHigh[1], VecTest[0], VecTest[1]);
 	TRadSlider = TestGlui->add_slider_to_panel(ArrowSettings, true, GLUI_HSLIDER_FLOAT, VecTest, RADID, MySliders);
 	TRadSlider->set_float_limits(TRADIUSMIN, TRADIUSMAX);
@@ -294,7 +295,7 @@ void InitGlui() {
 	sprintf(radstr, TRADIUSFORMAT, TRadLowHigh[0], TRadLowHigh[1]);
 	TRadLabel = TestGlui->add_statictext_to_panel(ArrowSettings, radstr);
 	printf("After Sliders are initialized, Value of RadLowHigh[0] is %f, RadLowHigh[1] is %f,  VecTest[0] is %f, VecTest[1] is %f\n", TRadLowHigh[0], TRadLowHigh[1], VecTest[0], VecTest[1]);
-
+	*/
 	spinArrowLength = TestGlui->add_spinner_to_panel(ArrowSettings, "Arrow Size", GLUI_SPINNER_FLOAT, &Framework::instance()->ArrowLength);
 	spinArrowLength ->set_float_limits(0.0, 15.0);
 	spinArrowLength ->set_speed(0.1);
@@ -306,10 +307,11 @@ void InitGlui() {
 	spinMaxVector->set_float_limits(Framework::instance()->spinVecMin, Framework::instance()->VECMAX);
 	spinMaxVector->set_speed(0.1);
 
+	/*
 	alphaVector = TestGlui->add_spinner_to_panel(ArrowSettings, "Arrow Alpha", GLUI_SPINNER_FLOAT, &Framework::instance()->vecAlphaVal);
 	alphaVector->set_float_limits(0.0, 1.0);
 	alphaVector->set_speed(0.05);
-
+	*/
 
 
 	//Streamline & Probe Settings:
