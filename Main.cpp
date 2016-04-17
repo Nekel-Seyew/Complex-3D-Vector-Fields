@@ -339,7 +339,7 @@ void InitGlui() {
 	spinNumContours->set_float_limits(0.0, 1.0);
 	spinNumContours->set_speed(0.1);
 	spinZPlaneVal = TestGlui ->add_spinner_to_panel(IsosurfaceSettings, "Z Plane Value", GLUI_SPINNER_FLOAT, &Framework::instance()->XYPlanesZval);
-	spinZPlaneVal->set_float_limits(-1.0, 1.0);
+	spinZPlaneVal->set_float_limits(-2.0, 2.0);
 	spinZPlaneVal->set_speed(0.1);
 
 	//VectorBlob Settings:

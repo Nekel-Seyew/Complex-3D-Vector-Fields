@@ -963,17 +963,19 @@ void Framework::Display() {
 		float scale = 2.0 / numContours;
 		float hsv[3];
 		float rgb[3];
-		//glShadeModel(GL_SMOOTH);
+
 		//glBegin(GL_LINES);
-		int NumShaderPoints = 10;
+		int NumShaderPoints = 20;
 		GLuint posSSbo;
 		GLuint velSSbo;
+		float min = VDef->get_vector_cull_min()->magnitude();
+		float max = VDef->get_vector_cull_max()->magnitude();
 		glGenBuffers(1, &posSSbo);
 		glBindBuffer(GL_ARRAY_BUFFER, posSSbo);
 		glBufferData(GL_ARRAY_BUFFER, (NumShaderPoints * NumShaderPoints) * 4 * sizeof(posShader), NULL, GL_STATIC_DRAW);
 		GLint bufMask = GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT; // the invalidate makes a big difference when re-writing
 		posShader * DynamicNow = (posShader *) glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
-		
+		//printf("Before being passed in: the max value is %f, the min value is %f\n", max, min);
 		
 		float testFloat = 0.; //This will be passed in by Glui - modifications can happen later
 		float xval, yval, zval;
@@ -993,6 +995,7 @@ void Framework::Display() {
 				DynamicNow[count].y = yval;
 				DynamicNow[count].z = zval;
 				DynamicNow[count].m = mag;
+				//printf("The t value is %f, the max value is %f, the min value is %f, the mag is %f\n", (mag - min) / (max - min), max, min, mag);
 				count++;
 
 				//vectex1
@@ -1002,6 +1005,7 @@ void Framework::Display() {
 				DynamicNow[count].y = yval;
 				DynamicNow[count].z = zval;
 				DynamicNow[count].m = mag;
+				//printf("The t value is %f, the max value is %f, the min value is %f, the mag is %f\n", (mag - min) / (max - min), max, min, mag);
 				count++;
 
 				tempVec = VectorAtLocation(xval, yval, zval);
@@ -1010,6 +1014,7 @@ void Framework::Display() {
 				DynamicNow[count].y = yval + planestep;
 				DynamicNow[count].z = zval;
 				DynamicNow[count].m = mag;
+				//printf("The t value is %f, the max value is %f, the min value is %f, the mag is %f\n", (mag - min) / (max - min), max, min, mag);
 				count++;
 
 				//vertex2
@@ -1019,8 +1024,8 @@ void Framework::Display() {
 				DynamicNow[count].y = yval + planestep;
 				DynamicNow[count].z = zval;
 				DynamicNow[count].m = mag;
+				//printf("The t value is %f, the max value is %f, the min value is %f, the mag is %f\n", (mag - min) / (max - min), max, min, mag);
 				count++;
-
 				//DynamicNow[index].m = 1.0;
 
 				//DynamicNow[i].m = mag;
@@ -1033,6 +1038,9 @@ void Framework::Display() {
 		
 		glUnmapBuffer(GL_ARRAY_BUFFER);
 		glUseProgram(program);
+		glShadeModel(GL_SMOOTH);
+		glUniform1f(glGetUniformLocation(program, "VectorMax"), max);
+		glUniform1f(glGetUniformLocation(program, "VectorMin"), min);
 		glBindBuffer( GL_ARRAY_BUFFER, posSSbo );
 		//glVertexPointer( 4, GL_FLOAT, 0, (void *)0 );
 		//GLuint vPosition = glGetAttribLocation(program, "vPosition");
@@ -1043,10 +1051,10 @@ void Framework::Display() {
 		glDrawArrays( GL_QUADS, 0, NumShaderPoints * NumShaderPoints * 4);
 		glDisableClientState( GL_VERTEX_ARRAY );
 		glBindBuffer( GL_ARRAY_BUFFER, 0 );
-		glutWireSphere(0.5, 5, 5);
+		//glutWireSphere(0.5, 5, 5);
 		glUseProgram(0); 
 
-		glBegin(GL_POINTS);
+		/*glBegin(GL_POINTS);
 		glUseProgram(program);
 		glPointSize(10);
 		glBegin(GL_POINTS);
@@ -1055,7 +1063,7 @@ void Framework::Display() {
 		glPointSize(4);
 		glEnd();
 		glUseProgram(0);
-		
+		*/
 		
 	}
 

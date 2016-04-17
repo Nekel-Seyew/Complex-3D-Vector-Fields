@@ -1,9 +1,13 @@
 #version 330 compatibility
 //in  vec4 vPosition;
+uniform float VectorMax;
+uniform float VectorMin;
 out vec4  vColor;
 out float vLightIntensity;
 out float vecMag; 
 out vec3 vECposition;
+out vec3 tnorm;
+
 const vec3 LIGHTPOS = vec3( 0., 0., 10. );
 
 void
