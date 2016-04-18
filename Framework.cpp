@@ -540,7 +540,7 @@ void Framework::SetupVertexBuffers() {
 void Framework::SetUpShaders() {
 	GLenum err = glewInit();
 	//Creating Vertex Shader
-	FILE *fpv = fopen("probe.glsl", "rb");
+	FILE *fpv = fopen("probe1.vert", "rb");
 	if (fpv == NULL) {}
 	fseek(fpv, 0, SEEK_END);
 	int vnumBytes = ftell(fpv); // length of file
@@ -701,7 +701,9 @@ void Framework::BuildClasses() {
 void Framework::RestoreDefaults() {
 	VectorSheetTimeVal = 0;
 	VectorBlobXVec = VectorBlobYVec = VectorBlobZVec = VectorBlobXLoc = VectorBlobYLoc = VectorBlobZLoc = 0.0;
+	VectorBlobTimeVal = 0; 
 	ActiveButton = 0;
+	XYPlanesZval = 0;
 	LeftButton = ROTATE;
 	backgroundColorR = 0.1f;
 	backgroundColorG = 0.1f;
@@ -961,71 +963,98 @@ void Framework::Display() {
 		float scale = 2.0 / numContours;
 		float hsv[3];
 		float rgb[3];
-		//glShadeModel(GL_SMOOTH);
+
 		//glBegin(GL_LINES);
-		int NumShaderPoints = 5;
+		int NumShaderPoints = 20;
 		GLuint posSSbo;
 		GLuint velSSbo;
+		float min = VDef->get_vector_cull_min()->magnitude();
+		float max = VDef->get_vector_cull_max()->magnitude();
 		glGenBuffers(1, &posSSbo);
-		glBindBuffer(GL_SHADER_STORAGE_BUFFER, posSSbo);
-		glBufferData(GL_SHADER_STORAGE_BUFFER, (NumShaderPoints * NumShaderPoints) * sizeof(posShader), NULL, GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, posSSbo);
+		glBufferData(GL_ARRAY_BUFFER, (NumShaderPoints * NumShaderPoints) * 4 * sizeof(posShader), NULL, GL_STATIC_DRAW);
 		GLint bufMask = GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT; // the invalidate makes a big difference when re-writing
-		posShader * DynamicNow = (posShader *) glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, (NumShaderPoints * NumShaderPoints) * sizeof(struct posShader), bufMask);
+		posShader * DynamicNow = (posShader *) glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+		//printf("Before being passed in: the max value is %f, the min value is %f\n", max, min);
+		
 		float testFloat = 0.; //This will be passed in by Glui - modifications can happen later
 		float xval, yval, zval;
-		float planestep = 2.0 / (NumShaderPoints * NumShaderPoints);
+		float planestep = 2.0 / NumShaderPoints;
 		xval = -1.0;
 		yval = -1.0;
-		zval = testFloat;
+		zval = XYPlanesZval;
 		glColor3f(1., 0., 0.);
 		int count = 0;
 		for (int i = 0; i < (NumShaderPoints); i++) {
 			for (int j = 0; j < NumShaderPoints; j++) {
 				//vertex 0
-				printf("Xval is %f, Yval is %f, Zval is %f\n", xval, yval, zval);
+				//printf("Xval is %f, Yval is %f, Zval is %f\n", xval, yval, zval);
+				vector3d * tempVec = VectorAtLocation(xval, yval, zval);
+				float mag = tempVec->magnitude();
 				DynamicNow[count].x = xval;
 				DynamicNow[count].y = yval;
 				DynamicNow[count].z = zval;
+				DynamicNow[count].m = mag;
+				//printf("The t value is %f, the max value is %f, the min value is %f, the mag is %f\n", (mag - min) / (max - min), max, min, mag);
+				count++;
 
 				//vectex1
-				count++;
+				tempVec = VectorAtLocation(xval, yval, zval);
+				mag = tempVec->magnitude();
 				DynamicNow[count].x = xval + planestep;
 				DynamicNow[count].y = yval;
 				DynamicNow[count].z = zval;
-
+				DynamicNow[count].m = mag;
+				//printf("The t value is %f, the max value is %f, the min value is %f, the mag is %f\n", (mag - min) / (max - min), max, min, mag);
 				count++;
+
+				tempVec = VectorAtLocation(xval, yval, zval);
+				mag = tempVec->magnitude();
 				DynamicNow[count].x = xval + planestep;
 				DynamicNow[count].y = yval + planestep;
 				DynamicNow[count].z = zval;
+				DynamicNow[count].m = mag;
+				//printf("The t value is %f, the max value is %f, the min value is %f, the mag is %f\n", (mag - min) / (max - min), max, min, mag);
+				count++;
 
 				//vertex2
-				count++;
+				tempVec = VectorAtLocation(xval, yval, zval);
+				mag = tempVec->magnitude();
 				DynamicNow[count].x = xval;
 				DynamicNow[count].y = yval + planestep;
 				DynamicNow[count].z = zval;
-
+				DynamicNow[count].m = mag;
+				//printf("The t value is %f, the max value is %f, the min value is %f, the mag is %f\n", (mag - min) / (max - min), max, min, mag);
+				count++;
 				//DynamicNow[index].m = 1.0;
 
 				//DynamicNow[i].m = mag;
 				xval += planestep;
 				//zval += planestep;
 			}
+			xval = -1.0;
 			yval += planestep;
 		}
+		
+		glUnmapBuffer(GL_ARRAY_BUFFER);
 		glUseProgram(program);
-		glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+		glShadeModel(GL_SMOOTH);
+		glUniform1f(glGetUniformLocation(program, "VectorMax"), max);
+		glUniform1f(glGetUniformLocation(program, "VectorMin"), min);
 		glBindBuffer( GL_ARRAY_BUFFER, posSSbo );
 		//glVertexPointer( 4, GL_FLOAT, 0, (void *)0 );
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
-		glEnableVertexAttribArray(0);
+		//GLuint vPosition = glGetAttribLocation(program, "vPosition");
+		//glEnableVertexAttribArray(vPosition);
+		//glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 0, (void *)0);
+		glVertexPointer(4, GL_FLOAT, 0, (void *)0);
 		glEnableClientState( GL_VERTEX_ARRAY );
-		glDrawArrays( GL_QUADS, 0, NumShaderPoints * NumShaderPoints);
+		glDrawArrays( GL_QUADS, 0, NumShaderPoints * NumShaderPoints * 4);
 		glDisableClientState( GL_VERTEX_ARRAY );
 		glBindBuffer( GL_ARRAY_BUFFER, 0 );
-		glutWireSphere(0.5, 5, 5);
+		//glutWireSphere(0.5, 5, 5);
 		glUseProgram(0); 
 
-		glBegin(GL_POINTS);
+		/*glBegin(GL_POINTS);
 		glUseProgram(program);
 		glPointSize(10);
 		glBegin(GL_POINTS);
@@ -1034,7 +1063,7 @@ void Framework::Display() {
 		glPointSize(4);
 		glEnd();
 		glUseProgram(0);
-		
+		*/
 		
 	}
 
