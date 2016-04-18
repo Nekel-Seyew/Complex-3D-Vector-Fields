@@ -52,7 +52,8 @@
     <IncludePath>.\odeint-boost;.\glm;.\dlib-18.18;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>.\dlib-18.18;$(IncludePath)</IncludePath>
+    <IncludePath>.\odeint-boost;.\glm;.\dlib-18.18;$(IncludePath)</IncludePath>
+    <LibraryPath>.;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Midl>
