@@ -673,8 +673,9 @@ void Framework::InitLists() {
 	if (this->VDef->am_file()) {//if we have data from a table
 		this->VDef->cull_space_vectors_rand(1000, 5);
 		std::vector<vector3d*>* points = this->VDef->get_cull_space_cache();
-		for (unsigned int i = 0; i < points->size(); ++i) {
-			vector3d* p = points->at(i);
+		int n3 = N*N*N;
+		for (unsigned int i = 0; i <n3; ++i) {
+			vector3d* p = points->at(rand() % points->size());
 			GenStreamline(p->xyz()[0], p->xyz()[1], p->xyz()[2]);
 		}
 	}else {//if it's an equation!
@@ -769,7 +770,7 @@ void Framework::RestoreDefaults() {
 	dotPointColorB = 0.0f;
 	colorAsVelocity = 0;
 	traceDotPath = 1;
-	path = new std::vector<vector3d*>[100]();
+	//path = new std::vector<vector3d*>[100]();
 	num_dot_points = 100;
 }
 
@@ -1402,7 +1403,7 @@ void Framework::DrawDots() {
 		}
 		//linepath
 		if (false) {
-			glLineWidth(1.5);
+			glLineWidth(2);
 			unsigned int maxgo = (this->path[i].size() % 2 == 0) ? (this->path[i].size()) : (this->path[i].size() - 1);
 			if (maxgo > 0) {
 				for (unsigned int k = 0; k < maxgo - 1; ++k) {
@@ -1414,6 +1415,7 @@ void Framework::DrawDots() {
 				}
 			}
 		}
+		glLineWidth(1.5);
 	}
 	glEnd();
 }
@@ -1806,11 +1808,12 @@ void Framework::PhysicsUpdater(int value) {
 			vector3d* newv = VectorAdvect(&this->dot_points[i], 0.1);
 			this->old_dot_pos[i].set_this_to_be_passed_in_value(&this->dot_points[i]);
 			this->dot_points[i].set_this_to_be_passed_in_value(newv);
-			if (false && this->path[i].size() < 100) {
-				this->path[i].push_back(newv);
-			}else {
-				delete newv;
+			this->path[i].push_front(newv);//get new place added to color path
+			if (this->path[i].size() >= 100) {
+				delete this->path[i].back();//free memory!
+				this->path[i].pop_back();//get rid of old last element
 			}
+			this->dot_points[i].set_this_to_be_passed_in_value(newv);
 			float* xyz = this->dot_points[i].xyz();
 			if (   (xyz[0] > 5.0f || xyz[0] < -5.0f)
 				|| (xyz[1] > 5.0f || xyz[1] < -5.0f)

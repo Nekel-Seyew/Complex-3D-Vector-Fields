@@ -26,6 +26,8 @@
 #include "color.h"
 #include <time.h>
 #include <vector>
+#include <queue>
+#include <deque>
 
 //This is for improved readability
 typedef glm::vec4 point4;
@@ -181,6 +183,7 @@ public:
 	GLuint	AxesList;			
 	GLuint StreamlineList;
 	GLuint BlobList;
+	GLuint PathList;
 
 
 	//Streamline Function and Related Variables
@@ -309,7 +312,7 @@ public:
 	vector3d dot_points[1000];
 	int num_dot_points=100;
 	vector3d old_dot_pos[1000];
-	std::vector<vector3d*>* path;
+	std::deque<vector3d*> path[1000];
 	float timestep = 0.1f; // this is what VectorAdvect uses as time step
 	void initDotPoints();
 	void DrawDots();
