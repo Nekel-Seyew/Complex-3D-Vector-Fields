@@ -54,6 +54,9 @@ void Vector(float x, float y, float z, float *vxp, float *vyp, float *vzp) {
 }
 
 float * Framework::Color(float VecMag) {
+	if (!isfinite<float>(VecMag)) {
+		return new float[4]{0.0f,0.0f,0.0f,0.0f };
+	}
 	float hsv[3], rgb[3];
 	float min = VDef->get_vector_cull_min()->magnitude();
 	float max = VDef->get_vector_cull_max()->magnitude();
@@ -111,6 +114,9 @@ float * Framework::Color(float VecMag) {
 }
 
 float* Framework::Color(float mag, float min, float max) {
+	if (!isfinite<float>(mag)) {
+		return new float[4]{ 0.0f,0.0f,0.0f,0.0f };
+	}
 	float hsv[3], rgb[3];
 	// finally draw the point if it passes all the tests
 	float divisor = (max - min);
@@ -1110,7 +1116,7 @@ void Framework::Display() {
 void Framework::DrawPoints() {
 	glBegin(GL_POINTS);
 	srand(time(NULL));
-	for (int i = 0; i < thePoints->size(); i++) {
+	for (unsigned int i = 0; i < thePoints->size(); i++) {
 		glColor3fv(Color((theVectors->at(i)->magnitude())));
 		float *vec = thePoints->at(i)->xyz();
 		if (useJitter) {
@@ -1127,7 +1133,7 @@ void Framework::DrawPoints() {
 }
 
 void Framework::DrawArrows() {
-	for (int i = 0; i < thePoints->size(); i++) {
+	for (unsigned int i = 0; i < thePoints->size(); i++) {
 		if ((theVectors->at(i)->magnitude()  < spinVecMin) || (theVectors->at(i)->magnitude() > spinVecMax)) {
 			continue;
 		}
@@ -1353,7 +1359,13 @@ void Framework::GenStreamline(float x, float y, float z)
 		if (sqrt(SQR(Svec[0]) + SQR(Svec[1]) + SQR(Svec[2])) < 0.000001) {
 			//printf("Too small!\n");
 			break; }//what should I make SOME_TOLERANCE? needs more tolerance around 0.00001
-		OriginalXYZ = VectorAdvect(OriginalXYZ, 0.1);
+		vector3d* newpos = VectorAdvect(OriginalXYZ, 0.1f);
+		float speed = (newpos->magnitude() - OriginalXYZ->magnitude()) / 0.1f;
+		float* c = this->Color(speed, VDef->get_vector_cull_min()->magnitude(), VDef->get_vector_cull_max()->magnitude());
+		glColor3fv(c);
+		OriginalXYZ = newpos;
+		//OriginalXYZ = VectorAdvect(OriginalXYZ, 0.1);
+		
 		//printf("Printing out a streamlinevertex %8.2f %8.2f %8.2f\n", x, y, z);
 	}
 	glEnd();
@@ -1363,7 +1375,7 @@ void Framework::GenStreamline(float x, float y, float z)
 void Framework::DrawDots() {
 	float min = sqrt(vector3d::distance_sqr(&this->dot_points[0], &this->old_dot_pos[0])) / this->timestep;
 	float max = min;
-	for (unsigned int i = 1; i < this->num_dot_points; ++i) {
+	for (int i = 1; i < this->num_dot_points; ++i) {
 		float k = sqrt(vector3d::distance_sqr(&this->dot_points[i], &this->old_dot_pos[i])) / this->timestep;
 		min = (k < min) ? k : min;
 		max = (k > max) ? k : max;
@@ -1790,7 +1802,7 @@ void Framework::PhysicsUpdater(int value) {
 		this->num_dot_points = ((int)this->NumPoints);
 	}
 	if (this->useAnimation) {
-		for (unsigned int i = 0; i < this->num_dot_points; ++i) {
+		for (int i = 0; i < this->num_dot_points; ++i) {
 			vector3d* newv = VectorAdvect(&this->dot_points[i], 0.1);
 			this->old_dot_pos[i].set_this_to_be_passed_in_value(&this->dot_points[i]);
 			this->dot_points[i].set_this_to_be_passed_in_value(newv);

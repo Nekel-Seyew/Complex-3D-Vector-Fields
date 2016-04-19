@@ -326,6 +326,7 @@ std::vector<vector3d*>* VectorDefiner::cull_space(float xmin, float xmax, float 
 			}
 		}
 	}
+
 	if(this->culled_space != NULL){
 		delete this->culled_space;
 	}
@@ -337,15 +338,42 @@ void VectorDefiner::cull_space_vectors_rand(unsigned int step, unsigned int num_
 	std::vector<vector3d*>* vec = new std::vector<vector3d*>();
 	std::vector<vector3d*>* space = new std::vector<vector3d*>();
 
+	vector3d* mmax = NULL;
+	vector3d* mmin = NULL;
+	vector3d* cmin = NULL;
+	vector3d* cmax = NULL;
+
 	for (unsigned int i = 0; i < this->space->size(); i+=step) {
 		for (unsigned int k = 0; k < num_in_step; ++k) {
 			int p = rand() % step;
 			if ((i + p) < this->space->size()) {
+				vector3d* v = this->vectors->at(i + p);
 				space->push_back(this->space->at(i + p));
-				vec->push_back(this->vectors->at(i + p));
+				vec->push_back(v);
+				//find min and max
+				if (mmax == NULL || mmax->magnitude() < v->magnitude()) {
+					mmax = v;
+				}
+				if (mmin == NULL || mmin->magnitude() > v->magnitude()) {
+					mmin = v;
+				}
+				//find culled min and max
+				if (cmax == NULL || cmax->magnitude() < v->magnitude()) {
+					cmax = v;
+				}
+				if (cmin == NULL || cmin->magnitude() > v->magnitude()) {
+					cmin = v;
+				}
 			}
 		}
 	}
+
+	//set up the cache
+	this->min = mmin;
+	this->max = mmax;
+	this->cull_max = cmax;
+	this->cull_min = cmin;
+
 	if (this->culled_space != NULL) {
 		//delete this->culled_space;
 	}
