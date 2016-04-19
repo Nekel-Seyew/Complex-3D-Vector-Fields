@@ -124,6 +124,11 @@ std::string VectorDefiner::replacer(std::string subject, const std::string& sear
 
 void VectorDefiner::populate(std::vector<vector3d*>* space){
 	if(this->is_file){
+		//just in case data only gives Vx,Vy,Vz
+		int x=0, y=0, z=0; //we will still keep everything in a 10*10*10 grid.
+		int xmax = 0, ymax = 0, zmax = 0;
+		bool gotbounds = false;
+		int eqrs_size = 0;
 		//set up of internal data structures
 		std::vector<vector3d*>* temp_space = new std::vector<vector3d*>();
 		if (this->vectors != NULL) {
@@ -133,6 +138,7 @@ void VectorDefiner::populate(std::vector<vector3d*>* space){
 		this->vectors = new std::vector<vector3d*>();
 
 		//I mean, Ideally, the file would be formatted as: x_space,y_space,z_space,x_vector,y_vector,z_vector\n
+		//If only x_vector, y_vector, z_vector are given, then the first line x,y,z will be interpreted as max number for "bounds"
 		//I can deal with whitespace, actually
 		//std::string the_file = *(this->filename);	
 		std::string line;
@@ -149,11 +155,27 @@ void VectorDefiner::populate(std::vector<vector3d*>* space){
 					//adds the newline, also replaces any newline tokens, which would be bad to have at the end.
 					eqrs.push_back(replacer(replacer(token, newline, t_space),",",t_space));
 				}
-				//ok, now the items are inside eqrs;
-				vector3d* spatial = new vector3d(atof(eqrs[0].c_str()), atof(eqrs[1].c_str()), atof(eqrs[2].c_str()));
-				vector3d* vectorFiled = new vector3d(atof(eqrs[3].c_str()), atof(eqrs[4].c_str()), atof(eqrs[5].c_str()));
-				temp_space->push_back(spatial);
-				temp_vectors->push_back(vectorFiled);
+				eqrs_size = eqrs.size();
+				if (eqrs_size == 6) {
+					//ok, now the items are inside eqrs;
+					vector3d* spatial = new vector3d(atof(eqrs[0].c_str()), atof(eqrs[1].c_str()), atof(eqrs[2].c_str()));
+					vector3d* vectorFiled = new vector3d(atof(eqrs[3].c_str()), atof(eqrs[4].c_str()), atof(eqrs[5].c_str()));
+					temp_space->push_back(spatial);
+					temp_vectors->push_back(vectorFiled);
+				}else if (eqrs_size == 3) {
+					if (gotbounds) {
+						vector3d* spatial = new vector3d(x*(10.0f/xmax) - 5.0f, y*(10.0f / ymax) - 5.0f, z*(10.0f / zmax) - 5.0f);
+						++x; ++y; ++z;
+						vector3d* vectorFiled = new vector3d(atof(eqrs[0].c_str()), atof(eqrs[1].c_str()), atof(eqrs[2].c_str()));
+						temp_space->push_back(spatial);
+						temp_vectors->push_back(vectorFiled);
+					}else {
+						gotbounds = true;
+						xmax = atoi(eqrs[0].c_str());
+						ymax = atoi(eqrs[1].c_str());
+						zmax = atoi(eqrs[2].c_str());
+					}
+				}
 				//add to the hashmap!
 				//this->hashmap->insert(std::pair<vector3d, vector3d*>(*spatial, vectorFiled));
 			}
