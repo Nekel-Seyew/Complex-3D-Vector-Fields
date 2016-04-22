@@ -1334,6 +1334,7 @@ void Framework::DrawProbe() {
 		}
 	}
 	glEnd();
+	glPointSize(4.0);
 }
 
 void Framework::GenStreamline(float x, float y, float z)
