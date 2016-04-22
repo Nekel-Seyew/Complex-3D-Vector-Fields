@@ -707,7 +707,8 @@ void Framework::BuildClasses() {
 //sets initial values of variables
 void Framework::RestoreDefaults() {
 	VectorSheetTimeVal = 0;
-	VectorBlobXVec = VectorBlobYVec = VectorBlobZVec = VectorBlobXLoc = VectorBlobYLoc = VectorBlobZLoc = 0.0;
+	VectorBlobYVec = 0.1;
+	VectorBlobXVec = VectorBlobZVec = VectorBlobXLoc = VectorBlobYLoc = VectorBlobZLoc = 0.0;
 	VectorBlobTimeVal = 0; 
 	ActiveButton = 0;
 	XYPlanesZval = 0;
@@ -951,7 +952,9 @@ void Framework::Display() {
 	}
 
 	//Draw Blob
-	glCallList(BlobList);
+	if (useVectorBlob) {
+		glCallList(BlobList);
+	}
 
 	//Draw vector Sheet
 	if (useVectorSheet) {

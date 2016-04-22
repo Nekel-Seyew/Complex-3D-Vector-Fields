@@ -258,7 +258,7 @@ void InitGlui() {
 	TestGlui->add_checkbox_to_panel(graphicsOptions, "Use Streamlines", &Framework::instance()->useStreamlines);
 	TestGlui->add_column_to_panel(graphicsOptions, 0);
 	TestGlui->add_checkbox_to_panel(graphicsOptions, "Use StrokeVisualization", &Framework::instance()->useStrokes);
-	TestGlui->add_checkbox_to_panel(graphicsOptions, "Use VectorBlob", &Framework::instance()->useVectorBlob);
+	TestGlui->add_checkbox_to_panel(graphicsOptions, "Use VectorBlob", &Framework::instance()->useVectorBlob, 1, SpinnerCallback);
 	TestGlui->add_checkbox_to_panel(graphicsOptions, "Use VectorSheet", &Framework::instance()->useVectorSheet);
 
 
