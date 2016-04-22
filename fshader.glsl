@@ -12,6 +12,7 @@ uniform mat4 Projection;
 uniform vec4 LightPosition;
 uniform float Shininess;
 
+
 void main()
 {
 vec3 L = normalize( (ModelView * LightPosition).xyz - vpos );
