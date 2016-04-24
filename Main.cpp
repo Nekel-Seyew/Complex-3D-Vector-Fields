@@ -375,7 +375,7 @@ void InitGlui() {
 
 	//animation items
 	TestGlui->add_checkbox_to_panel(AnimationSettings, "Color As Velocity", &Framework::instance()->colorAsVelocity);
-	//TestGlui->add_checkbox_to_panel(AnimationSettings, "TracePath", &Framework::instance()->traceDotPath);
+	TestGlui->add_checkbox_to_panel(AnimationSettings, "TracePath", &Framework::instance()->traceDotPath);//for turning off and on trace path.
 	dotPointColorSpinnerR = TestGlui->add_spinner_to_panel(AnimationSettings, "Dot Color R", GLUI_SPINNER_FLOAT, &Framework::instance()->dotPointColorR);
 	dotPointColorSpinnerR->set_float_limits(0.0, 1.0);
 	dotPointColorSpinnerR->set_speed(0.05);

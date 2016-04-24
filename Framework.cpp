@@ -1385,40 +1385,35 @@ void Framework::DrawDots() {
 		min = (k < min) ? k : min;
 		max = (k > max) ? k : max;
 	}
-	glBegin(GL_POINTS);
 	srand(time(NULL));
 	for (int i = 0; i < this->num_dot_points; ++i) {
-		if (colorAsVelocity) {
-			float velocity = sqrt(vector3d::distance_sqr(&this->dot_points[i], &this->old_dot_pos[i])) / this->timestep;
-			float* pointcolor = Color(velocity,min,max);
-			glColor3f(pointcolor[0], pointcolor[1], pointcolor[2]);
-		}else {
-			glColor3f(dotPointColorR, dotPointColorG, dotPointColorB);
-		}
-		float *vec = this->dot_points[i].xyz();
-		if (useJitter) {
-			glVertex3f(vec[0] + ((rand() % 10 - 5) / 300.), vec[1] + ((rand() % 10 - 5) / 300.), vec[2] + ((rand() % 10 - 5) / 300.));
-			//printf("Jitter Jitter\n");
-		}
-		else {
-			//printf("No Jitter\n");
-			glVertex3f(vec[0], vec[1], vec[2]);
-			//Pass in a Vec3 Here to the Vertex Shader
-		}
-		//linepath
-		if (false) {
-			glLineWidth(2);
-			unsigned int maxgo = (this->path[i].size() % 2 == 0) ? (this->path[i].size()) : (this->path[i].size() - 1);
-			if (maxgo > 0) {
-				for (unsigned int k = 0; k < maxgo - 1; ++k) {
-					k = sqrt(vector3d::distance_sqr(this->path[i].at(k), this->path[i].at(k + 1))) / this->timestep;
-					float* pointcolor = Color(k, min, max);
-					glColor3f(pointcolor[0], pointcolor[1], pointcolor[2]);
-					glVertex3f(this->path[i].at(k)->xyz()[0], this->path[i].at(k)->xyz()[1], this->path[i].at(k)->xyz()[2]);
-					glVertex3f(this->path[i].at(k + 1)->xyz()[0], this->path[i].at(k + 1)->xyz()[1], this->path[i].at(k + 1)->xyz()[2]);
+		glBegin(GL_POINTS);
+			if (colorAsVelocity) {
+				float velocity = sqrt(vector3d::distance_sqr(&this->dot_points[i], &this->old_dot_pos[i])) / this->timestep;
+				float* pointcolor = Color(velocity,min,max);
+				glColor3f(pointcolor[0], pointcolor[1], pointcolor[2]);
+			}else {
+				glColor3f(dotPointColorR, dotPointColorG, dotPointColorB);
+			}
+			float *vec = this->dot_points[i].xyz();
+			glVertex3f(vec[0], vec[1], vec[2]);//NO MORE JITTER
+		glEnd();
+		//linepath now works
+		glBegin(GL_LINE_STRIP);
+			if (traceDotPath) {
+				glLineWidth(1.6);
+				unsigned int maxgo = (this->path[i].size() % 2 == 0) ? (this->path[i].size()) : (this->path[i].size() - 1);
+				if (maxgo > 0) {
+					for (unsigned int k = 0; k < maxgo - 1; ++k) {
+						float dist = sqrt(vector3d::distance_sqr(this->path[i].at(k), this->path[i].at(k + 1))) / this->timestep;
+						float* pointcolor = Color(dist, min, max);
+						glColor3f(pointcolor[0], pointcolor[1], pointcolor[2]);
+						glVertex3f(this->path[i].at(k)->xyz()[0], this->path[i].at(k)->xyz()[1], this->path[i].at(k)->xyz()[2]);
+						glVertex3f(this->path[i].at(k + 1)->xyz()[0], this->path[i].at(k + 1)->xyz()[1], this->path[i].at(k + 1)->xyz()[2]);
+					}
 				}
 			}
-		}
+		glEnd();
 		glLineWidth(1.5);
 	}
 	glEnd();
@@ -1812,7 +1807,10 @@ void Framework::PhysicsUpdater(int value) {
 			vector3d* newv = VectorAdvect(&this->dot_points[i], 0.1);
 			this->old_dot_pos[i].set_this_to_be_passed_in_value(&this->dot_points[i]);
 			this->dot_points[i].set_this_to_be_passed_in_value(newv);
-			this->path[i].push_front(newv);//get new place added to color path
+			
+			//if ((value % 5) == 0) {
+				this->path[i].push_front(newv);//get new place added to color path
+			//}
 			if (this->path[i].size() >= 100) {
 				delete this->path[i].back();//free memory!
 				this->path[i].pop_back();//get rid of old last element
@@ -1835,35 +1833,6 @@ void Framework::initDotPoints() {
 }
 
 void Framework::initSheet() {
-	/*float Cross1[3];
-	float Cross2[3];
-	//Grab a perpendicular vector with 0 z 
-	Cross1[0] = -VectorSheetYVec;
-	Cross1[1] = VectorSheetXVec;
-	Cross1[2] = 0;
-	//Take the cross product to find the other perpendicular with z
-	Cross2[0] = (VectorSheetYVec * Cross1[2]) - (VectorSheetZVec * Cross1[1]);
-	Cross2[1] = (VectorSheetZVec * Cross1[0]) - (VectorSheetXVec * Cross1[2]);
-	Cross2[2] = (VectorSheetXVec * Cross1[1]) - (VectorSheetYVec * Cross1[0]);
-	Unit(Cross1, Cross1);
-	Unit(Cross2, Cross2);
-	//printf("Cross1 = %f, %f, %f\n", Cross1[0], Cross1[1], Cross1[2]);
-	//printf("Cross2 = %f, %f, %f\n", Cross2[0], Cross2[1], Cross2[2]);
-
-	//Place points
-	for (int i = 0; i < 10; i++) {
-		for (int j = 0; j < 10; j++) {
-			VecSheet[i][j].xyz()[0] = Cross1[0] * (i - 5);
-			VecSheet[i][j].xyz()[1] = Cross1[1] * (i - 5);
-			VecSheet[i][j].xyz()[2] = Cross1[2] * (i - 5);
-			VecSheet[i][j].xyz()[0] += Cross2[0] * (j - 5);
-			VecSheet[i][j].xyz()[1] += Cross2[1] * (j - 5);
-			VecSheet[i][j].xyz()[2] += Cross2[2] * (j - 5);
-			VecSheet[i][j].xyz()[0] += VectorSheetXLoc;
-			VecSheet[i][j].xyz()[1] += VectorSheetYLoc;
-			VecSheet[i][j].xyz()[2] += VectorSheetZLoc;
-		}
-	}*/
 	for (int i = 0; i < 10; i++) {
 		for (int j = 0; j < 10; j++) {
 			VecSheet[i][j].xyz()[0] = (i - 5) / 10.0f;
