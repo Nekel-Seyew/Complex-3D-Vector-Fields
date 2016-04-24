@@ -416,8 +416,8 @@ void MouseButtonFuncl(int arg1, int arg2, int arg3, int arg4) {
 
 void PhysicsUpdater(int value) {
 	//printf("Updater called\n");
-	Framework::instance()->PhysicsUpdater(value);
-	glutTimerFunc(16, PhysicsUpdater, value);
+	Framework::instance()->PhysicsUpdater((value));
+	glutTimerFunc(16, PhysicsUpdater, (value+1)%MAXINT);
 	glutPostRedisplay();
 }
 
