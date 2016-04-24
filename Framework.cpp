@@ -707,7 +707,8 @@ void Framework::BuildClasses() {
 //sets initial values of variables
 void Framework::RestoreDefaults() {
 	VectorSheetTimeVal = 0;
-	VectorBlobXVec = VectorBlobYVec = VectorBlobZVec = VectorBlobXLoc = VectorBlobYLoc = VectorBlobZLoc = 0.0;
+	VectorBlobYVec = 0.1;
+	VectorBlobXVec = VectorBlobZVec = VectorBlobXLoc = VectorBlobYLoc = VectorBlobZLoc = 0.0;
 	VectorBlobTimeVal = 0; 
 	ActiveButton = 0;
 	XYPlanesZval = 0;
@@ -951,7 +952,9 @@ void Framework::Display() {
 	}
 
 	//Draw Blob
-	glCallList(BlobList);
+	if (useVectorBlob) {
+		glCallList(BlobList);
+	}
 
 	//Draw vector Sheet
 	if (useVectorSheet) {
@@ -1006,7 +1009,7 @@ void Framework::Display() {
 				count++;
 
 				//vectex1
-				tempVec = VectorAtLocation(xval, yval, zval);
+				tempVec = VectorAtLocation(xval + planestep, yval, zval);
 				mag = tempVec->magnitude();
 				DynamicNow[count].x = xval + planestep;
 				DynamicNow[count].y = yval;
@@ -1015,7 +1018,7 @@ void Framework::Display() {
 				//printf("The t value is %f, the max value is %f, the min value is %f, the mag is %f\n", (mag - min) / (max - min), max, min, mag);
 				count++;
 
-				tempVec = VectorAtLocation(xval, yval, zval);
+				tempVec = VectorAtLocation(xval + planestep, yval + planestep, zval);
 				mag = tempVec->magnitude();
 				DynamicNow[count].x = xval + planestep;
 				DynamicNow[count].y = yval + planestep;
@@ -1025,7 +1028,7 @@ void Framework::Display() {
 				count++;
 
 				//vertex2
-				tempVec = VectorAtLocation(xval, yval, zval);
+				tempVec = VectorAtLocation(xval, yval + planestep, zval);
 				mag = tempVec->magnitude();
 				DynamicNow[count].x = xval;
 				DynamicNow[count].y = yval + planestep;
@@ -1331,6 +1334,7 @@ void Framework::DrawProbe() {
 		}
 	}
 	glEnd();
+	glPointSize(4.0);
 }
 
 void Framework::GenStreamline(float x, float y, float z)
