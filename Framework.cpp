@@ -203,7 +203,13 @@ vector3d * Framework::VectorAdvect(vector3d * inputVector, float TimeStep) {
 	vector3d* vectorReturn = new vector3d(xc, yc, zc);
 	return vectorReturn;
 }
-
+float Framework::GetVectorMax() {
+	
+	return VDef->get_vector_cull_max()->magnitude();
+}
+float Framework::GetVectorMin() {
+	return VDef->get_vector_cull_min()->magnitude();
+}
 vector3d* Framework::VectorAtLocation(float xCord, float yCord, float zCord) {
 	float vectorP[3];
 	vector3d* returnVec;
@@ -712,7 +718,9 @@ void Framework::RestoreDefaults() {
 	VectorBlobTimeVal = 0; 
 	CuttingPlaneYVec = 0.1;
 	CuttingPlaneXVec = CuttingPlaneZVec = CuttingPlaneXLoc = CuttingPlaneYLoc = CuttingPlaneZLoc = 0.0;
-
+	IsosurfacesVal = 0.1;
+	IsoResolution = 100;
+	numContours = 5.0;
 	ActiveButton = 0;
 	XYPlanesZval = 0;
 	LeftButton = ROTATE;
@@ -777,6 +785,7 @@ void Framework::RestoreDefaults() {
 	traceDotPath = 1;
 	//path = new std::vector<vector3d*>[100]();
 	num_dot_points = 100;
+	InitIsoNodes();
 }
 
 void Framework::Run(int argc, char ** argv) {
@@ -971,7 +980,7 @@ void Framework::Display() {
 
 	//Insert comment here when this does something
 	if (useIsosurfaces) {
-
+		DrawIsosurfaces();
 	}
 
 	if (this->useCuttingPlane) {
@@ -1151,7 +1160,175 @@ void Framework::DrawArrows() {
 		}
 	}
 }
+void Framework::DrawIsosurfaces() {
+	float Sstar = 0.1;
+	float SMax = GetVectorMax();
+	float min = GetVectorMin();
+	float max = GetVectorMax();
+	int numS = numContours;
+	float scale = 2.0 / numContours;
+	float hsv[3];
+	float rgb[3];
+	glShadeModel(GL_SMOOTH);
+	glBegin(GL_LINES);
+	//This is the XY
+	float tempval = -1.0;
+	vector3d * tempVector;
+	for (int index = 0; index < (numContours + 1); index++) {
+		glColor4fv(Color(Sstar));
+		for (int i = 0; i < IsoResolution - 1; i++)
+		{
 
+			for (int j = 0; j < IsoResolution - 1; j++)
+			{
+				float hsv0[3], rgb0[3], hsv1[3], rgb1[3], hsv2[3], rgb2[3], hsv3[3], rgb3[3];
+				float z = tempval;
+				struct node Node0, Node1, Node2, Node3;
+				struct node * Node0P, *Node1P, *Node2P, *Node3P;
+			
+				Node0P = &Node0;
+				Node1P = &Node1;
+				Node2P = &Node2;
+				Node3P = &Node3;
+				//This is point 0
+				Node0.x = XYPlane[i][j].x;
+				Node0.y = XYPlane[i][j].y;
+				Node0.z = z;
+				tempVector = VectorAtLocation(Node0.x, Node0.y, z);
+				Node0.t = tempVector-> magnitude();
+				
+
+				//This is point 1
+				Node1.x = XYPlane[i + 1][j].x;
+				Node1.y = XYPlane[i + 1][j].y;
+				Node1.z = z;
+				tempVector = VectorAtLocation(XYPlane[i + 1][j].x, XYPlane[i + 1][j].y, z);
+				Node1.t = tempVector->magnitude();
+
+				//This is point 3
+				Node3.x = XYPlane[i + 1][j + 1].x;
+				Node3.y = XYPlane[i + 1][j + 1].y;
+				Node3.z = z;
+				tempVector = VectorAtLocation(XYPlane[i + 1][j + 1].x, XYPlane[i + 1][j + 1].y, z);
+				Node3.t = tempVector->magnitude();
+
+				//This is point 2
+				Node2.x = XYPlane[i][j + 1].x;
+				Node2.y = XYPlane[i][j + 1].y;
+				Node2.z = z;
+				tempVector = VectorAtLocation(XYPlane[i][j + 1].x, XYPlane[i][j + 1].y, z);
+				Node2.t = tempVector->magnitude();
+				ProcessQuad(Node0P, Node1P, Node2P, Node3P, Sstar);
+			}
+		}
+		tempval += scale;
+	}
+	//This is the XZ
+	tempval = -1.0;
+	for (int index = 0; index < (numContours + 1); index++) {
+		glColor4fv(Color(Sstar));
+		for (int i = 0; i < IsoResolution - 1; i++)
+		{
+
+			for (int j = 0; j < IsoResolution - 1; j++)
+			{
+				float hsv0[3], rgb0[3], hsv1[3], rgb1[3], hsv2[3], rgb2[3], hsv3[3], rgb3[3];
+				float y = tempval;
+				struct node Node0, Node1, Node2, Node3;
+				struct node * Node0P, *Node1P, *Node2P, *Node3P;
+				Node0P = &Node0;
+				Node1P = &Node1;
+				Node2P = &Node2;
+				Node3P = &Node3;
+				//This is point 0
+				Node0.x = XZPlane[i][j].x;
+				Node0.y = y;
+				Node0.z = XZPlane[i][j].z;
+				tempVector = VectorAtLocation(Node0.x, y, Node0.z);
+				Node0.t = tempVector->magnitude();
+
+				//This is point 1
+				Node1.x = XZPlane[i + 1][j].x;
+				Node1.y = y;
+				Node1.z = XZPlane[i + 1][j].z;
+				tempVector = VectorAtLocation(Node1.x, y, Node1.z);
+				Node1.t = tempVector->magnitude();
+
+				//This is point 3
+				Node3.x = XZPlane[i + 1][j + 1].x;
+				Node3.y = y;
+				Node3.z = XZPlane[i + 1][j + 1].z;
+				tempVector = VectorAtLocation(Node3.x, y, Node3.z);
+				Node3.t = tempVector->magnitude();
+
+				//This is point 2
+				Node2.x = XZPlane[i][j + 1].x;
+				Node2.y = y;
+				Node2.z = XZPlane[i][j + 1].z;
+				tempVector = VectorAtLocation(Node2.x, y, Node2.z);
+				Node2.t = tempVector->magnitude();
+				ProcessQuad(Node0P, Node1P, Node2P, Node3P, Sstar);
+			}
+		}
+		tempval += scale;
+	}
+	//YZ
+	tempval = -1.0;
+	for (int index = 0; index < (numContours + 1); index++) {
+		glColor4fv(Color(Sstar));
+		for (int i = 0; i < IsoResolution - 1; i++)
+		{
+
+			for (int j = 0; j < IsoResolution - 1; j++)
+			{
+				float hsv0[3], rgb0[3], hsv1[3], rgb1[3], hsv2[3], rgb2[3], hsv3[3], rgb3[3];
+				float x = tempval;
+				struct node Node0, Node1, Node2, Node3;
+				struct node * Node0P, *Node1P, *Node2P, *Node3P;
+				Node0P = &Node0;
+				Node1P = &Node1;
+				Node2P = &Node2;
+				Node3P = &Node3;
+
+				//This is point 0
+				Node0.x = x;
+				Node0.y = YZPlane[i][j].y;
+				Node0.z = YZPlane[i][j].z;
+				tempVector = VectorAtLocation(x, Node0.y, Node0.z);
+				Node0.t = tempVector->magnitude();
+
+				//This is point 1
+				Node1.x = x;
+				Node1.y = YZPlane[i + 1][j].y;
+				Node1.z = YZPlane[i + 1][j].z;
+				tempVector = VectorAtLocation(x, Node1.y, Node1.z);
+				Node1.t = tempVector->magnitude();
+
+
+
+				//This is point 3
+				Node3.x = x;
+				Node3.y = YZPlane[i + 1][j + 1].y;
+				Node3.z = YZPlane[i + 1][j + 1].z;
+				tempVector = VectorAtLocation(x, Node3.y, Node3.z);
+				Node3.t = tempVector->magnitude();
+
+
+				//This is point 2
+				Node2.x = x;
+				Node2.y = YZPlane[i][j + 1].y;
+				Node2.z = YZPlane[i][j + 1].z;
+				tempVector = VectorAtLocation(x, Node2.y, Node2.z);
+				Node2.t = tempVector->magnitude();
+
+
+				ProcessQuad(Node0P, Node1P, Node2P, Node3P, Sstar);
+			}
+		}
+		tempval += scale;
+	}
+	glEnd();
+}
 void Framework::DrawProbe() {
 	glPointSize(8);
 	glBegin(GL_POINTS);
@@ -1318,7 +1495,59 @@ void Framework::DrawDots() {
 	}
 	glEnd();
 }
+void Framework::InitIsoNodes() {
+	//This is where each Planes For the Isosurfaces will be initialized
+	//First the XY
+	for (int i = 0; i < IsoResolution; i++)
+	{
+		for (int j = 0; j < IsoResolution; j++)
+		{
+			//keep but dont use this 
+			XYPlane[i][j].x = -1. + 2. * (float)i / (float)(IsoResolution - 1);
+			XYPlane[i][j].y = -1. + 2. * (float)j / (float)(IsoResolution - 1);
+			XYPlane[i][j].z = XYPlanesZval;
 
+			//Nodes[i][j][k].rad = (sqrt(SQR((float)Nodes[i][j][k].x) + SQR((float)Nodes[i][j][k].y) + SQR((float)Nodes[i][j][k].z)));
+			//Nodes[i][j][k].t = Temperature(Nodes[i][j][k].x, Nodes[i][j][k].y, Nodes[i][j][k].z);
+			//float gray = GRAYMIN + (GRAYMAX - GRAYMIN) * (t - TEMPMIN) / (TEMPMAX - TEMPMIN);
+			//Nodes[i][j][k].colorval = 0.1 + (0.9)* (Nodes[i][j][k].t - TEMPMIN) / (TEMPMAX - TEMPMIN);
+		}
+	}
+
+	//Then the XZ
+	for (int i = 0; i < IsoResolution; i++)
+	{
+		for (int j = 0; j < IsoResolution; j++)
+		{
+			//keep but dont use this 
+			XZPlane[i][j].x = -1. + 2. * (float)i / (float)(IsoResolution - 1);
+			XZPlane[i][j].y = -1. + 2. * (float)j / (float)(IsoResolution - 1);
+			XZPlane[i][j].z = XZPlanesYval;
+		}
+	}
+	//Then the XZ
+	for (int i = 0; i < IsoResolution; i++)
+	{
+		for (int j = 0; j < IsoResolution; j++)
+		{
+			//keep but dont use this 
+			XZPlane[i][j].x = -1. + 2. * (float)i / (float)(IsoResolution - 1);
+			XZPlane[i][j].z = -1. + 2. * (float)j / (float)(IsoResolution - 1);
+			XZPlane[i][j].y = XZPlanesYval;
+		}
+	}
+	//Then the YZ
+	for (int i = 0; i < IsoResolution; i++)
+	{
+		for (int j = 0; j < IsoResolution; j++)
+		{
+			//keep but dont use this 
+			YZPlane[i][j].y = -1. + 2. * (float)i / (float)(IsoResolution - 1);
+			YZPlane[i][j].z = -1. + 2. * (float)j / (float)(IsoResolution - 1);
+			YZPlane[i][j].x = YZPlanesXval;
+		}
+	}
+}
 void Framework::InitBlob() {
 	float VecBlob[10][10][3];
 	float Cross1[3];
@@ -1472,7 +1701,69 @@ void Framework::InitBlob() {
 		}
 	}
 }
+void Framework::ProcessQuad(struct node *p0, struct node *p1, struct node *p2, struct node *p3, float Sstar)
+{
+	float testval;
+	int index;
+	int i;
+	int j;
+	struct node Intersections[4];
+	int totalsides = 0;
+	float mycolor;
+	float hsv[3];
+	float rgb[3];
 
+	float vx1, vx2, vy1, vy2, vz1, vz2;
+	totalsides = 0;
+	testval = 0;
+	if (p0->t != p1->t) {
+		testval = (Sstar - p0->t) / (p1->t - p0->t);
+		if ((testval > 0.) && (testval < 1.)) {
+			Intersections[totalsides].t = testval;
+			Intersections[totalsides].x = p0->x + testval * (p1->x - p0->x);
+			Intersections[totalsides].y = p0->y + testval * (p1->y - p0->y);
+			Intersections[totalsides].z = p0->z + testval * (p1->z - p0->z);
+			totalsides++;
+		}
+	}
+	//check the vo v2 side
+	if (p0->t != p2->t) {
+		testval = (Sstar - p0->t) / (p2->t - p0->t);
+		if ((testval > 0.) && (testval < 1.)) {
+			Intersections[totalsides].x = p0->x + testval * (p2->x - p0->x);
+			Intersections[totalsides].y = p0->y + testval * (p2->y - p0->y);
+			Intersections[totalsides].z = p0->z + testval * (p2->z - p0->z);
+			totalsides++;
+		}
+	}
+	//check the v2 v3 side
+	if (p2->t != p3->t) {
+		testval = (Sstar - p2->t) / (p3->t - p2->t);
+		if ((testval > 0.) && (testval < 1.)) {
+			Intersections[totalsides].x = p2->x + testval * (p3->x - p2->x);
+			Intersections[totalsides].y = p2->y + testval * (p3->y - p2->y);
+			Intersections[totalsides].z = p2->z + testval * (p3->z - p2->z);
+			totalsides++;
+		}
+	}
+	//check the v3 v1 side
+	if (p3->t != p1->t) {
+		testval = (Sstar - p3->t) / (p1->t - p3->t);
+		if ((testval > 0.) && (testval < 1.)) {
+			Intersections[totalsides].x = p3->x + testval * (p1->x - p3->x);
+			Intersections[totalsides].y = p3->y + testval * (p1->y - p3->y);
+			Intersections[totalsides].z = p3->z + testval * (p1->z - p3->z);
+			totalsides++;
+		}
+	}
+	if (totalsides == 2) {
+		glVertex3f(Intersections[0].x, Intersections[0].y, Intersections[0].z);
+		glVertex3f(Intersections[1].x, Intersections[1].y, Intersections[1].z);
+
+	}
+
+
+}
 /*void Framework::DrawBlob() {
 	float VecBlob[10][10][3];
 	float Cross1[3];

@@ -146,8 +146,11 @@ void InitGlui() {
 	GLUI_Spinner * alphaVector;
 
 	//Isosurface Settings
+	GLUI_Spinner * spinIsoValue;
 	GLUI_Spinner * spinNumContours;
+	GLUI_Spinner * spinIsoResolution;
 	GLUI_Spinner * spinZPlaneVal;
+
 	//Streamline Controls:
 	GLUI_Spinner * spinNumStreamlines;
 
@@ -353,10 +356,15 @@ void InitGlui() {
 	spinNumContours = TestGlui->add_spinner_to_panel(IsosurfaceSettings, "NumContours", GLUI_SPINNER_FLOAT, &Framework::instance()->numContours);
 	spinNumContours->set_float_limits(0.0, 1.0);
 	spinNumContours->set_speed(0.1);
-	spinZPlaneVal = TestGlui ->add_spinner_to_panel(IsosurfaceSettings, "Z Plane Value", GLUI_SPINNER_FLOAT, &Framework::instance()->XYPlanesZval);
-	spinZPlaneVal->set_float_limits(-2.0, 2.0);
-	spinZPlaneVal->set_speed(0.1);
-
+	float tempMin = Framework::instance()->GetVectorMin();
+	float tempMax = Framework::instance()->GetVectorMax();
+	printf("IsoMin is %f, IsoMax is %f\n", tempMin, tempMax);
+	spinIsoValue = TestGlui->add_spinner_to_panel(IsosurfaceSettings, "IsoValue", GLUI_SPINNER_FLOAT, &Framework::instance()->IsosurfacesVal);
+	spinIsoValue->set_float_limits(0.0, 1.0);
+	spinIsoValue->set_speed(0.1);
+	spinIsoResolution = TestGlui->add_spinner_to_panel(IsosurfaceSettings, "IsoResolution", GLUI_SPINNER_INT, &Framework::instance()->IsoResolution);
+	spinIsoValue->set_float_limits(50, 150);
+	spinIsoValue->set_speed(0.1);
 	//VectorBlob Settings:
 	VectorBlobTime = TestGlui->add_spinner_to_panel(VectorBlobSettings, "Time Value", GLUI_SPINNER_INT, &Framework::instance()->VectorBlobTimeVal, 2, SpinnerCallback);
 	VectorBlobTime->set_int_limits(0, 100);
