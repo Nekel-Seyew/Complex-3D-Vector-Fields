@@ -57,7 +57,7 @@ private:
 
 public:
 	void render();
-	void apply_phyisics(VectorDefiner* vdef);
+	void apply_phyisics(VectorDefiner* vdef, float dt);
 	Cloth();
 	~Cloth();
 };
