@@ -7,6 +7,7 @@ public:
 	vector3d(float a, float b, float c, int mode);
 	vector3d(float* v, int mode);
 	vector3d(vector3d* in);
+	vector3d(const vector3d& in);
 	vector3d();
 
 	//methods
@@ -60,9 +61,21 @@ public:
 	//sets all values to be 0
 	void nullify();
 
-	//operators
+	/*operators*/
+	//returns self
 	vector3d& operator*=(const float rhs);
 	vector3d& operator/=(const float rhs);
+	vector3d& operator+=(const vector3d& rhs);
+	//returns new
+	vector3d* operator-(const vector3d& rhs);
+	//returns const
+	//dot operator
+	float operator*(const vector3d& rhs);
+
+
+	static vector3d* Cross(vector3d* v1, vector3d* v2);
+	
+	void unitize();
 
 private:
 	//variables

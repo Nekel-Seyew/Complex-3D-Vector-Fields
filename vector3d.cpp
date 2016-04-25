@@ -27,6 +27,12 @@ vector3d::vector3d(vector3d* in) {
 	this->abc[2] = in->abc[2];
 	this->mode = in->mode;
 }
+vector3d::vector3d(const vector3d& in) {
+	this->abc[0] = in.abc[0];
+	this->abc[1] = in.abc[1];
+	this->abc[2] = in.abc[2];
+	this->mode = in.mode;
+}
 
 vector3d::vector3d() {
 	this->abc[0] = 0;
@@ -143,22 +149,63 @@ void vector3d::set_this_to_be_passed_in_value(vector3d* in) {
 }
 
 vector3d& vector3d::operator*=(const float rhs) {
+	this->to_rect();
 	this->abc[0] *= rhs;
-	this->abc[1] *= rhs;;
+	this->abc[1] *= rhs;
 	this->abc[2] *= rhs;
 	return *this;
 }
 vector3d& vector3d::operator/=(const float rhs) {
+	this->to_rect();
 	this->abc[0] /= rhs;
 	this->abc[1] /= rhs;
 	this->abc[2] /= rhs;
 	return *this;
 }
+vector3d& vector3d::operator+=(const vector3d& rhs) {
+	this->to_rect();
+	vector3d temp(rhs);//ugh so much work, but need things in convenient form. Sorry processor
+	temp.to_rect();
+	this->abc[0] += temp.abc[0];
+	this->abc[1] += temp.abc[0];
+	this->abc[2] += temp.abc[0];
+	return *this;
+}
+
+vector3d* vector3d::operator-(const vector3d& rhs) {
+	this->to_rect();
+	vector3d temp(rhs);//ugh so much work, but need things in convenient form. Sorry processor
+	temp.to_rect();
+	return (new vector3d(this->abc[0] - temp.abc[0], this->abc[1] - temp.abc[1], this->abc[2] - temp.abc[2]));
+}
+
+float vector3d::operator*(const vector3d& rhs) {
+	this->to_rect();
+	vector3d temp(rhs);//ugh so much work, but need things in convenient form. Sorry processor
+	temp.to_rect();
+	return (this->abc[0] * temp.abc[0]) + (this->abc[1] * temp.abc[1]) + (this->abc[2] * temp.abc[2]);
+}
+
 
 void vector3d::nullify() {
 	this->abc[0] = 0;
 	this->abc[1] = 0;
 	this->abc[2] = 0;
+}
+
+void vector3d::unitize() {
+	(*this) /= this->magnitude();//I honestly love this line right here.
+}
+
+//static method
+vector3d* vector3d::Cross(vector3d* v1, vector3d* v2){
+	float tmp[3];
+
+	tmp[0] = v1->xyz()[1] * v2->xyz()[2] - v2->xyz()[1] * v1->xyz()[2];
+	tmp[1] = v2->xyz()[0] * v1->xyz()[2] - v1->xyz()[0] * v2->xyz()[2];
+	tmp[2] = v1->xyz()[0] * v2->xyz()[1] - v2->xyz()[0] * v1->xyz()[1];
+
+	return new vector3d(tmp, vector3d::rect);
 }
 
 
