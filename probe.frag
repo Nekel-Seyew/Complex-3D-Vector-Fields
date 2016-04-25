@@ -6,6 +6,7 @@
 //uniform sampler3D	TexUnit;
 uniform float VectorMax;
 uniform float VectorMin;
+uniform int AltColor;
 in vec4  vColor;
 in float vLightIntensity;
 in vec3 vECposition;
@@ -238,7 +239,13 @@ main( )
 	float t = ( 1. - VectorMin ) / ( VectorMax - VectorMin );
 	//vec3 rgb = Rainbow( t );
 	//t = clamp( t, 0., 1. );
-	vec3 rgb = Rainbow();
+	vec3 rgb;
+	if (AltColor == 1){
+		rgb = FireColor();
+	}
+	else{
+		rgb = Rainbow();
+	}
 	gl_FragColor = vec4( rgb, 1. );
 	//gl_FragColor = vec4(0., VectorMax, 0., 1);
 }
