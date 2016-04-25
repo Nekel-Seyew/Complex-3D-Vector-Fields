@@ -1151,7 +1151,9 @@ void Framework::DrawArrows() {
 		}
 	}
 }
+void Framework::DrawIsosurfaces() {
 
+}
 void Framework::DrawProbe() {
 	glPointSize(8);
 	glBegin(GL_POINTS);
