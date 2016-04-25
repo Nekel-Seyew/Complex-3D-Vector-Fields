@@ -168,6 +168,7 @@ public:
 	void InitBlob();
 	void DrawBlob();
 	void DrawSheet();
+	void DrawCuttingPlane();
 
 	//These are the Helper Functions for Graphics: 
 	vector3d * VectorAtLocation(float, float, float);
@@ -268,6 +269,7 @@ public:
 	int useVectorSheet;
 	int useJitter;
 	int useProbe;
+	int useCuttingPlane;
 
 
 
@@ -300,6 +302,9 @@ public:
 	float OldVecBlob[10][10][3];
 	//vector3d VecBlob[10][10];
 	float VectorBlobXLoc, VectorBlobYLoc, VectorBlobZLoc, VectorBlobXVec, VectorBlobYVec, VectorBlobZVec;
+
+	//These are the GluiValues for the Cutting Plane:
+	float CuttingPlaneXLoc, CuttingPlaneYLoc, CuttingPlaneZLoc, CuttingPlaneXVec, CuttingPlaneYVec, CuttingPlaneZVec;
 
 	//These are the GluiValues for the Vector Sheet:
 	float VectorSheetTimeVal=0, VectorSheetXLoc=0, VectorSheetYLoc=0, VectorSheetZLoc=0, VectorSheetXVec=0, VectorSheetYVec=0, VectorSheetZVec=1;

@@ -130,6 +130,7 @@ void InitGlui() {
 	GLUI_Rollout * StrokesSettings;
 	GLUI_Rollout * StreamlineSettings;
 	GLUI_Rollout * VectorBlobSettings; 
+	GLUI_Rollout * CuttingPlaneSettings;
 	//Oculus Settings:
 	GLUI_Panel * OculusSettings;
 	GLUI_Rollout * OculusRollout;
@@ -164,6 +165,15 @@ void InitGlui() {
 	GLUI_Spinner * VectorBlobXVec;
 	GLUI_Spinner * VectorBlobYVec;
 	GLUI_Spinner * VectorBlobZVec;
+
+	//Cutting Plane Controls:
+	//GLUI_Spinner * VectorBlobTime;
+	GLUI_Spinner * CuttingPlaneXLoc;
+	GLUI_Spinner * CuttingPlaneYLoc;
+	GLUI_Spinner * CuttingPlaneZLoc;
+	GLUI_Spinner * CuttingPlaneXVec;
+	GLUI_Spinner * CuttingPlaneYVec;
+	GLUI_Spinner * CuttingPlaneZVec;
 
 	//dot point animation controls:
 	GLUI_Spinner * dotPointColorSpinnerR;
@@ -252,6 +262,7 @@ void InitGlui() {
 	TestGlui->add_column_to_panel(graphicsOptions, 0);
 	TestGlui->add_checkbox_to_panel(graphicsOptions, "Use Arrows", &Framework::instance()->useArrows);
 	TestGlui->add_checkbox_to_panel(graphicsOptions, "Use Animation", &Framework::instance()->useAnimation);
+	TestGlui->add_checkbox_to_panel(graphicsOptions, "Use CuttingPlane", &Framework::instance()->useCuttingPlane);
 	TestGlui->add_column_to_panel(graphicsOptions, 0);
 	TestGlui->add_checkbox_to_panel(graphicsOptions, "Use Isosurfaces", &Framework::instance()->useIsosurfaces);
 	TestGlui->add_checkbox_to_panel(graphicsOptions, "Use Points", &Framework::instance()->usePoints);
@@ -277,6 +288,8 @@ void InitGlui() {
 	StrokesSettings->set_w(200);
 	VectorBlobSettings = TestGlui->add_rollout_to_panel(CustomSettings, "Vector Blob Settings", 0);
 	VectorBlobSettings ->set_w(200);
+	CuttingPlaneSettings = TestGlui->add_rollout_to_panel(CustomSettings, "Cutting Plane Settings", 0);
+	CuttingPlaneSettings->set_w(200);
 
 	//Oculus Rift Settings:
 	OculusSettings = TestGlui->add_panel("Oculus Rift"); 
@@ -372,6 +385,32 @@ void InitGlui() {
 	VectorBlobZVec = TestGlui->add_spinner_to_panel(VectorBlobSettings, "ZVectorBlobVector", GLUI_SPINNER_FLOAT, &Framework::instance()->VectorBlobZVec, 1, SpinnerCallback);
 	VectorBlobZVec->set_float_limits(-1.0, 1.0);
 	VectorBlobZVec->set_speed(0.2);
+
+	//VectorBlob Settings:
+
+	CuttingPlaneXLoc = TestGlui->add_spinner_to_panel(CuttingPlaneSettings, "XCuttingPlaneLocation", GLUI_SPINNER_FLOAT, &Framework::instance()->CuttingPlaneXLoc);
+	CuttingPlaneXLoc->set_float_limits(-1.0, 1.0);
+	CuttingPlaneXLoc->set_speed(0.2);
+
+	CuttingPlaneYLoc = TestGlui->add_spinner_to_panel(CuttingPlaneSettings, "YCuttingPlaneLocation", GLUI_SPINNER_FLOAT, &Framework::instance()->CuttingPlaneYLoc);
+	CuttingPlaneYLoc->set_float_limits(-1.0, 1.0);
+	CuttingPlaneYLoc->set_speed(0.2);
+
+	CuttingPlaneZLoc = TestGlui->add_spinner_to_panel(CuttingPlaneSettings, "ZCuttingPlaneLocation", GLUI_SPINNER_FLOAT, &Framework::instance()->CuttingPlaneZLoc);
+	CuttingPlaneZLoc->set_float_limits(-1.0, 1.0);
+	CuttingPlaneZLoc->set_speed(0.2);
+
+	CuttingPlaneXVec = TestGlui->add_spinner_to_panel(CuttingPlaneSettings, "XCuttingPlaneVector", GLUI_SPINNER_FLOAT, &Framework::instance()->CuttingPlaneXVec);
+	CuttingPlaneXVec->set_float_limits(-1.0, 1.0);
+	CuttingPlaneXVec->set_speed(0.2);
+
+	CuttingPlaneYVec = TestGlui->add_spinner_to_panel(CuttingPlaneSettings, "YCuttingPlaneVector", GLUI_SPINNER_FLOAT, &Framework::instance()->CuttingPlaneYVec);
+	CuttingPlaneYVec->set_float_limits(-1.0, 1.0);
+	CuttingPlaneYVec->set_speed(0.2);
+
+	CuttingPlaneZVec = TestGlui->add_spinner_to_panel(CuttingPlaneSettings, "ZCuttingPlaneVector", GLUI_SPINNER_FLOAT, &Framework::instance()->CuttingPlaneZVec);
+	CuttingPlaneZVec->set_float_limits(-1.0, 1.0);
+	CuttingPlaneZVec->set_speed(0.2);
 
 	//animation items
 	TestGlui->add_checkbox_to_panel(AnimationSettings, "Color As Velocity", &Framework::instance()->colorAsVelocity);

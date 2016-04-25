@@ -710,6 +710,9 @@ void Framework::RestoreDefaults() {
 	VectorBlobYVec = 0.1;
 	VectorBlobXVec = VectorBlobZVec = VectorBlobXLoc = VectorBlobYLoc = VectorBlobZLoc = 0.0;
 	VectorBlobTimeVal = 0; 
+	CuttingPlaneYVec = 0.1;
+	CuttingPlaneXVec = CuttingPlaneZVec = CuttingPlaneXLoc = CuttingPlaneYLoc = CuttingPlaneZLoc = 0.0;
+
 	ActiveButton = 0;
 	XYPlanesZval = 0;
 	LeftButton = ROTATE;
@@ -753,6 +756,7 @@ void Framework::RestoreDefaults() {
 	useIsosurfaces = 0;
 	useVectorBlob = 0; 
 	useVectorSheet = 0;
+	useCuttingPlane = 0;
 	useJitter = 1;
 	useProbe = 0;
 	usePrism = 1;
@@ -967,116 +971,12 @@ void Framework::Display() {
 
 	//Insert comment here when this does something
 	if (useIsosurfaces) {
-		float Sstar = maxvec - minvec / 2;
-		float SMax = maxvec;
-		int numS = numContours;
-		float scale = 2.0 / numContours;
-		float hsv[3];
-		float rgb[3];
 
-		//glBegin(GL_LINES);
-		int NumShaderPoints = 20;
-		GLuint posSSbo;
-		GLuint velSSbo;
-		float min = VDef->get_vector_cull_min()->magnitude();
-		float max = VDef->get_vector_cull_max()->magnitude();
-		glGenBuffers(1, &posSSbo);
-		glBindBuffer(GL_ARRAY_BUFFER, posSSbo);
-		glBufferData(GL_ARRAY_BUFFER, (NumShaderPoints * NumShaderPoints) * 4 * sizeof(posShader), NULL, GL_STATIC_DRAW);
-		GLint bufMask = GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT; // the invalidate makes a big difference when re-writing
-		posShader * DynamicNow = (posShader *) glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
-		//printf("Before being passed in: the max value is %f, the min value is %f\n", max, min);
-		
-		float testFloat = 0.; //This will be passed in by Glui - modifications can happen later
-		float xval, yval, zval;
-		float planestep = 2.0 / NumShaderPoints;
-		xval = -1.0;
-		yval = -1.0;
-		zval = XYPlanesZval;
-		glColor3f(1., 0., 0.);
-		int count = 0;
-		for (int i = 0; i < (NumShaderPoints); i++) {
-			for (int j = 0; j < NumShaderPoints; j++) {
-				//vertex 0
-				//printf("Xval is %f, Yval is %f, Zval is %f\n", xval, yval, zval);
-				vector3d * tempVec = VectorAtLocation(xval, yval, zval);
-				float mag = tempVec->magnitude();
-				DynamicNow[count].x = xval;
-				DynamicNow[count].y = yval;
-				DynamicNow[count].z = zval;
-				DynamicNow[count].m = mag;
-				//printf("The t value is %f, the max value is %f, the min value is %f, the mag is %f\n", (mag - min) / (max - min), max, min, mag);
-				count++;
-
-				//vectex1
-				tempVec = VectorAtLocation(xval + planestep, yval, zval);
-				mag = tempVec->magnitude();
-				DynamicNow[count].x = xval + planestep;
-				DynamicNow[count].y = yval;
-				DynamicNow[count].z = zval;
-				DynamicNow[count].m = mag;
-				//printf("The t value is %f, the max value is %f, the min value is %f, the mag is %f\n", (mag - min) / (max - min), max, min, mag);
-				count++;
-
-				tempVec = VectorAtLocation(xval + planestep, yval + planestep, zval);
-				mag = tempVec->magnitude();
-				DynamicNow[count].x = xval + planestep;
-				DynamicNow[count].y = yval + planestep;
-				DynamicNow[count].z = zval;
-				DynamicNow[count].m = mag;
-				//printf("The t value is %f, the max value is %f, the min value is %f, the mag is %f\n", (mag - min) / (max - min), max, min, mag);
-				count++;
-
-				//vertex2
-				tempVec = VectorAtLocation(xval, yval + planestep, zval);
-				mag = tempVec->magnitude();
-				DynamicNow[count].x = xval;
-				DynamicNow[count].y = yval + planestep;
-				DynamicNow[count].z = zval;
-				DynamicNow[count].m = mag;
-				//printf("The t value is %f, the max value is %f, the min value is %f, the mag is %f\n", (mag - min) / (max - min), max, min, mag);
-				count++;
-				//DynamicNow[index].m = 1.0;
-
-				//DynamicNow[i].m = mag;
-				xval += planestep;
-				//zval += planestep;
-			}
-			xval = -1.0;
-			yval += planestep;
-		}
-		
-		glUnmapBuffer(GL_ARRAY_BUFFER);
-		glUseProgram(program);
-		glShadeModel(GL_SMOOTH);
-		glUniform1f(glGetUniformLocation(program, "VectorMax"), max);
-		glUniform1f(glGetUniformLocation(program, "VectorMin"), min);
-		glBindBuffer( GL_ARRAY_BUFFER, posSSbo );
-		//glVertexPointer( 4, GL_FLOAT, 0, (void *)0 );
-		//GLuint vPosition = glGetAttribLocation(program, "vPosition");
-		//glEnableVertexAttribArray(vPosition);
-		//glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 0, (void *)0);
-		glVertexPointer(4, GL_FLOAT, 0, (void *)0);
-		glEnableClientState( GL_VERTEX_ARRAY );
-		glDrawArrays( GL_QUADS, 0, NumShaderPoints * NumShaderPoints * 4);
-		glDisableClientState( GL_VERTEX_ARRAY );
-		glBindBuffer( GL_ARRAY_BUFFER, 0 );
-		//glutWireSphere(0.5, 5, 5);
-		glUseProgram(0); 
-
-		/*glBegin(GL_POINTS);
-		glUseProgram(program);
-		glPointSize(10);
-		glBegin(GL_POINTS);
-		glColor3f(0., 1., 1.);
-		glVertex3f(0., 0., 0.);
-		glPointSize(4);
-		glEnd();
-		glUseProgram(0);
-		*/
-		
 	}
 
+	if (this->useCuttingPlane) {
+		DrawCuttingPlane();
+	}
 	glDisable(GL_DEPTH_TEST);
 	glColor3f(0., 1., 1.);
 
@@ -1701,6 +1601,120 @@ void Framework::DrawSheet() {
 			}
 		}
 	glEnd();
+}
+
+void Framework::DrawCuttingPlane() {
+	float Sstar = maxvec - minvec / 2;
+	float SMax = maxvec;
+	int numS = numContours;
+	float scale = 2.0 / numContours;
+	float hsv[3];
+	float rgb[3];
+
+	//glBegin(GL_LINES);
+	int NumShaderPoints = 20;
+	GLuint posSSbo;
+	GLuint velSSbo;
+	float min = VDef->get_vector_cull_min()->magnitude();
+	float max = VDef->get_vector_cull_max()->magnitude();
+	glGenBuffers(1, &posSSbo);
+	glBindBuffer(GL_ARRAY_BUFFER, posSSbo);
+	glBufferData(GL_ARRAY_BUFFER, (NumShaderPoints * NumShaderPoints) * 4 * sizeof(posShader), NULL, GL_STATIC_DRAW);
+	GLint bufMask = GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT; // the invalidate makes a big difference when re-writing
+	posShader * DynamicNow = (posShader *)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+	//printf("Before being passed in: the max value is %f, the min value is %f\n", max, min);
+
+	float testFloat = 0.; //This will be passed in by Glui - modifications can happen later
+	float xval, yval, zval;
+	float planestep = 2.0 / NumShaderPoints;
+	xval = -1.0;
+	yval = -1.0;
+	zval = XYPlanesZval;
+	glColor3f(1., 0., 0.);
+	int count = 0;
+	for (int i = 0; i < (NumShaderPoints); i++) {
+		for (int j = 0; j < NumShaderPoints; j++) {
+			//vertex 0
+			//printf("Xval is %f, Yval is %f, Zval is %f\n", xval, yval, zval);
+			vector3d * tempVec = VectorAtLocation(xval, yval, zval);
+			float mag = tempVec->magnitude();
+			DynamicNow[count].x = xval;
+			DynamicNow[count].y = yval;
+			DynamicNow[count].z = zval;
+			DynamicNow[count].m = mag;
+			//printf("The t value is %f, the max value is %f, the min value is %f, the mag is %f\n", (mag - min) / (max - min), max, min, mag);
+			count++;
+
+			//vectex1
+			tempVec = VectorAtLocation(xval + planestep, yval, zval);
+			mag = tempVec->magnitude();
+			DynamicNow[count].x = xval + planestep;
+			DynamicNow[count].y = yval;
+			DynamicNow[count].z = zval;
+			DynamicNow[count].m = mag;
+			//printf("The t value is %f, the max value is %f, the min value is %f, the mag is %f\n", (mag - min) / (max - min), max, min, mag);
+			count++;
+
+			tempVec = VectorAtLocation(xval + planestep, yval + planestep, zval);
+			mag = tempVec->magnitude();
+			DynamicNow[count].x = xval + planestep;
+			DynamicNow[count].y = yval + planestep;
+			DynamicNow[count].z = zval;
+			DynamicNow[count].m = mag;
+			//printf("The t value is %f, the max value is %f, the min value is %f, the mag is %f\n", (mag - min) / (max - min), max, min, mag);
+			count++;
+
+			//vertex2
+			tempVec = VectorAtLocation(xval, yval + planestep, zval);
+			mag = tempVec->magnitude();
+			DynamicNow[count].x = xval;
+			DynamicNow[count].y = yval + planestep;
+			DynamicNow[count].z = zval;
+			DynamicNow[count].m = mag;
+			//printf("The t value is %f, the max value is %f, the min value is %f, the mag is %f\n", (mag - min) / (max - min), max, min, mag);
+			count++;
+			//DynamicNow[index].m = 1.0;
+
+			//DynamicNow[i].m = mag;
+			xval += planestep;
+			//zval += planestep;
+		}
+		xval = -1.0;
+		yval += planestep;
+	}
+
+
+
+
+	glUnmapBuffer(GL_ARRAY_BUFFER);
+	glUseProgram(program);
+	glShadeModel(GL_SMOOTH);
+	glUniform1f(glGetUniformLocation(program, "VectorMax"), max);
+	glUniform1f(glGetUniformLocation(program, "VectorMin"), min);
+	glBindBuffer(GL_ARRAY_BUFFER, posSSbo);
+	//glVertexPointer( 4, GL_FLOAT, 0, (void *)0 );
+	//GLuint vPosition = glGetAttribLocation(program, "vPosition");
+	//glEnableVertexAttribArray(vPosition);
+	//glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 0, (void *)0);
+	glVertexPointer(4, GL_FLOAT, 0, (void *)0);
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glDrawArrays(GL_QUADS, 0, NumShaderPoints * NumShaderPoints * 4);
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	//glutWireSphere(0.5, 5, 5);
+	glUseProgram(0);
+
+	/*glBegin(GL_POINTS);
+	glUseProgram(program);
+	glPointSize(10);
+	glBegin(GL_POINTS);
+	glColor3f(0., 1., 1.);
+	glVertex3f(0., 0., 0.);
+	glPointSize(4);
+	glEnd();
+	glUseProgram(0);
+	*/
+
 }
 
 void Framework::DrawRasterString(float x, float y, float z, char *s)
