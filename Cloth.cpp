@@ -121,7 +121,7 @@ void Cloth::apply_phyisics(VectorDefiner* vdef) {
 			(*vel) *= (-1.f * this->dampening);
 			p.give_force(vel);
 			//viscosity
-			vector3d* fluid_velocity = vdef->get_vector_at_pos(p.get_pos);
+			vector3d* fluid_velocity = vdef->get_vector_at_pos(p.get_pos());
 			vector3d* temp = ((*fluid_velocity) - p.get_vel());
 			vector3d* norm;
 			vector3d* a;
