@@ -148,14 +148,17 @@ equation* equation_factory::scalar_equation(std::string eq){
 	for(i=0; i<eq.size(); ++i){
 		k = eq[i];
 		switch(k){
+			case 'x':
 			case 'X':
 				ret->everything.push_back('V');
 				ret->variables.push_back('X');
 				break;
+			case 'y':
 			case 'Y':
 				ret->everything.push_back('V');
 				ret->variables.push_back('Y');
 				break;
+			case 'z':
 			case 'Z':
 				ret->everything.push_back('V');
 				ret->variables.push_back('Z');
@@ -167,10 +170,15 @@ equation* equation_factory::scalar_equation(std::string eq){
 			case '^':
 			case '(':
 			case ')':
+			case 'S':
 			case 's':
+			case 'T':
 			case 't':
+			case 'C':
 			case 'c':
+			case 'L':
 			case 'l':
+			case 'E':
 			case 'e':
 			case '~':{
 				int skip = handle_instruction(&ops, ret, k, eq, i);
@@ -235,17 +243,17 @@ int equation_factory::handle_instruction(std::stack<int> *ops, equation *eqr, ch
 	if(opk == 101) ops->pop(); //')'
 	if(opk != 101) ops->push(opk);
 
-	if(k == 's'){
-		if(q[i+1] == 'i') return 2;
-		if(q[i+1] == 'q') return 3;
+	if(k == 's' || k == 'S'){
+		if(q[i+1] == 'i' || q[i + 1] == 'I') return 2;
+		if(q[i+1] == 'q' || q[i + 1] == 'Q') return 3;
 	}
-	if(k == 'l'){
-		if(q[i+1] == 'n') return 1;
-		if(q[i+1] == 'o') return 2;
+	if(k == 'l' || k == 'L'){
+		if(q[i+1] == 'n' || q[i + 1] == 'N') return 1;
+		if(q[i+1] == 'o' || q[i + 1] == 'O') return 2;
 	}
-	if(k == 'c') return 2;
-	if(k == 't') return 2;
-	if(k == 'e') return 1;
+	if(k == 'c' || k == 'C') return 2;
+	if(k == 't' || k == 'T') return 2;
+	if(k == 'e' || k == 'E') return 1;
 	
 	return 0;
 }
@@ -304,18 +312,23 @@ int equation_factory::get_num_for_inst(char k, std::string q, int i){
 			return 101;
 		case '~':
 			return 18;
+		case 'E':
 		case 'e':
 			return 12;
+		case 'S':
 		case 's':
-			if(q[i+1] == 'i') return 16;
-			if(q[i+1] == 'q') return 11;
+			if(q[i+1] == 'i' || q[i + 1] == 'I') return 16;
+			if(q[i+1] == 'q' || q[i + 1] == 'Q') return 11;
+		case 'C':
 		case 'c':
 			return 15;
+		case 'T':
 		case 't':
 			return 17;
+		case 'L':
 		case 'l':
-			if(q[i+1] == 'n') return 14;
-			if(q[i+1] == 'o') return 13;
+			if(q[i+1] == 'n' || q[i + 1] == 'N') return 14;
+			if(q[i+1] == 'o' || q[i + 1] == 'O') return 13;
 	}
 }
 

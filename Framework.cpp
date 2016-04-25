@@ -2205,6 +2205,7 @@ void Framework::PhysicsUpdater(int value) {
 				int p = rand() % this->thePoints->size();
 				this->dot_points[i].set_this_to_be_passed_in_value(this->thePoints->at(p));
 				this->old_dot_pos[i].set_this_to_be_passed_in_value(&this->dot_points[i]);
+				this->path[i].clear();
 			}
 		}
 	}
