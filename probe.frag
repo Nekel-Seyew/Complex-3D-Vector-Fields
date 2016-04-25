@@ -44,41 +44,41 @@ vec3
 
 
 vec3
-Rainbow( float t )
+Rainbow( void )
 {
-	t = clamp( t, 0., 1. );
+	vec3 rgba;
+	float range = VectorMax - VectorMin;
+	float firstQuarter = VectorMin + 0.25 * range;
+	float secondQuarter = VectorMin + 0.50 * range;
+	float thirdQuarter = VectorMin + 0.75 * range;
 
-	vec3 rgb;
-
-	// b -> c
-	rgb.r = 0.;
-	rgb.g = 4. * ( t - (0./4.) );
-	rgb.b = 1.;
-
-	// c -> g
-	if( t >= (1./4.) )
-	{
-		rgb.r = 0.;
-		rgb.g = 1.;
-		rgb.b = 1. - 4. * ( t - (1./4.) );
+	if (vecMag < firstQuarter) {
+			float interpR = (vecMag - VectorMin) / (firstQuarter - VectorMin);
+			rgba.r = 0.;
+			rgba.g = interpR;
+			rgba.b = 1.;
 	}
+		else if (vecMag < secondQuarter) {
+			float interpG = (vecMag - firstQuarter) / (secondQuarter - firstQuarter);
+			rgba.r = 0.;
+			rgba.g = 1.;
+			rgba.b = 1 - interpG;
 
-	// g -> y
-	if( t >= (2./4.) )
-	{
-		rgb.r = 4. * ( t - (2./4.) );
-		rgb.g = 1.;
-		rgb.b = 0.;
-	}
+		}
+		else if (vecMag < thirdQuarter) {
+			float interpG = (vecMag - secondQuarter) / (thirdQuarter - secondQuarter);
+			rgba.r = interpG;
+			rgba.g = 1.;
+			rgba.b = 0.;
 
-	// y -> r
-	if( t >= (3./4.) )
-	{
-		rgb.r = 1.;
-		rgb.g = 1. - 4. * ( t - (3./4.) );
-		rgb.b = 0.;
-	}
-	return rgb;
+		}
+		else {
+			float interpB = (vecMag - thirdQuarter) / (VectorMax- thirdQuarter);
+			rgba.r = 1.;
+			rgba.g = 1 - interpB;
+			rgba.b = 0.;
+		}
+		return rgba;
 }
 
 void HsvRgb(vec3 hsv, vec3 rgb){
@@ -238,7 +238,7 @@ main( )
 	float t = ( 1. - VectorMin ) / ( VectorMax - VectorMin );
 	//vec3 rgb = Rainbow( t );
 	//t = clamp( t, 0., 1. );
-	vec3 rgb = FireColor();
+	vec3 rgb = Rainbow();
 	gl_FragColor = vec4( rgb, 1. );
 	//gl_FragColor = vec4(0., VectorMax, 0., 1);
 }
