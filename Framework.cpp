@@ -1632,7 +1632,7 @@ void Framework::DrawCuttingPlane() {
 	zval = XYPlanesZval;
 	glColor3f(1., 0., 0.);
 	int count = 0;
-	for (int i = 0; i < (NumShaderPoints); i++) {
+	/*for (int i = 0; i < (NumShaderPoints); i++) {
 		for (int j = 0; j < NumShaderPoints; j++) {
 			//vertex 0
 			//printf("Xval is %f, Yval is %f, Zval is %f\n", xval, yval, zval);
@@ -1681,10 +1681,87 @@ void Framework::DrawCuttingPlane() {
 		}
 		xval = -1.0;
 		yval += planestep;
+	}*/
+	float Cross1[3];
+	float Cross2[3];
+	float CuttingPlane[50][50][3];
+	Cross1[0] = -CuttingPlaneYVec;
+	Cross1[1] = CuttingPlaneXVec;
+	Cross1[2] = 0;
+	//Take the cross product to find the other perpendicular with z
+	Cross2[0] = (CuttingPlaneYVec * Cross1[2]) - (CuttingPlaneZVec * Cross1[1]);
+	Cross2[1] = (CuttingPlaneZVec * Cross1[0]) - (CuttingPlaneXVec * Cross1[2]);
+	Cross2[2] = (CuttingPlaneXVec * Cross1[1]) - (CuttingPlaneYVec * Cross1[0]);
+	Unit(Cross1, Cross1);
+	Unit(Cross2, Cross2);
+	//printf("Cross1 = %f, %f, %f\n", Cross1[0], Cross1[1], Cross1[2]);
+	//printf("Cross2 = %f, %f, %f\n", Cross2[0], Cross2[1], Cross2[2]);
+
+	//Place points
+	for (int i = 0; i < NumShaderPoints + 1; i++) {
+		for (int j = 0; j < NumShaderPoints + 1; j++) {
+			CuttingPlane[i][j][0] = Cross1[0] * (i - 5) / 10;
+			CuttingPlane[i][j][1] = Cross1[1] * (i - 5) / 10;
+			CuttingPlane[i][j][2] = Cross1[2] * (i - 5) / 10;
+			CuttingPlane[i][j][0] += Cross2[0] * (j - 5) / 10;
+			CuttingPlane[i][j][1] += Cross2[1] * (j - 5) / 10;
+			CuttingPlane[i][j][2] += Cross2[2] * (j - 5) / 10;
+			CuttingPlane[i][j][0] += CuttingPlaneXLoc;
+			CuttingPlane[i][j][1] += CuttingPlaneYLoc;
+			CuttingPlane[i][j][2] += CuttingPlaneZLoc;
+		}
 	}
 
+	for (int j = 0; j < NumShaderPoints; j++) {
+		for (int i = 0; i < NumShaderPoints; i++) {
+			//vertex 0
+			//printf("Xval is %f, Yval is %f, Zval is %f\n", xval, yval, zval);
+			vector3d * tempVec = VectorAtLocation(CuttingPlane[i][j][0], CuttingPlane[i][j][1], CuttingPlane[i][j][2]);
+			float mag = tempVec->magnitude();
+			DynamicNow[count].x = CuttingPlane[i][j][0];
+			DynamicNow[count].y = CuttingPlane[i][j][1];
+			DynamicNow[count].z = CuttingPlane[i][j][2];
+			DynamicNow[count].m = mag;
+			//printf("The t value is %f, the max value is %f, the min value is %f, the mag is %f\n", (mag - min) / (max - min), max, min, mag);
+			count++;
 
+			//vectex1
+			tempVec = VectorAtLocation(CuttingPlane[i + 1][j][0], CuttingPlane[i + 1][j][1], CuttingPlane[i + 1][j][2]);
+			mag = tempVec->magnitude();
+			DynamicNow[count].x = CuttingPlane[i + 1][j][0];
+			DynamicNow[count].y = CuttingPlane[i + 1][j][1];
+			DynamicNow[count].z = CuttingPlane[i + 1][j][2];
+			DynamicNow[count].m = mag;
+			//printf("The t value is %f, the max value is %f, the min value is %f, the mag is %f\n", (mag - min) / (max - min), max, min, mag);
+			count++;
 
+			tempVec = VectorAtLocation(CuttingPlane[i + 1][j + 1][0], CuttingPlane[i + 1][j + 1][1], CuttingPlane[i + 1][j + 1][2]);
+			mag = tempVec->magnitude();
+			DynamicNow[count].x = CuttingPlane[i + 1][j + 1][0];
+			DynamicNow[count].y = CuttingPlane[i + 1][j + 1][1];
+			DynamicNow[count].z = CuttingPlane[i + 1][j + 1][2];
+			DynamicNow[count].m = mag;
+			//printf("The t value is %f, the max value is %f, the min value is %f, the mag is %f\n", (mag - min) / (max - min), max, min, mag);
+			count++;
+
+			//vertex2
+			tempVec = VectorAtLocation(CuttingPlane[i][j + 1][0], CuttingPlane[i][j + 1][1], CuttingPlane[i][j + 1][2]);
+			mag = tempVec->magnitude();
+			DynamicNow[count].x = CuttingPlane[i][j + 1][0];
+			DynamicNow[count].y = CuttingPlane[i][j + 1][1];
+			DynamicNow[count].z = CuttingPlane[i][j + 1][2];
+			DynamicNow[count].m = mag;
+			//printf("The t value is %f, the max value is %f, the min value is %f, the mag is %f\n", (mag - min) / (max - min), max, min, mag);
+			count++;
+			//DynamicNow[index].m = 1.0;
+
+			//DynamicNow[i].m = mag;
+			//xval += planestep;
+			//zval += planestep;
+		}
+		//xval = -1.0;
+		//yval += planestep;
+	}
 
 	glUnmapBuffer(GL_ARRAY_BUFFER);
 	glUseProgram(program);
