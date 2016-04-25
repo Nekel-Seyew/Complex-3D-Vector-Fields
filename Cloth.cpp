@@ -105,7 +105,7 @@ Cloth::~Cloth()
 {
 }
 
-void Cloth::apply_phyisics(VectorDefiner* vdef) {
+void Cloth::apply_phyisics(VectorDefiner* vdef, float dt) {
 	vector3d* grav = new vector3d();
 	vector3d* vel = new vector3d();
 	/*external forces*/
@@ -197,6 +197,12 @@ void Cloth::apply_phyisics(VectorDefiner* vdef) {
 	}
 	delete grav;
 	delete vel;
+	//Get new Pos
+	for (int i = 0; i < 10; ++i) {
+		for (int j = 0; j < 10; ++j) {
+			this->the_grid[i][j].calculate_pos(dt);
+		}
+	}
 }
 
 void Cloth::spring_helper(ClothPoint* a, ClothPoint* b) {
