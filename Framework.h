@@ -62,6 +62,7 @@ struct node {//This is used in the Space Definer Code
 	float vx, vy, vz;
 	float vecLength;
 };
+
 struct posShader
 {//This Struct is For Using Shaders
 	float x, y, z, m; // m is magnitude
@@ -169,7 +170,9 @@ public:
 	void DrawBlob();
 	void DrawSheet();
 	void DrawCuttingPlane();
-
+	void DrawIsosurfaces();
+	void ProcessQuad(struct node *, struct node *, struct node *, struct node *, float );
+	void InitIsoNodes();
 	//These are the Helper Functions for Graphics: 
 	vector3d * VectorAtLocation(float, float, float);
 	vector3d* VectorAtLocation(vector3d* pos);
@@ -179,7 +182,8 @@ public:
 	void InitLists();
 	float Unit(float*, float*);
 	void Cross(float*, float*, float*);
-
+	float GetVectorMin();
+	float GetVectorMax();
 	//These are the Gluints that correspond to the Lists in InitLists:
 	GLuint	AxesList;			
 	GLuint StreamlineList;
@@ -204,14 +208,16 @@ public:
 
 	//This is the Isosurfaces Variables 
 	float numContours;
-	int UseXY;
-	int UseXZ;
-	int UseYZ;
+	float IsosurfacesVal;
+	int IsoResolution;
+	struct node XYPlane[100][100];
+	struct node XZPlane[100][100];
+	struct node YZPlane[100][100];
 
 	//These are for drawing the Cutting Planes - Still to be implemented:
 	float XYPlanesZval;
 	float  XZPlanesYval;
-	float XZPlanesZval;
+	float YZPlanesXval;
 
 
 	/*Glui (Controller)*/
