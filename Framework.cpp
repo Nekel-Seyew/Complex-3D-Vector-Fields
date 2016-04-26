@@ -786,6 +786,11 @@ void Framework::RestoreDefaults() {
 	//path = new std::vector<vector3d*>[100]();
 	num_dot_points = 100;
 	InitIsoNodes();
+	//just for now
+	vector3d pos(1, 1, 1);
+	vector3d xdir(-1, 0, 0);
+	vector3d ydir(0, -1, 0);
+	this->theCloth.place(&pos, &xdir, &ydir);
 }
 
 void Framework::Run(int argc, char ** argv) {
@@ -1050,6 +1055,9 @@ void Framework::DrawArrows() {
 		if ((theVectors->at(i)->magnitude()  < spinVecMin) || (theVectors->at(i)->magnitude() > spinVecMax)) {
 			continue;
 		}
+		if (theVectors->at(i)->magnitude() == 0.0f) continue;
+		vector3d* vecyes = theVectors->at(i);
+		vector3d* vecyespos = this->thePoints->at(i);
 		glColor4fv(Color((theVectors->at(i)->magnitude())));
 		float tail[3], head[3];
 		float *xyz = thePoints->at(i)->xyz();
@@ -1845,53 +1853,7 @@ void Framework::ProcessQuad(struct node *p0, struct node *p1, struct node *p2, s
 
 //all we need this to do is to physically draw the sheet, which will bend and flex and stuff
 void Framework::DrawSheet() {
-	/*float VecSheet[10][10][3];
-	float Cross1[3];
-	float Cross2[3];
-	//Grab a perpendicular vector with 0 z 
-	Cross1[0] = -VectorSheetYVec;
-	Cross1[1] = VectorSheetXVec;
-	Cross1[2] = 0;
-	//Take the cross product to find the other perpendicular with z
-	Cross2[0] = (VectorSheetYVec * Cross1[2]) - (VectorSheetZVec * Cross1[1]);
-	Cross2[1] = (VectorSheetZVec * Cross1[0]) - (VectorSheetXVec * Cross1[2]);
-	Cross2[2] = (VectorSheetXVec * Cross1[1]) - (VectorSheetYVec * Cross1[0]);
-	Unit(Cross1, Cross1);
-	Unit(Cross2, Cross2);
-	//printf("Cross1 = %f, %f, %f\n", Cross1[0], Cross1[1], Cross1[2]);
-	//printf("Cross2 = %f, %f, %f\n", Cross2[0], Cross2[1], Cross2[2]);
-
-	//Place points
-	for (int i = 0; i < 10; i++){
-		for (int j = 0; j < 10; j++) {
-			VecSheet[i][j][0] = Cross1[0] * (i - 5);
-			VecSheet[i][j][1] = Cross1[1] * (i - 5);
-			VecSheet[i][j][2] = Cross1[2] * (i - 5);
-			VecSheet[i][j][0] += Cross2[0] * (j - 5);
-			VecSheet[i][j][1] += Cross2[1] * (j - 5);
-			VecSheet[i][j][2] += Cross2[2] * (j - 5);
-			VecSheet[i][j][0] += VectorSheetXLoc;
-			VecSheet[i][j][1] += VectorSheetYLoc;
-			VecSheet[i][j][2] += VectorSheetZLoc;
-		}
-	}*/
-
-	//Insert Animation here?
-	//Draw the sheet
-	glBegin(GL_TRIANGLES);
-		glColor3f(0.1, 0.2, 0.3);
-		for (int i = 0; i < 9; i++) {
-			for (int j = 0; j < 9; j++) {
-				glVertex3f(VecSheet[i][j].xyz()[0], VecSheet[i][j].xyz()[1], VecSheet[i][j].xyz()[2]);
-				glVertex3f(VecSheet[i + 1][j].xyz()[0], VecSheet[i + 1][j].xyz()[1], VecSheet[i + 1][j].xyz()[2]);
-				glVertex3f(VecSheet[i][j + 1].xyz()[0], VecSheet[i][j + 1].xyz()[1], VecSheet[i][j + 1].xyz()[2]);
-
-				glVertex3f(VecSheet[i + 1][j].xyz()[0], VecSheet[i + 1][j].xyz()[1], VecSheet[i + 1][j].xyz()[2]);
-				glVertex3f(VecSheet[i + 1][j + 1].xyz()[0], VecSheet[i + 1][j + 1].xyz()[1], VecSheet[i + 1][j + 1].xyz()[2]);
-				glVertex3f(VecSheet[i][j + 1].xyz()[0], VecSheet[i][j + 1].xyz()[1], VecSheet[i][j + 1].xyz()[2]);
-			}
-		}
-	glEnd();
+	this->theCloth.render();
 }
 
 void Framework::DrawCuttingPlane() {
@@ -2174,12 +2136,15 @@ void Framework::MouseMotion(int x, int y){
 }
 
 void Framework::PhysicsUpdater(int value) {
-	for (int i = 0; i < 9; i++) {
+	/*for (int i = 0; i < 9; i++) {
 		for (int j = 0; j < 9; j++) {
 			vector3d* newv = VectorAdvect(&VecSheet[i][j], 0.1);
 			//VecSheet[i][j].set_this_to_be_passed_in_value(newv);
 			delete newv;
 		}
+	}*/
+	if (this->useVectorSheet) {
+		this->theCloth.apply_phyisics(this->VDef, 0.01f);
 	}
 	if (((int)this->NumPoints) != this->num_dot_points) { //increase (or decrease) number of dots
 		this->num_dot_points = ((int)this->NumPoints);

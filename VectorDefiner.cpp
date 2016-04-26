@@ -164,8 +164,19 @@ void VectorDefiner::populate(std::vector<vector3d*>* space){
 					temp_vectors->push_back(vectorFiled);
 				}else if (eqrs_size == 3) {
 					if (gotbounds) {
-						vector3d* spatial = new vector3d(x*(10.0f/xmax) - 5.0f, y*(10.0f / ymax) - 5.0f, z*(10.0f / zmax) - 5.0f);
-						++x; ++y; ++z;
+						//manual iteration.
+						if (z < zmax) {
+							++z;
+						}else {
+							if (y < ymax) {
+								z = 0;
+								++y;
+							}else {
+								y = 0;
+								++x;
+							}
+						}
+						vector3d* spatial = new vector3d(x*(10.0f / xmax) - 5.0f, y*(10.0f / ymax) - 5.0f, z*(10.0f / zmax) - 5.0f);
 						vector3d* vectorFiled = new vector3d(atof(eqrs[0].c_str()), atof(eqrs[1].c_str()), atof(eqrs[2].c_str()));
 						temp_space->push_back(spatial);
 						temp_vectors->push_back(vectorFiled);
@@ -182,66 +193,12 @@ void VectorDefiner::populate(std::vector<vector3d*>* space){
 			csv.close();//be polite
 		}
 		
-		//start training data
-		/*this->data_trainer = new DataSetTrainer(temp_space, temp_vectors);
-		this->data_trainer->train_linear();
-
-		double errX = 0;
-		double errY = 0;
-		double errZ = 0;
-		//use trained data to get vectors
-		for (size_t i = 0; i < temp_space->size(); ++i) {
-			vector3d* vec = this->data_trainer->get_from_linear(temp_space->at(i));
-			//this->vectors->push_back(vec);
-			//calc error
-			float* a = temp_vectors->at(i)->rtp();
-			float* b = vec->rtp();
-			errX += (b[0] - a[0]) * (b[0] - a[0]);
-			errY += (b[1] - a[1]) * (b[1] - a[1]);
-			errZ += (b[2] - a[2]) * (b[2] - a[2]);
-			vec->xyz();
-			this->vectors->push_back(vec);
-		}
-		errX /= temp_space->size();
-		errY /= temp_space->size();
-		errZ /= temp_space->size();
-		std::cout << "RADIUS error: " << errX << std::endl;
-		std::cout << "THETA error: " << errY << std::endl;
-		std::cout << "PHI error: " << errZ << std::endl;
-		this->space = temp_space;
-		/*
-		this->data_trainer = new DataSetTrainer(temp_space, temp_vectors);
-		this->data_trainer->train_hybrid();
-
-		double errX = 0;
-		double errY = 0;
-		double errZ = 0;
-		for (size_t i = 0; i < temp_space->size(); ++i) {
-			vector3d* vec = this->data_trainer->get_from_hybrid(temp_space->at(i));
-
-			float* a = temp_vectors->at(i)->rtp();
-			float* b = vec->rtp();
-			errX += (b[0] - a[0]) * (b[0] - a[0]);
-			errY += (b[1] - a[1]) * (b[1] - a[1]);
-			errZ += (b[2] - a[2]) * (b[2] - a[2]);
-
-			vec->xyz();
-			this->vectors->push_back(vec);
-		}
-		errX /= temp_space->size();
-		errY /= temp_space->size();
-		errZ /= temp_space->size();
-		std::cout << "RADIUS error: " << errX << std::endl;
-		std::cout << "THETA error: " << errY << std::endl;
-		std::cout << "PHI error: " << errZ << std::endl;
-		this->space = temp_space;*/
-
 		this->space = temp_space;
 		this->vectors = temp_vectors;
 
 		//build everything to allow for nearest-neighbor search
 		this->pc2kd = new PC2KD(this);
-		this->index = new my_kd_tree_t(3 /*dim*/, *(this->pc2kd), nanoflann::KDTreeSingleIndexAdaptorParams(10 /* max leaf */));
+		this->index = new my_kd_tree_t(3 /*dim*/, *(this->pc2kd), nanoflann::KDTreeSingleIndexAdaptorParams(100 /* max leaf */));
 		this->index->buildIndex();
 		//all done
 	}else{

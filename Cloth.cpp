@@ -1,11 +1,12 @@
 #include "Cloth.h"
+#include "Framework.h"
 
 /*ClothPoint*/
 
 ClothPoint::ClothPoint()
 {
 	this->position = new vector3d(0.f, 0.f, 0.f, vector3d::rect);
-	this->mass = 0.0f;
+	this->mass = 1.0f;
 	this->velocity = new vector3d(0.f, 0.f, 0.f, vector3d::rect);
 	this->forces_sum = new vector3d(0.f, 0.f, 0.f, vector3d::rect);
 	this->normal = new vector3d(0.f, 0.f, 0.f, vector3d::rect);
@@ -40,7 +41,7 @@ void ClothPoint::calculate_pos(float dt) {
 	pos_ij(t+dt) = pos_ij(t) + dt*vel_ij(t+dt)
 	*/
 	//calculate acceleration
-	vector3d* acc = *(this->forces_sum) - *(this->intern_forces_sum);
+	vector3d* acc = *(this->forces_sum) + *(this->intern_forces_sum);
 	(*acc) /= this->mass;
 	//you know, let's try this out. It's a normal integral. Is it right? dunno. let's try.
 	//figure out new position
@@ -57,8 +58,9 @@ void ClothPoint::calculate_pos(float dt) {
 void ClothPoint::set_pos(vector3d* pos) {
 	if (this->position != NULL) {
 		delete this->position;
+		this->position = new vector3d(0.f, 0.f, 0.f, vector3d::rect);
 	}
-	this->position = pos;
+	this->position->set_this_to_be_passed_in_value(pos);
 }
 void ClothPoint::set_pos(float x, float y, float z) {
 	vector3d temp(x, y, z, vector3d::rect);
@@ -70,6 +72,9 @@ void ClothPoint::set_pos(float x, float y, float z) {
 }
 
 void ClothPoint::set_norm(vector3d* pos) {
+	if (this->position == NULL) {
+		this->position = new vector3d(0.f, 0.f, 0.f, vector3d::rect);
+	}
 	this->normal->set_this_to_be_passed_in_value(pos);
 }
 
@@ -95,14 +100,48 @@ Cloth::Cloth()
 {
 	this->gravity = new vector3d(0.f, 0.f, 0.f, vector3d::rect);;
 	this->normal_distance = 0.1f;
-	this->stiffness = 10.0f;
-	this->dampening = 2;
-	this->viscoscity = 1;
+	this->stiffness = 100.0f;
+	this->dampening = 2000.f;
+	this->viscoscity = 0.5;
 }
 
 
 Cloth::~Cloth()
 {
+}
+
+void Cloth::place(vector3d* pos, vector3d* xdir, vector3d* ydir) {
+	vector3d xdirmod(xdir); xdirmod.unitize(); xdirmod *= this->normal_distance;
+	vector3d ydirmod(ydir); ydirmod.unitize(); ydirmod *= this->normal_distance;
+	this->the_grid[0][0].set_pos(pos);
+	for (int i = 0; i < 10; ++i) {
+		for (int j = 0; j < 10; ++j) {
+			if (i == 0 && j == 0) {
+				continue;
+			}else if (1 == 0 && j == 9) {
+				vector3d* tmp = *(this->the_grid[i-1][j].get_pos()) + ydirmod;
+				this->the_grid[i][j].set_pos(tmp);
+				delete tmp;
+				continue;
+			}else if (j == 0) {
+				vector3d* tmp = *(this->the_grid[i - 1][j].get_pos()) + ydirmod;
+				this->the_grid[i][j].set_pos(tmp);
+				delete tmp;
+				continue;
+			}else if (i == 0) {
+				vector3d* tmp = *(this->the_grid[i][j-1].get_pos()) + xdirmod;
+				this->the_grid[i][j].set_pos(tmp);
+				delete tmp;
+				continue;
+			}else {
+				vector3d* tmp = *(this->the_grid[i - 1][j - 1].get_pos()) + ydirmod;
+				(*tmp) += xdirmod;
+				this->the_grid[i][j].set_pos(tmp);
+				delete tmp;
+				continue;
+			}
+		}
+	}
 }
 
 void Cloth::apply_phyisics(VectorDefiner* vdef, float dt) {
@@ -215,25 +254,41 @@ void Cloth::spring_helper(ClothPoint* a, ClothPoint* b) {
 	
 	(*temp) *= this->stiffness;
 	
-	a->give_intern_force(temp);
+	//b->give_intern_force(temp);//equal and opposite directions
 	(*temp) *= -1.f;
-	b->give_intern_force(temp);
+	a->give_intern_force(temp);
 	
 	delete temp;
 }
 
 
 void Cloth::render() {
+	float min = this->the_grid[0][0].get_vel()->magnitude();
+	float max = min;
+	for (int i = 0; i < 10; ++i) {
+		for (int j = 0; j < 10; ++j) {
+			float tmp = this->the_grid[i][j].get_vel()->magnitude();
+			min = (min > tmp) ? tmp : min;
+			max = (max < tmp) ? tmp : max;
+		}
+	}
+	//yay, colors!
 	glBegin(GL_TRIANGLES);
-		glColor3f(0.1f, 0.2f, 0.3f);
+		//glColor3f(0.1f, 0.2f, 0.3f);
 		for (int i = 0; i < 9; i++) {
 			for (int j = 0; j < 9; j++) {
+				glColor3fv(Framework::instance()->Color(the_grid[i][j].get_vel()->magnitude(), min, max));
 				glVertex3f(the_grid[i][j].get_pos()->xyz()[0], the_grid[i][j].get_pos()->xyz()[1], the_grid[i][j].get_pos()->xyz()[2]);
+				glColor3fv(Framework::instance()->Color(the_grid[i+1][j].get_vel()->magnitude(), min, max));
 				glVertex3f(the_grid[i + 1][j].get_pos()->xyz()[0], the_grid[i + 1][j].get_pos()->xyz()[1], the_grid[i + 1][j].get_pos()->xyz()[2]);
+				glColor3fv(Framework::instance()->Color(the_grid[i][j+1].get_vel()->magnitude(), min, max));
 				glVertex3f(the_grid[i][j + 1].get_pos()->xyz()[0], the_grid[i][j + 1].get_pos()->xyz()[1], the_grid[i][j + 1].get_pos()->xyz()[2]);
 
+				glColor3fv(Framework::instance()->Color(the_grid[i+1][j].get_vel()->magnitude(), min, max));
 				glVertex3f(the_grid[i + 1][j].get_pos()->xyz()[0], the_grid[i + 1][j].get_pos()->xyz()[1], the_grid[i + 1][j].get_pos()->xyz()[2]);
+				glColor3fv(Framework::instance()->Color(the_grid[i+1][j+1].get_vel()->magnitude(), min, max));
 				glVertex3f(the_grid[i + 1][j + 1].get_pos()->xyz()[0], the_grid[i + 1][j + 1].get_pos()->xyz()[1], the_grid[i + 1][j + 1].get_pos()->xyz()[2]);
+				glColor3fv(Framework::instance()->Color(the_grid[i][j+1].get_vel()->magnitude(), min, max));
 				glVertex3f(the_grid[i][j + 1].get_pos()->xyz()[0], the_grid[i][j + 1].get_pos()->xyz()[1], the_grid[i][j + 1].get_pos()->xyz()[2]);
 			}
 		}

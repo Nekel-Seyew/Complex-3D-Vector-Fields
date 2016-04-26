@@ -68,6 +68,7 @@ public:
 	vector3d& operator+=(const vector3d& rhs);
 	//returns new
 	vector3d* operator-(const vector3d& rhs);
+	vector3d* operator+(const vector3d& rhs);
 	//returns const
 	//dot operator
 	float operator*(const vector3d& rhs);
