@@ -181,6 +181,7 @@ void InitGlui() {
 	GLUI_Spinner * CuttingPlaneXVec;
 	GLUI_Spinner * CuttingPlaneYVec;
 	GLUI_Spinner * CuttingPlaneZVec;
+	GLUI_Spinner * Tolerence;
 
 	//dot point animation controls:
 	GLUI_Spinner * dotPointColorSpinnerR;
@@ -399,7 +400,7 @@ void InitGlui() {
 	VectorBlobZVec->set_float_limits(-1.0, 1.0);
 	VectorBlobZVec->set_speed(0.2);
 
-	//VectorBlob Settings:
+	//Cutting Plane Settings:
 
 	CuttingPlaneXLoc = TestGlui->add_spinner_to_panel(CuttingPlaneSettings, "XCuttingPlaneLocation", GLUI_SPINNER_FLOAT, &Framework::instance()->CuttingPlaneXLoc);
 	CuttingPlaneXLoc->set_float_limits(-1.0, 1.0);
@@ -425,6 +426,12 @@ void InitGlui() {
 	CuttingPlaneZVec->set_float_limits(-1.0, 1.0);
 	CuttingPlaneZVec->set_speed(0.2);
 
+	TestGlui->add_checkbox_to_panel(CuttingPlaneSettings, "Use Contour", &Framework::instance()->ContourOn);
+
+	Tolerence = TestGlui->add_spinner_to_panel(CuttingPlaneSettings, "Tolerence", GLUI_SPINNER_FLOAT, &Framework::instance()->Tolerence);
+	Tolerence->set_float_limits(0., 5.0);
+	Tolerence->set_speed(0.4);
+	
 	//animation items
 	TestGlui->add_checkbox_to_panel(AnimationSettings, "Color As Velocity", &Framework::instance()->colorAsVelocity);
 	TestGlui->add_checkbox_to_panel(AnimationSettings, "TracePath", &Framework::instance()->traceDotPath);//for turning off and on trace path.

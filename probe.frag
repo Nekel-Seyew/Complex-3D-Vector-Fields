@@ -7,6 +7,8 @@
 uniform float VectorMax;
 uniform float VectorMin;
 uniform int AltColor;
+uniform int ContourOn;
+uniform float uTol;
 in vec4  vColor;
 in float vLightIntensity;
 in vec3 vECposition;
@@ -202,7 +204,7 @@ main( )
 {
 	float		uMin = VectorMin;
 	float		uMax = VectorMax;
-	float		uTol = 1.0;
+	//float		uTol = 1.0;
 	//uniform sampler3D	TexUnit;
 	vec3 stp = ( vECposition.xyz + 1. ) / 2.;
 	// maps [-1.,1.] to [0.,1.]
@@ -234,6 +236,12 @@ main( )
 	if( abs( scalar - scalar10 ) > uTol )
 		discard;
 	*/
+	
+	if( ContourOn == 1 ){
+		float scalar10 = float( 10*int( (scalar+5.)/10. ) );
+		if( abs( scalar - scalar10 ) > uTol )
+			discard; 
+	}
 	float SMIN =   VectorMin;
 	float SMAX = VectorMax;
 	float t = ( 1. - VectorMin ) / ( VectorMax - VectorMin );

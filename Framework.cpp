@@ -729,6 +729,7 @@ void Framework::RestoreDefaults() {
 	VectorBlobTimeVal = 0; 
 	CuttingPlaneYVec = 0.1;
 	CuttingPlaneXVec = CuttingPlaneZVec = CuttingPlaneXLoc = CuttingPlaneYLoc = CuttingPlaneZLoc = 0.0;
+	Tolerence = 1.0;
 	IsosurfacesVal = 0.1;
 	IsoResolution = 15;
 	numContours = 5.0;
@@ -776,6 +777,7 @@ void Framework::RestoreDefaults() {
 	useVectorBlob = 0; 
 	useVectorSheet = 0;
 	useCuttingPlane = 0;
+	ContourOn = 0;
 	useJitter = 1;
 	useProbe = 0;
 	usePrism = 1;
@@ -2071,6 +2073,8 @@ void Framework::DrawCuttingPlane() {
 	glUniform1f(glGetUniformLocation(program, "VectorMax"), max);
 	glUniform1f(glGetUniformLocation(program, "VectorMin"), min);
 	glUniform1i(glGetUniformLocation(program, "AltColor"), ColorAlternate);
+	glUniform1i(glGetUniformLocation(program, "ContourOn"), ContourOn);
+	glUniform1f(glGetUniformLocation(program, "uTol"), Tolerence);
 	glBindBuffer(GL_ARRAY_BUFFER, posSSbo);
 	//glVertexPointer( 4, GL_FLOAT, 0, (void *)0 );
 	//GLuint vPosition = glGetAttribLocation(program, "vPosition");
