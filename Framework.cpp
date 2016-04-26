@@ -669,6 +669,16 @@ void Framework::InitLists() {
 	glLineWidth(1.);
 	glEndList();
 
+	UpdateStreamline();
+	UpdateIsolist();
+}
+void Framework::UpdateIsolist() {
+	IsoList = glGenLists(3);
+	glNewList(IsoList, GL_COMPILE);
+	DrawIsosurfaces();
+	glEndList();
+}
+void Framework::UpdateStreamline() {
 	StreamlineList = glGenLists(2);
 	glNewList(StreamlineList, GL_COMPILE);
 	float xval;
@@ -684,7 +694,8 @@ void Framework::InitLists() {
 			vector3d* p = points->at(rand() % points->size());
 			GenStreamline(p->xyz()[0], p->xyz()[1], p->xyz()[2]);
 		}
-	}else {//if it's an equation!
+	}
+	else {//if it's an equation!
 		xval = -1.0; //assumes contained from -1 to 1
 		for (int i = 0; i < N; i++) {
 			yval = -1.0;
@@ -718,8 +729,9 @@ void Framework::RestoreDefaults() {
 	VectorBlobTimeVal = 0; 
 	CuttingPlaneYVec = 0.1;
 	CuttingPlaneXVec = CuttingPlaneZVec = CuttingPlaneXLoc = CuttingPlaneYLoc = CuttingPlaneZLoc = 0.0;
+	Tolerence = 1.0;
 	IsosurfacesVal = 0.1;
-	IsoResolution = 100;
+	IsoResolution = 15;
 	numContours = 5.0;
 	ActiveButton = 0;
 	XYPlanesZval = 0;
@@ -765,6 +777,7 @@ void Framework::RestoreDefaults() {
 	useVectorBlob = 0; 
 	useVectorSheet = 0;
 	useCuttingPlane = 0;
+	ContourOn = 0;
 	useJitter = 1;
 	useProbe = 0;
 	usePrism = 1;
@@ -985,9 +998,9 @@ void Framework::Display() {
 
 	//Insert comment here when this does something
 	if (useIsosurfaces) {
-		DrawIsosurfaces();
+		glCallList(IsoList);
+		
 	}
-
 	if (this->useCuttingPlane) {
 		DrawCuttingPlane();
 	}
@@ -1169,7 +1182,8 @@ void Framework::DrawArrows() {
 	}
 }
 void Framework::DrawIsosurfaces() {
-	float Sstar = 0.1;
+	printf("Drawing the Isosurfaces\n");
+	float Sstar = 0.15;
 	float SMax = GetVectorMax();
 	float min = GetVectorMin();
 	float max = GetVectorMax();
@@ -2015,12 +2029,14 @@ void Framework::DrawCuttingPlane() {
 		//xval = -1.0;
 		//yval += planestep;
 	}
-
 	glUnmapBuffer(GL_ARRAY_BUFFER);
 	glUseProgram(program);
 	glShadeModel(GL_SMOOTH);
 	glUniform1f(glGetUniformLocation(program, "VectorMax"), max);
 	glUniform1f(glGetUniformLocation(program, "VectorMin"), min);
+	glUniform1i(glGetUniformLocation(program, "AltColor"), ColorAlternate);
+	glUniform1i(glGetUniformLocation(program, "ContourOn"), ContourOn);
+	glUniform1f(glGetUniformLocation(program, "uTol"), Tolerence);
 	glBindBuffer(GL_ARRAY_BUFFER, posSSbo);
 	//glVertexPointer( 4, GL_FLOAT, 0, (void *)0 );
 	//GLuint vPosition = glGetAttribLocation(program, "vPosition");

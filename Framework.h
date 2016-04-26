@@ -187,11 +187,13 @@ public:
 	float GetVectorMin();
 	float GetVectorMax();
 	//These are the Gluints that correspond to the Lists in InitLists:
-	GLuint	AxesList;			
+	GLuint IsoList;
+	GLuint AxesList;			
 	GLuint StreamlineList;
 	GLuint BlobList;
 	GLuint PathList;
-
+	void Framework::UpdateStreamline();
+	void Framework::UpdateIsolist();
 
 	//Streamline Function and Related Variables
 	void GenStreamline(float, float, float);
@@ -278,6 +280,7 @@ public:
 	int useJitter;
 	int useProbe;
 	int useCuttingPlane;
+	int ContourOn;
 
 
 
@@ -313,6 +316,7 @@ public:
 
 	//These are the GluiValues for the Cutting Plane:
 	float CuttingPlaneXLoc, CuttingPlaneYLoc, CuttingPlaneZLoc, CuttingPlaneXVec, CuttingPlaneYVec, CuttingPlaneZVec;
+	float Tolerence;
 
 	//These are the GluiValues for the Vector Sheet:
 	float VectorSheetTimeVal=0, VectorSheetXLoc=0, VectorSheetYLoc=0, VectorSheetZLoc=0, VectorSheetXVec=0, VectorSheetYVec=0, VectorSheetZVec=1;

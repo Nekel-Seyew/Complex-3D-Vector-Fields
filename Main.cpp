@@ -62,13 +62,17 @@ void MyTextBoxes(int textbox) {
 void SpinnerCallback(int spinner) {
 	switch (spinner) {
 	case(0) :
-		Framework::instance()->InitLists();
+		Framework::instance()->UpdateStreamline();
 		glutPostRedisplay();
 		break;
 	case(1) :
 		VectorBlobTime->set_int_val(0);
 	case(2) :
 		Framework::instance()->InitBlob();
+		glutPostRedisplay();
+		break;
+	case(3) :
+		Framework::instance()->UpdateIsolist();
 		glutPostRedisplay();
 		break;
 	}
@@ -177,6 +181,7 @@ void InitGlui() {
 	GLUI_Spinner * CuttingPlaneXVec;
 	GLUI_Spinner * CuttingPlaneYVec;
 	GLUI_Spinner * CuttingPlaneZVec;
+	GLUI_Spinner * Tolerence;
 
 	//dot point animation controls:
 	GLUI_Spinner * dotPointColorSpinnerR;
@@ -356,15 +361,16 @@ void InitGlui() {
 	spinNumContours = TestGlui->add_spinner_to_panel(IsosurfaceSettings, "NumContours", GLUI_SPINNER_FLOAT, &Framework::instance()->numContours);
 	spinNumContours->set_float_limits(0.0, 1.0);
 	spinNumContours->set_speed(0.1);
+
 	float tempMin = Framework::instance()->GetVectorMin();
 	float tempMax = Framework::instance()->GetVectorMax();
 	printf("IsoMin is %f, IsoMax is %f\n", tempMin, tempMax);
-	spinIsoValue = TestGlui->add_spinner_to_panel(IsosurfaceSettings, "IsoValue", GLUI_SPINNER_FLOAT, &Framework::instance()->IsosurfacesVal);
-	spinIsoValue->set_float_limits(0.0, 1.0);
-	spinIsoValue->set_speed(0.1);
-	spinIsoResolution = TestGlui->add_spinner_to_panel(IsosurfaceSettings, "IsoResolution", GLUI_SPINNER_INT, &Framework::instance()->IsoResolution);
-	spinIsoValue->set_float_limits(50, 150);
-	spinIsoValue->set_speed(0.1);
+	spinIsoValue = TestGlui->add_spinner_to_panel(IsosurfaceSettings, "IsoValue", GLUI_SPINNER_FLOAT, &Framework::instance()->IsosurfacesVal, 3, SpinnerCallback);
+	spinIsoValue->set_float_limits(tempMin, tempMax);
+	spinIsoValue->set_speed(0.5);
+	spinIsoResolution = TestGlui->add_spinner_to_panel(IsosurfaceSettings, "IsoResolution", GLUI_SPINNER_INT, &Framework::instance()->IsoResolution, 3, SpinnerCallback);
+	spinIsoResolution->set_float_limits(10, 150);
+	spinIsoResolution->set_speed(0.1);
 	//VectorBlob Settings:
 	VectorBlobTime = TestGlui->add_spinner_to_panel(VectorBlobSettings, "Time Value", GLUI_SPINNER_INT, &Framework::instance()->VectorBlobTimeVal, 2, SpinnerCallback);
 	VectorBlobTime->set_int_limits(0, 100);
@@ -394,7 +400,7 @@ void InitGlui() {
 	VectorBlobZVec->set_float_limits(-1.0, 1.0);
 	VectorBlobZVec->set_speed(0.2);
 
-	//VectorBlob Settings:
+	//Cutting Plane Settings:
 
 	CuttingPlaneXLoc = TestGlui->add_spinner_to_panel(CuttingPlaneSettings, "XCuttingPlaneLocation", GLUI_SPINNER_FLOAT, &Framework::instance()->CuttingPlaneXLoc);
 	CuttingPlaneXLoc->set_float_limits(-1.0, 1.0);
@@ -420,6 +426,12 @@ void InitGlui() {
 	CuttingPlaneZVec->set_float_limits(-1.0, 1.0);
 	CuttingPlaneZVec->set_speed(0.2);
 
+	TestGlui->add_checkbox_to_panel(CuttingPlaneSettings, "Use Contour", &Framework::instance()->ContourOn);
+
+	Tolerence = TestGlui->add_spinner_to_panel(CuttingPlaneSettings, "Tolerence", GLUI_SPINNER_FLOAT, &Framework::instance()->Tolerence);
+	Tolerence->set_float_limits(0., 5.0);
+	Tolerence->set_speed(0.4);
+	
 	//animation items
 	TestGlui->add_checkbox_to_panel(AnimationSettings, "Color As Velocity", &Framework::instance()->colorAsVelocity);
 	TestGlui->add_checkbox_to_panel(AnimationSettings, "TracePath", &Framework::instance()->traceDotPath);//for turning off and on trace path.
