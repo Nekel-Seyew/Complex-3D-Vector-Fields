@@ -29,6 +29,8 @@
 #include <queue>
 #include <deque>
 
+#include "Cloth.h"
+
 //This is for improved readability
 typedef glm::vec4 point4;
 typedef glm::vec4 color4;
@@ -278,6 +280,7 @@ public:
 	int useJitter;
 	int useProbe;
 	int useCuttingPlane;
+	int ContourOn;
 
 
 
@@ -313,11 +316,13 @@ public:
 
 	//These are the GluiValues for the Cutting Plane:
 	float CuttingPlaneXLoc, CuttingPlaneYLoc, CuttingPlaneZLoc, CuttingPlaneXVec, CuttingPlaneYVec, CuttingPlaneZVec;
+	float Tolerence;
 
 	//These are the GluiValues for the Vector Sheet:
 	float VectorSheetTimeVal=0, VectorSheetXLoc=0, VectorSheetYLoc=0, VectorSheetZLoc=0, VectorSheetXVec=0, VectorSheetYVec=0, VectorSheetZVec=1;
 	void initSheet();
 	vector3d VecSheet[10][10];
+	Cloth theCloth;
 
 	//animation points
 	float NumPoints;//max value is hardset at 1000

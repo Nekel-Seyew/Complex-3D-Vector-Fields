@@ -178,6 +178,12 @@ vector3d* vector3d::operator-(const vector3d& rhs) {
 	temp.to_rect();
 	return (new vector3d(this->abc[0] - temp.abc[0], this->abc[1] - temp.abc[1], this->abc[2] - temp.abc[2]));
 }
+vector3d* vector3d::operator+(const vector3d& rhs) {
+	this->to_rect();
+	vector3d temp(rhs);//ugh so much work, but need things in convenient form. Sorry processor
+	temp.to_rect();
+	return (new vector3d(this->abc[0] + temp.abc[0], this->abc[1] + temp.abc[1], this->abc[2] + temp.abc[2]));
+}
 
 float vector3d::operator*(const vector3d& rhs) {
 	this->to_rect();

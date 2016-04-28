@@ -5,8 +5,9 @@
 #include <vector>
 #include <boost\numeric\odeint.hpp>
 #include <Windows.h>
-#include <gl\GL.h>
-#include <gl\GLU.h>
+#include "glew.h"
+#include <GL/gl.h>
+#include <GL/glu.h>
 
 class Cloth;
 
@@ -58,6 +59,7 @@ private:
 public:
 	void render();
 	void apply_phyisics(VectorDefiner* vdef, float dt);
+	void place(vector3d* pos, vector3d* xdir, vector3d* ydir);
 	Cloth();
 	~Cloth();
 };
