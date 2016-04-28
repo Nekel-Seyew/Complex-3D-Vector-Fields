@@ -20,15 +20,15 @@ const float TRADIUSMIN = { 0.f };
 const float TRADIUSMAX = { 1.732f };
 const char * TRADIUSFORMAT = { "Radius-range: %5.2f - %5.2f" };
 float			TRadLowHigh[2] = { TRADIUSMIN, TRADIUSMAX }; //temperature highlow
-GLUI_HSlider *		TRadSlider; //temperature slider
+//GLUI_HSlider *		TRadSlider; //temperature slider
 GLUI_StaticText *	TRadLabel; //temperature static text label4
-GLUI_HSlider *		RadSlider2; //temperature slider
+//GLUI_HSlider *		RadSlider2; //temperature slider
 GLUI_StaticText *	RadLabel2; //temperature static text label
 #define RADID 2
 float VecTest[2] = { 0.f, 10.f };
 
 GLUI_Spinner * VectorBlobTime;
-
+/*
 void MySliders(int numSlide) {
 	//printf("Slider #%d\n", numSlide);
 	char tempstr[128];
@@ -55,7 +55,7 @@ void MySliders(int numSlide) {
 	}
 	glutSetWindow(Framework::instance()->MainWindow);
 	glutPostRedisplay();
-}
+}*/
 void MyTextBoxes(int textbox) {
 	
 }
