@@ -20,15 +20,15 @@ const float TRADIUSMIN = { 0.f };
 const float TRADIUSMAX = { 1.732f };
 const char * TRADIUSFORMAT = { "Radius-range: %5.2f - %5.2f" };
 float			TRadLowHigh[2] = { TRADIUSMIN, TRADIUSMAX }; //temperature highlow
-GLUI_HSlider *		TRadSlider; //temperature slider
+//GLUI_HSlider *		TRadSlider; //temperature slider
 GLUI_StaticText *	TRadLabel; //temperature static text label4
-GLUI_HSlider *		RadSlider2; //temperature slider
+//GLUI_HSlider *		RadSlider2; //temperature slider
 GLUI_StaticText *	RadLabel2; //temperature static text label
 #define RADID 2
 float VecTest[2] = { 0.f, 10.f };
 
 GLUI_Spinner * VectorBlobTime;
-
+/*
 void MySliders(int numSlide) {
 	//printf("Slider #%d\n", numSlide);
 	char tempstr[128];
@@ -55,7 +55,7 @@ void MySliders(int numSlide) {
 	}
 	glutSetWindow(Framework::instance()->MainWindow);
 	glutPostRedisplay();
-}
+}*/
 void MyTextBoxes(int textbox) {
 	
 }
@@ -76,6 +76,14 @@ void SpinnerCallback(int spinner) {
 		glutPostRedisplay();
 		break;
 	}
+}
+void CheckboxCallback(int checkbox) {
+	switch (checkbox) {
+	case(0) :
+		Framework::instance()->DrawCuttingPlane();
+		break;
+	}
+
 }
 void MyButtons(int button) {
 	switch (button) {
@@ -131,13 +139,9 @@ void InitGlui() {
 	GLUI_Rollout * AnimationSettings;
 	GLUI_Rollout * IsosurfaceSettings;
 	GLUI_Rollout * PointsSettings;
-	GLUI_Rollout * StrokesSettings;
 	GLUI_Rollout * StreamlineSettings;
 	GLUI_Rollout * VectorBlobSettings; 
 	GLUI_Rollout * CuttingPlaneSettings;
-	//Oculus Settings:
-	GLUI_Panel * OculusSettings;
-	GLUI_Rollout * OculusRollout;
 	
 	//ObjFileSettings:
 	GLUI_Panel * ObjFileSettings;
@@ -182,6 +186,7 @@ void InitGlui() {
 	GLUI_Spinner * CuttingPlaneYVec;
 	GLUI_Spinner * CuttingPlaneZVec;
 	GLUI_Spinner * Tolerence;
+	GLUI_Spinner * ContDist;
 
 	//dot point animation controls:
 	GLUI_Spinner * dotPointColorSpinnerR;
@@ -276,7 +281,6 @@ void InitGlui() {
 	TestGlui->add_checkbox_to_panel(graphicsOptions, "Use Points", &Framework::instance()->usePoints);
 	TestGlui->add_checkbox_to_panel(graphicsOptions, "Use Streamlines", &Framework::instance()->useStreamlines);
 	TestGlui->add_column_to_panel(graphicsOptions, 0);
-	TestGlui->add_checkbox_to_panel(graphicsOptions, "Use StrokeVisualization", &Framework::instance()->useStrokes);
 	TestGlui->add_checkbox_to_panel(graphicsOptions, "Use VectorBlob", &Framework::instance()->useVectorBlob, 1, SpinnerCallback);
 	TestGlui->add_checkbox_to_panel(graphicsOptions, "Use VectorSheet", &Framework::instance()->useVectorSheet);
 
@@ -292,19 +296,11 @@ void InitGlui() {
 	PointsSettings->set_w(200);
 	StreamlineSettings = TestGlui->add_rollout_to_panel(CustomSettings, "Streamline Settings", 0);
 	StreamlineSettings->set_w(200);
-	StrokesSettings = TestGlui->add_rollout_to_panel(CustomSettings, "Strokes Visualization Settings", 0);
-	StrokesSettings->set_w(200);
 	VectorBlobSettings = TestGlui->add_rollout_to_panel(CustomSettings, "Vector Blob Settings", 0);
 	VectorBlobSettings ->set_w(200);
 	CuttingPlaneSettings = TestGlui->add_rollout_to_panel(CustomSettings, "Cutting Plane Settings", 0);
 	CuttingPlaneSettings->set_w(200);
 
-	//Oculus Rift Settings:
-	OculusSettings = TestGlui->add_panel("Oculus Rift"); 
-	TestGlui->add_button_to_panel(OculusSettings, "Oculus Mode");
-	OculusRollout = TestGlui->add_rollout_to_panel(OculusSettings, "Oculus Settings");
-	OculusRollout->set_w(200);
-	TestGlui->add_separator();
 	//Arrow Settings: 
 	//TRadLowHigh[0] = VecTest[0];
 	//TRadLowHigh[1] = VecTest[1];
@@ -333,7 +329,6 @@ void InitGlui() {
 	alphaVector->set_float_limits(0.0, 1.0);
 	alphaVector->set_speed(0.05);
 	*/
-
 
 	//Streamline & Probe Settings:
 	spinNumStreamlines = TestGlui->add_spinner_to_panel(StreamlineSettings, "Cubed Number of Streamlines", GLUI_SPINNER_INT, &Framework::instance()->NumStreamlines, 0, SpinnerCallback);
@@ -427,10 +422,15 @@ void InitGlui() {
 	CuttingPlaneZVec->set_speed(0.2);
 
 	TestGlui->add_checkbox_to_panel(CuttingPlaneSettings, "Use Contour", &Framework::instance()->ContourOn);
-
+	TestGlui ->add_checkbox_to_panel(CuttingPlaneSettings, "Use MineCraft Setting", &Framework::instance()->MineCraftOn);
+	
 	Tolerence = TestGlui->add_spinner_to_panel(CuttingPlaneSettings, "Tolerence", GLUI_SPINNER_FLOAT, &Framework::instance()->Tolerence);
 	Tolerence->set_float_limits(0., 5.0);
 	Tolerence->set_speed(0.4);
+
+	ContDist = TestGlui->add_spinner_to_panel(CuttingPlaneSettings, "Distance", GLUI_SPINNER_FLOAT, &Framework::instance()->ContDist);
+	ContDist->set_float_limits(0., 5.0);
+	ContDist->set_speed(0.4);
 	
 	//animation items
 	TestGlui->add_checkbox_to_panel(AnimationSettings, "Color As Velocity", &Framework::instance()->colorAsVelocity);

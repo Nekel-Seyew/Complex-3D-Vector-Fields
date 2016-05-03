@@ -275,13 +275,13 @@ public:
 	int useStreamlines;
 	int useAnimation;
 	int useIsosurfaces;
-	int useStrokes;
 	int useVectorBlob;
 	int useVectorSheet;
 	int useJitter;
 	int useProbe;
 	int useCuttingPlane;
 	int ContourOn;
+	int MineCraftOn;
 
 
 
@@ -298,7 +298,7 @@ public:
 	//These are the arrow slider controls:
 	const char * VECFORMAT = { "Vector Magnitude: %5.2f - %5.2f" };
 	float			VectorLowHigh[2]; //temperature highlow
-	GLUI_HSlider *		VectorSlider; //temperature slider
+	//GLUI_HSlider *		VectorSlider; //temperature slider
 	GLUI_StaticText *	VectorLabel; //temperature static text label
 	float VECMIN, VECMAX;
 
@@ -318,6 +318,7 @@ public:
 	//These are the GluiValues for the Cutting Plane:
 	float CuttingPlaneXLoc, CuttingPlaneYLoc, CuttingPlaneZLoc, CuttingPlaneXVec, CuttingPlaneYVec, CuttingPlaneZVec;
 	float Tolerence;
+	float ContDist;
 
 	//These are the GluiValues for the Vector Sheet:
 	float VectorSheetTimeVal=0, VectorSheetXLoc=0, VectorSheetYLoc=0, VectorSheetZLoc=0, VectorSheetXVec=0, VectorSheetYVec=0, VectorSheetZVec=1;

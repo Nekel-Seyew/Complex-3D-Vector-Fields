@@ -731,6 +731,7 @@ void Framework::RestoreDefaults() {
 	CuttingPlaneYVec = 0.1;
 	CuttingPlaneXVec = CuttingPlaneZVec = CuttingPlaneXLoc = CuttingPlaneYLoc = CuttingPlaneZLoc = 0.0;
 	Tolerence = 1.0;
+	ContDist = 0.1;
 	IsosurfacesVal = 0.1;
 	IsoResolution = 15;
 	numContours = 5.0;
@@ -772,13 +773,13 @@ void Framework::RestoreDefaults() {
 	useArrows = 1;
 	usePoints = 0;
 	useStreamlines = 0;
-	useStrokes = 0;
 	useAnimation = 0;
 	useIsosurfaces = 0;
 	useVectorBlob = 0; 
 	useVectorSheet = 0;
 	useCuttingPlane = 0;
 	ContourOn = 0;
+	MineCraftOn = 0;
 	useJitter = 1;
 	useProbe = 0;
 	usePrism = 1;
@@ -1969,12 +1970,12 @@ void Framework::DrawCuttingPlane() {
 	//Place points
 	for (int i = 0; i < NumShaderPoints + 1; i++) {
 		for (int j = 0; j < NumShaderPoints + 1; j++) {
-			CuttingPlane[i][j][0] = Cross1[0] * (i - 5) / 10;
-			CuttingPlane[i][j][1] = Cross1[1] * (i - 5) / 10;
-			CuttingPlane[i][j][2] = Cross1[2] * (i - 5) / 10;
-			CuttingPlane[i][j][0] += Cross2[0] * (j - 5) / 10;
-			CuttingPlane[i][j][1] += Cross2[1] * (j - 5) / 10;
-			CuttingPlane[i][j][2] += Cross2[2] * (j - 5) / 10;
+			CuttingPlane[i][j][0] = Cross1[0] * (i - 10) / 10;
+			CuttingPlane[i][j][1] = Cross1[1] * (i - 10) / 10;
+			CuttingPlane[i][j][2] = Cross1[2] * (i - 10) / 10;
+			CuttingPlane[i][j][0] += Cross2[0] * (j - 10) / 10;
+			CuttingPlane[i][j][1] += Cross2[1] * (j - 10) / 10;
+			CuttingPlane[i][j][2] += Cross2[2] * (j - 10) / 10;
 			CuttingPlane[i][j][0] += CuttingPlaneXLoc;
 			CuttingPlane[i][j][1] += CuttingPlaneYLoc;
 			CuttingPlane[i][j][2] += CuttingPlaneZLoc;
@@ -2033,12 +2034,18 @@ void Framework::DrawCuttingPlane() {
 	}
 	glUnmapBuffer(GL_ARRAY_BUFFER);
 	glUseProgram(program);
-	glShadeModel(GL_SMOOTH);
+	if (MineCraftOn) {
+		glShadeModel(GL_FLAT);
+	}
+	else {
+		glShadeModel(GL_SMOOTH);
+	}
 	glUniform1f(glGetUniformLocation(program, "VectorMax"), max);
 	glUniform1f(glGetUniformLocation(program, "VectorMin"), min);
 	glUniform1i(glGetUniformLocation(program, "AltColor"), ColorAlternate);
 	glUniform1i(glGetUniformLocation(program, "ContourOn"), ContourOn);
 	glUniform1f(glGetUniformLocation(program, "uTol"), Tolerence);
+	glUniform1f(glGetUniformLocation(program, "uDist"), ContDist);
 	glBindBuffer(GL_ARRAY_BUFFER, posSSbo);
 	//glVertexPointer( 4, GL_FLOAT, 0, (void *)0 );
 	//GLuint vPosition = glGetAttribLocation(program, "vPosition");
