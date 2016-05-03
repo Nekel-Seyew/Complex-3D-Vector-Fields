@@ -9,6 +9,7 @@ uniform float VectorMin;
 uniform int AltColor;
 uniform int ContourOn;
 uniform float uTol;
+uniform float uDist;
 in vec4  vColor;
 in float vLightIntensity;
 in vec3 vECposition;
@@ -238,7 +239,7 @@ main( )
 	*/
 	
 	if( ContourOn == 1 ){
-		float scalar10 = float( 10*int( (scalar+5.)/10. ) );
+		float scalar10 = float( uDist*int( (scalar)/uDist ) );
 		if( abs( scalar - scalar10 ) > uTol )
 			discard; 
 	}

@@ -186,6 +186,7 @@ void InitGlui() {
 	GLUI_Spinner * CuttingPlaneYVec;
 	GLUI_Spinner * CuttingPlaneZVec;
 	GLUI_Spinner * Tolerence;
+	GLUI_Spinner * ContDist;
 
 	//dot point animation controls:
 	GLUI_Spinner * dotPointColorSpinnerR;
@@ -422,9 +423,14 @@ void InitGlui() {
 
 	TestGlui->add_checkbox_to_panel(CuttingPlaneSettings, "Use Contour", &Framework::instance()->ContourOn);
 	TestGlui ->add_checkbox_to_panel(CuttingPlaneSettings, "Use MineCraft Setting", &Framework::instance()->MineCraftOn);
+	
 	Tolerence = TestGlui->add_spinner_to_panel(CuttingPlaneSettings, "Tolerence", GLUI_SPINNER_FLOAT, &Framework::instance()->Tolerence);
 	Tolerence->set_float_limits(0., 5.0);
 	Tolerence->set_speed(0.4);
+
+	ContDist = TestGlui->add_spinner_to_panel(CuttingPlaneSettings, "Distance", GLUI_SPINNER_FLOAT, &Framework::instance()->ContDist);
+	ContDist->set_float_limits(0., 5.0);
+	ContDist->set_speed(0.4);
 	
 	//animation items
 	TestGlui->add_checkbox_to_panel(AnimationSettings, "Color As Velocity", &Framework::instance()->colorAsVelocity);

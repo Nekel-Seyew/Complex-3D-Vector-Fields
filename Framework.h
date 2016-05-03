@@ -317,6 +317,7 @@ public:
 	//These are the GluiValues for the Cutting Plane:
 	float CuttingPlaneXLoc, CuttingPlaneYLoc, CuttingPlaneZLoc, CuttingPlaneXVec, CuttingPlaneYVec, CuttingPlaneZVec;
 	float Tolerence;
+	float ContDist;
 
 	//These are the GluiValues for the Vector Sheet:
 	float VectorSheetTimeVal=0, VectorSheetXLoc=0, VectorSheetYLoc=0, VectorSheetZLoc=0, VectorSheetXVec=0, VectorSheetYVec=0, VectorSheetZVec=1;
