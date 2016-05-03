@@ -771,13 +771,13 @@ void Framework::RestoreDefaults() {
 	useArrows = 1;
 	usePoints = 0;
 	useStreamlines = 0;
-	useStrokes = 0;
 	useAnimation = 0;
 	useIsosurfaces = 0;
 	useVectorBlob = 0; 
 	useVectorSheet = 0;
 	useCuttingPlane = 0;
 	ContourOn = 0;
+	MineCraftOn = 0;
 	useJitter = 1;
 	useProbe = 0;
 	usePrism = 1;
@@ -2031,7 +2031,12 @@ void Framework::DrawCuttingPlane() {
 	}
 	glUnmapBuffer(GL_ARRAY_BUFFER);
 	glUseProgram(program);
-	glShadeModel(GL_SMOOTH);
+	if (MineCraftOn) {
+		glShadeModel(GL_FLAT);
+	}
+	else {
+		glShadeModel(GL_SMOOTH);
+	}
 	glUniform1f(glGetUniformLocation(program, "VectorMax"), max);
 	glUniform1f(glGetUniformLocation(program, "VectorMin"), min);
 	glUniform1i(glGetUniformLocation(program, "AltColor"), ColorAlternate);

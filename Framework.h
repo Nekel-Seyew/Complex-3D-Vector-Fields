@@ -274,13 +274,13 @@ public:
 	int useStreamlines;
 	int useAnimation;
 	int useIsosurfaces;
-	int useStrokes;
 	int useVectorBlob;
 	int useVectorSheet;
 	int useJitter;
 	int useProbe;
 	int useCuttingPlane;
 	int ContourOn;
+	int MineCraftOn;
 
 
 
