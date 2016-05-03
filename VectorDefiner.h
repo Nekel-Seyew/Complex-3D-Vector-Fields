@@ -70,4 +70,6 @@ public:
 	bool am_file();
 	vector3d* get_vector_at_pos(vector3d* vec);
 	vector3d* get_vector_at_pos(float x, float y, float z);
+
+	vector3d* VectorAdvect(vector3d* inputVector, float TimeStep);
 };

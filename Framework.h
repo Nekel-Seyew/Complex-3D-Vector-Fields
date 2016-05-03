@@ -329,14 +329,14 @@ public:
 	//animation points
 	float NumPoints;//max value is hardset at 1000
 	float dotPointColorR, dotPointColorG, dotPointColorB;
-	//vector3d dot_points[1000];
+	vector3d dot_points[1000];
 	int num_dot_points=100;
-	//vector3d old_dot_pos[1000];
-	//std::deque<vector3d*> path[1000];
-	//float timestep = 0.1f; // this is what VectorAdvect uses as time step
+	vector3d old_dot_pos[1000];
+	std::deque<vector3d*> path[1000];
+	float timestep = 0.1f; // this is what VectorAdvect uses as time step
 	void initDotPoints();
 	void DrawDots();
-	AnimatedPoints theMovingDots;
+	//AnimatedPoints theMovingDots;
 	int colorAsVelocity;//really a bool though
 	int traceDotPath;
 	
