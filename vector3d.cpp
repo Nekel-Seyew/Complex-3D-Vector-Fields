@@ -1,7 +1,9 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 #include "vector3d.h"
+vector3d::~vector3d() {
 
+}
 vector3d::vector3d(float a, float b, float c){
 	this->abc[0] = a;
 	this->abc[1] = b;

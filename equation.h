@@ -29,9 +29,11 @@ friend class equation_factory;
 public:
 	float  eval(float x, float y, float z);
 	float* eval(float x, float y, float z, float* vector);
-	
+	equation();
+	equation(const equation& eqr);
 private:
-	equation();	
+	std::string self;
+	//equation();	
 
 	bool isVector; //true if we are a vector equation
 	equation** xyz; //if we are a vector equation
@@ -61,6 +63,8 @@ public:
 	
 	equation* scalar_equation(std::string eq);
 	equation* vector_equation(std::string eq);
+	equation* make_copy(equation* eq);
+
 private:
 	int handle_instruction(std::stack<int> *ops, equation *eqr, char k, std::string q, int i);
 	bool should_pop(int a, int b);

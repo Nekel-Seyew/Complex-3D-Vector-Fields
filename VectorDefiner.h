@@ -29,7 +29,7 @@ protected:
 	equation* eqr;
 	std::string* filename;
 	bool is_file;
-	DataSetTrainer* data_trainer;
+	//DataSetTrainer* data_trainer;
 
 	//absolute cache of min and max magnitude vector
 	vector3d* min;
@@ -47,6 +47,7 @@ protected:
 
 public:
 	VectorDefiner();
+	VectorDefiner(const VectorDefiner& vdef);
 	~VectorDefiner();
 
 	//this will either be the equation literal, or the full filepath of a file
@@ -68,4 +69,5 @@ public:
 
 	bool am_file();
 	vector3d* get_vector_at_pos(vector3d* vec);
+	vector3d* get_vector_at_pos(float x, float y, float z);
 };

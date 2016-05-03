@@ -13,7 +13,7 @@
 //yes
 VectorDefiner::VectorDefiner()
 {
-	this->eqr = NULL;
+	//this->eqr = NULL;
 	this->vectors = NULL;
 	this->is_file = false;
 	this->filename = NULL;
@@ -22,11 +22,39 @@ VectorDefiner::VectorDefiner()
 	this->min = NULL;
 	this->max = NULL;
 	this->space = NULL;
-	this->data_trainer = NULL;
+	//this->data_trainer = NULL;
 
 	this->hashmap = new std::unordered_map<vector3d, vector3d*, vector3d::VectorHash, vector3d::VectorEqual>(1000, vector3d::VectorHash(), vector3d::VectorEqual());
 
 	this->index = NULL;
+}
+VectorDefiner::VectorDefiner(const VectorDefiner& vdef) {
+	this->vectors = new std::vector<vector3d*>(*vdef.vectors);//the vector field values
+	this->space = new std::vector<vector3d*>(*vdef.space); //positions in the vector field
+	this->culled_vectors = new std::vector<vector3d*>(*vdef.culled_vectors);
+	this->culled_space = new std::vector<vector3d*>(*vdef.culled_space);
+
+	equation_factory eqrf;
+
+	this->eqr = eqrf.make_copy(vdef.eqr);
+	this->filename = vdef.filename;
+	this->is_file = vdef.is_file;
+	//this->data_trainer = vdef.data_trainer;
+
+	//absolute cache of min and max magnitude vector
+	this->min = new vector3d(vdef.min);
+	this->max = new vector3d(vdef.max);
+	//culled cache of min and max magintude vector
+	this->cull_min = new vector3d(vdef.cull_min);
+	this->cull_max = new vector3d(vdef.cull_max);
+
+	//hashmap
+	this->hashmap = vdef.hashmap;
+	//kdtree
+	this->pc2kd = new PC2KD(this);
+	this->index = new my_kd_tree_t(3 /*dim*/, *(this->pc2kd), nanoflann::KDTreeSingleIndexAdaptorParams(100 /* max leaf */));
+	this->index->buildIndex();
+	//my_kd_tree_t*  index;
 }
 
 
@@ -34,10 +62,22 @@ VectorDefiner::~VectorDefiner()
 {
 	delete this->culled_vectors;
 	delete this->culled_space;
-	delete this->filename;
+	if (this->filename != NULL) {
+		delete this->filename;
+	}
+	//delete this->filename;
 	delete this->eqr;
 	delete this->vectors;
-	delete this->data_trainer;
+	delete this->space;
+	//delete this->data_trainer;
+	delete this->min;
+	delete this->max;
+	delete this->cull_max;
+	delete this->cull_min;
+
+	delete this->pc2kd;
+	delete this->index;
+
 }
 
 void VectorDefiner::give_input(std::string str){
@@ -303,6 +343,7 @@ void VectorDefiner::cull_space_vectors_rand(unsigned int step, unsigned int num_
 	for (unsigned int i = 0; i < this->space->size(); i+=step) {
 		for (unsigned int k = 0; k < num_in_step; ++k) {
 			int p = rand() % step;
+			//int p = k;
 			if ((i + p) < this->space->size()) {
 				vector3d* v = this->vectors->at(i + p);
 				space->push_back(this->space->at(i + p));
@@ -367,17 +408,6 @@ bool VectorDefiner::am_file() {
 
 //will always return a new vector. So this allocates memory. Remember that.
 vector3d* VectorDefiner::get_vector_at_pos(vector3d* vec) {
-	/*double len = 1e100;
-	size_t i = 0;
-	double dist;
-	for (size_t k = 0; k < this->space->size(); ++k) {
-		dist = vector3d::distance_sqr(vec, this->space->at(k));
-		if (dist < len) {
-			i = k;
-			len = dist;
-		}
-	}
-	return this->vectors->at(i);*/
 	if (this->is_file) {
 		const size_t num_results = 1;
 		size_t ret_index;
@@ -386,13 +416,31 @@ vector3d* VectorDefiner::get_vector_at_pos(vector3d* vec) {
 		resultSet.init(&ret_index, &out_dist_sqr);
 		this->index->findNeighbors(resultSet, vec->xyz(), nanoflann::SearchParams(10));
 
-		//vector3d nearest_point = *(this->space->at(ret_index));
-		//vector3d* nearest_point_vector_value = this->hashmap->at(nearest_point);
-
 		return new vector3d(this->vectors->at(ret_index));
 	}else{
 		float* out = new float[3];
 		out = this->eqr->eval(vec->xyz()[0], vec->xyz()[1], vec->xyz()[2], out);
+		vector3d* outv = new vector3d(out, vector3d::rect);
+		delete out;
+		return outv;
+	}
+}
+
+vector3d* VectorDefiner::get_vector_at_pos(float x, float y, float z) {
+	if (this->is_file) {
+		float* in = new float[3]; in[0] = x; in[1] = y; in[2] = z;
+		const size_t num_results = 1;
+		size_t ret_index;
+		float out_dist_sqr;
+		nanoflann::KNNResultSet<float> resultSet(num_results);
+		resultSet.init(&ret_index, &out_dist_sqr);
+		this->index->findNeighbors(resultSet, in, nanoflann::SearchParams(10));
+
+		return new vector3d(this->vectors->at(ret_index));
+	}
+	else {
+		float* out = new float[3];
+		out = this->eqr->eval(x, y, z, out);
 		vector3d* outv = new vector3d(out, vector3d::rect);
 		delete out;
 		return outv;

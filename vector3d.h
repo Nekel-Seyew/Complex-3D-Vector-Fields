@@ -9,6 +9,7 @@ public:
 	vector3d(vector3d* in);
 	vector3d(const vector3d& in);
 	vector3d();
+	~vector3d();
 
 	//methods
 	float* xyz(); //rectangular

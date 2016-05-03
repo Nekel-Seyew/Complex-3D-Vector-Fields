@@ -524,7 +524,8 @@ void Framework::setUpPointsAndVectors() {
 	//randomly assign the dot_points number
 	for (unsigned int i = 0; i < 1000; i++) { //there is no more than 1000 dots to draw
 		int p = rand() % this->thePoints->size();
-		this->dot_points[i].set_this_to_be_passed_in_value(this->thePoints->at(p));
+		this->theMovingDots.setPoint(i, this->thePoints->at(p));
+		//this->dot_points[i].set_this_to_be_passed_in_value(this->thePoints->at(p));
 	}
 	InitLists();
 }
@@ -1477,45 +1478,46 @@ void Framework::GenStreamline(float x, float y, float z)
 }
 
 void Framework::DrawDots() {
-	float min = sqrt(vector3d::distance_sqr(&this->dot_points[0], &this->old_dot_pos[0])) / this->timestep;
-	float max = min;
-	for (int i = 1; i < this->num_dot_points; ++i) {
-		float k = sqrt(vector3d::distance_sqr(&this->dot_points[i], &this->old_dot_pos[i])) / this->timestep;
-		min = (k < min) ? k : min;
-		max = (k > max) ? k : max;
-	}
-	srand(time(NULL));
-	for (int i = 0; i < this->num_dot_points; ++i) {
-		glBegin(GL_POINTS);
-			if (colorAsVelocity) {
-				float velocity = sqrt(vector3d::distance_sqr(&this->dot_points[i], &this->old_dot_pos[i])) / this->timestep;
-				float* pointcolor = Color(velocity,min,max);
-				glColor3f(pointcolor[0], pointcolor[1], pointcolor[2]);
-			}else {
-				glColor3f(dotPointColorR, dotPointColorG, dotPointColorB);
-			}
-			float *vec = this->dot_points[i].xyz();
-			glVertex3f(vec[0], vec[1], vec[2]);//NO MORE JITTER
-		glEnd();
-		//linepath now works
-		glBegin(GL_LINE_STRIP);
-			if (traceDotPath) {
-				glLineWidth(1.6);
-				unsigned int maxgo = (this->path[i].size() % 2 == 0) ? (this->path[i].size()) : (this->path[i].size() - 1);
-				if (maxgo > 0) {
-					for (unsigned int k = 0; k < maxgo - 1; ++k) {
-						float dist = sqrt(vector3d::distance_sqr(this->path[i].at(k), this->path[i].at(k + 1))) / this->timestep;
-						float* pointcolor = Color(dist, min, max);
-						glColor3f(pointcolor[0], pointcolor[1], pointcolor[2]);
-						glVertex3f(this->path[i].at(k)->xyz()[0], this->path[i].at(k)->xyz()[1], this->path[i].at(k)->xyz()[2]);
-						glVertex3f(this->path[i].at(k + 1)->xyz()[0], this->path[i].at(k + 1)->xyz()[1], this->path[i].at(k + 1)->xyz()[2]);
-					}
-				}
-			}
-		glEnd();
-		glLineWidth(1.5);
-	}
-	glEnd();
+	this->theMovingDots.render();
+	//float min = sqrt(vector3d::distance_sqr(&this->dot_points[0], &this->old_dot_pos[0])) / this->timestep;
+	//float max = min;
+	//for (int i = 1; i < this->num_dot_points; ++i) {
+	//	float k = sqrt(vector3d::distance_sqr(&this->dot_points[i], &this->old_dot_pos[i])) / this->timestep;
+	//	min = (k < min) ? k : min;
+	//	max = (k > max) ? k : max;
+	//}
+	//srand(time(NULL));
+	//for (int i = 0; i < this->num_dot_points; ++i) {
+	//	glBegin(GL_POINTS);
+	//		if (colorAsVelocity) {
+	//			float velocity = sqrt(vector3d::distance_sqr(&this->dot_points[i], &this->old_dot_pos[i])) / this->timestep;
+	//			float* pointcolor = Color(velocity,min,max);
+	//			glColor3f(pointcolor[0], pointcolor[1], pointcolor[2]);
+	//		}else {
+	//			glColor3f(dotPointColorR, dotPointColorG, dotPointColorB);
+	//		}
+	//		float *vec = this->dot_points[i].xyz();
+	//		glVertex3f(vec[0], vec[1], vec[2]);//NO MORE JITTER
+	//	glEnd();
+	//	//linepath now works
+	//	glBegin(GL_LINE_STRIP);
+	//		if (traceDotPath) {
+	//			glLineWidth(1.6);
+	//			unsigned int maxgo = (this->path[i].size() % 2 == 0) ? (this->path[i].size()) : (this->path[i].size() - 1);
+	//			if (maxgo > 0) {
+	//				for (unsigned int k = 0; k < maxgo - 1; ++k) {
+	//					float dist = sqrt(vector3d::distance_sqr(this->path[i].at(k), this->path[i].at(k + 1))) / this->timestep;
+	//					float* pointcolor = Color(dist, min, max);
+	//					glColor3f(pointcolor[0], pointcolor[1], pointcolor[2]);
+	//					glVertex3f(this->path[i].at(k)->xyz()[0], this->path[i].at(k)->xyz()[1], this->path[i].at(k)->xyz()[2]);
+	//					glVertex3f(this->path[i].at(k + 1)->xyz()[0], this->path[i].at(k + 1)->xyz()[1], this->path[i].at(k + 1)->xyz()[2]);
+	//				}
+	//			}
+	//		}
+	//	glEnd();
+	//	glLineWidth(1.5);
+	//}
+	//glEnd();
 }
 void Framework::InitIsoNodes() {
 	//This is where each Planes For the Isosurfaces will be initialized
@@ -2166,34 +2168,37 @@ void Framework::PhysicsUpdater(int value) {
 		this->num_dot_points = ((int)this->NumPoints);
 	}
 	if (this->useAnimation) {
-		for (int i = 0; i < this->num_dot_points; ++i) {
-			vector3d* newv = VectorAdvect(&this->dot_points[i], 0.1);
-			this->old_dot_pos[i].set_this_to_be_passed_in_value(&this->dot_points[i]);
-			this->dot_points[i].set_this_to_be_passed_in_value(newv);
-			
-			//if ((value % 5) == 0) {
-				this->path[i].push_front(newv);//get new place added to color path
-			//}
-			if (this->path[i].size() >= 100) {
-				delete this->path[i].back();//free memory!
-				this->path[i].pop_back();//get rid of old last element
-			}
-			this->dot_points[i].set_this_to_be_passed_in_value(newv);
-			float* xyz = this->dot_points[i].xyz();
-			if (   (xyz[0] > 5.0f || xyz[0] < -5.0f)
-				|| (xyz[1] > 5.0f || xyz[1] < -5.0f)
-				|| (xyz[2] > 5.0f || xyz[2] < -5.0f)) {
-				int p = rand() % this->thePoints->size();
-				this->dot_points[i].set_this_to_be_passed_in_value(this->thePoints->at(p));
-				this->old_dot_pos[i].set_this_to_be_passed_in_value(&this->dot_points[i]);
-				this->path[i].clear();
-			}
-		}
+		this->theMovingDots.doPhysics(this->VDef, this->thePoints, this->num_dot_points);
+		//for (int i = 0; i < this->num_dot_points; ++i) {
+		//	vector3d* newv = VectorAdvect(&this->dot_points[i], 0.1);
+		//	this->old_dot_pos[i].set_this_to_be_passed_in_value(&this->dot_points[i]);
+		//	this->dot_points[i].set_this_to_be_passed_in_value(newv);
+		//	
+		//	//if ((value % 5) == 0) {
+		//		this->path[i].push_front(newv);//get new place added to color path
+		//	//}
+		//	if (this->path[i].size() >= 100) {
+		//		delete this->path[i].back();//free memory!
+		//		this->path[i].pop_back();//get rid of old last element
+		//	}
+		//	//this->dot_points[i].set_this_to_be_passed_in_value(newv);
+		//	float* xyz = this->dot_points[i].xyz();
+		//	if (   (xyz[0] > 5.0f || xyz[0] < -5.0f)
+		//		|| (xyz[1] > 5.0f || xyz[1] < -5.0f)
+		//		|| (xyz[2] > 5.0f || xyz[2] < -5.0f)) {
+		//		int p = rand() % this->thePoints->size();
+		//		this->dot_points[i].set_this_to_be_passed_in_value(this->thePoints->at(p));
+		//		this->old_dot_pos[i].set_this_to_be_passed_in_value(&this->dot_points[i]);
+		//		this->path[i].clear();
+		//	}
+		//}
+
 	}
 	//printf("update of left corner x: %f y: %f z: %f\n", VecSheet[0][0].xyz()[0], VecSheet[0][0].xyz()[1], VecSheet[0][0].xyz()[2]);
 }
 void Framework::initDotPoints() {
 	this->num_dot_points = 100;
+	this->theMovingDots.initDotPoints();
 }
 
 void Framework::initSheet() {

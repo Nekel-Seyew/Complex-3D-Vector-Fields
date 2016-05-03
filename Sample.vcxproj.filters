@@ -78,6 +78,9 @@
     <ClCompile Include="Cloth.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="AnimatedPoints.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="vector3d.h">
@@ -579,6 +582,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="odeint-boost\boost\numeric\odeint.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimatedPoints.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

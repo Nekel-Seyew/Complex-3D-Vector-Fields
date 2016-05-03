@@ -4,6 +4,28 @@
 #include <cstdlib>
 #include <sstream>
 #include "equation.h"
+
+equation::equation(const equation& eqr) {
+	this->isVector = eqr.isVector; //true if we are a vector equation
+	if (isVector) {
+		this->xyz = new equation*[3]; //if we are a vector equation
+		this->xyz[0] = new equation(*eqr.xyz[0]);
+		this->xyz[1] = new equation(*eqr.xyz[1]);
+		this->xyz[2] = new equation(*eqr.xyz[2]);
+	}
+	
+
+	this->instructions = eqr.instructions;
+	this->literals = eqr.literals; //anytime FLT_MAX is used, pop from variables
+	this->variables = eqr.variables; //will hold the char of the variable to use.
+	this->everything = eqr.everything; // 'I' : instruction, 'V': variable, 'L': literal
+
+	//this->lit_i = eqr.lit_i;
+	//this->var_i = eqr.var_i;
+	//this->ins_i = eqr.ins_i;
+	//this->evr_i = eqr.evr_i;
+}
+
 float equation::eval(float x, float y, float z){
 	this->lit_i=this->literals.size()-1;
 	this->var_i=this->variables.size()-1;
@@ -13,12 +35,12 @@ float equation::eval(float x, float y, float z){
 }
 
 float equation::eval_h(float x, float y, float z){
-	if(everything[evr_i] == 'L'){
-		--evr_i;
-		return literals[lit_i--];
-	}else if(everything[evr_i] == 'V'){
-		--evr_i;
-		char k = variables[var_i--];
+	if(this->everything[this->evr_i] == 'L'){
+		this->evr_i -= 1;
+		return this->literals[this->lit_i--];
+	}else if(this->everything[this->evr_i] == 'V'){
+		this->evr_i -=1;
+		char k = this->variables[this->var_i--];
 		switch(k){
 			case 'X':
 				return x;
@@ -27,24 +49,24 @@ float equation::eval_h(float x, float y, float z){
 			case 'Z':
 				return z;
 		}
-	}else if(everything[evr_i] == 'I'){
-		--evr_i;
-		int k = instructions[ins_i--];
+	}else if(this->everything[this->evr_i] == 'I'){
+		this->evr_i -= 1;
+		int k = this->instructions[this->ins_i--];
 		float a = 0;
 		float b = 0;
-		a = eval_h(x,y,z);
+		a = this->eval_h(x,y,z);
 		if(k < 10){
-			b = eval_h(x,y,z);
+			b = this->eval_h(x,y,z);
 		}
 		switch(k){
 			case 1:
-				return add(a,b);
+				return this->add(a,b);
 			case 2:
-				return sub(b,a); //numbers fed in backwards, this corrects that
+				return this->sub(b,a); //numbers fed in backwards, this corrects that
 			case 3:
-				return mul(a,b);
+				return this->mul(a,b);
 			case 4:
-				return div(b,a); //numbers fed in backwards, going to fix that
+				return this->div(b,a); //numbers fed in backwards, going to fix that
 			case 5:
 				return pow(b,a); //numbers will be fed in backwards as we get them, so flip around
 			case 11:
@@ -111,6 +133,7 @@ equation* equation_factory::vector_equation(std::string eq){
 	for (size_t i = 0; i < eq.size(); ++i) {//basically, if it's not an equation, don't bother parsing. It's not going to end well.
 		if (eq.at(i) == '\\' || eq.at(i) == ':') return NULL;
 	}
+
 	std::vector<std::string> eqrs;
 	std::istringstream ss(eq);
 	std::string token;
@@ -131,6 +154,7 @@ equation* equation_factory::vector_equation(std::string eq){
 	ret->xyz[0] = scalar_equation(all_real[0]);
 	ret->xyz[1] = scalar_equation(all_real[1]);
 	ret->xyz[2] = scalar_equation(all_real[2]);
+	ret->self = eq;
 	
 	return ret;
 	
@@ -139,6 +163,7 @@ equation* equation_factory::vector_equation(std::string eq){
 equation* equation_factory::scalar_equation(std::string eq){
 	equation* ret = new equation();
 	ret->isVector = false;
+	ret->self = eq;
 	//look into shunting-yard algorithm
 	// '(' -> 100, ')' -> 101
 	std::stack<int> ops;	
@@ -334,4 +359,13 @@ int equation_factory::get_num_for_inst(char k, std::string q, int i){
 
 equation_factory::equation_factory(){
 	
+}
+
+equation* equation_factory::make_copy(equation* eq) {
+	if (eq->isVector) {
+		return this->vector_equation(eq->self);
+	}
+	else {
+		return this->scalar_equation(eq->self);
+	}
 }
