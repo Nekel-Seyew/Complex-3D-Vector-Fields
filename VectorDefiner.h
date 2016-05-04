@@ -72,4 +72,5 @@ public:
 	vector3d* get_vector_at_pos(float x, float y, float z);
 
 	vector3d* VectorAdvect(vector3d* inputVector, float TimeStep);
+	void VectorAdvect(vector3d* inputVector, float TimeStep, float* storeArray);
 };

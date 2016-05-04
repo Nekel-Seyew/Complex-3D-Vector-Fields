@@ -59,6 +59,7 @@ public:
 	};
 
 	void set_this_to_be_passed_in_value(vector3d* in);
+	void set_this_to_be_passed_in_value(float* in);
 	//sets all values to be 0
 	void nullify();
 

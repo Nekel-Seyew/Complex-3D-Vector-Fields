@@ -180,6 +180,7 @@ public:
 	vector3d * VectorAtLocation(float, float, float);
 	vector3d* VectorAtLocation(vector3d* pos);
 	vector3d * VectorAdvect(vector3d *, float);
+	void VectorAdvect(vector3d * inputVector, float TimeStep, float* storeArray);
 	float * Color(float);
 	float * Color(float mag,float min,float max);
 	void InitLists();
@@ -333,6 +334,7 @@ public:
 	int num_dot_points=100;
 	vector3d old_dot_pos[1000];
 	std::deque<vector3d*> path[1000];
+	std::list<vector3d*> listPath[1000];
 	float timestep = 0.1f; // this is what VectorAdvect uses as time step
 	void initDotPoints();
 	void DrawDots();

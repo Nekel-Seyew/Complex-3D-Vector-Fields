@@ -170,6 +170,9 @@ float * ChemistryColor(float mag, float min, float max) {
 inline vector3d * Framework::VectorAdvect(vector3d * inputVector, float TimeStep) {
 	return this->VDef->VectorAdvect(inputVector, TimeStep);//faster, and uses intrinsics, and it uses less memory
 }
+inline void Framework::VectorAdvect(vector3d * inputVector, float TimeStep, float* storeArray) {
+	this->VDef->VectorAdvect(inputVector, TimeStep, storeArray);//faster, and uses intrinsics, and it uses less memory
+}
 inline float Framework::GetVectorMax() {
 	
 	return VDef->get_vector_cull_max()->magnitude();
@@ -1471,14 +1474,25 @@ void Framework::DrawDots() {
 		glBegin(GL_LINE_STRIP);
 			if (traceDotPath) {
 				glLineWidth(1.6);
-				unsigned int maxgo = (this->path[i].size() % 2 == 0) ? (this->path[i].size()) : (this->path[i].size() - 1);
+				unsigned int maxgo = (this->listPath[i].size() % 2 == 0) ? (this->listPath[i].size()) : (this->listPath[i].size() - 1);
+				vector3d* km1 = NULL;
 				if (maxgo > 0) {
-					for (unsigned int k = 0; k < maxgo - 1; ++k) {
-						float dist = sqrt(vector3d::distance_sqr(this->path[i].at(k), this->path[i].at(k + 1))) / (this->timestep * 5);
+					unsigned int ik = 0;
+					for (std::list<vector3d*>::iterator it = this->listPath[i].begin(); it != this->listPath[i].end() && ik<maxgo; ++it) {
+						if (ik == 0) {
+							++ik;
+							km1 = *(it);
+							continue;
+						}
+						vector3d* kpos = km1;
+						vector3d* kpos1 = *(it);
+						float dist = sqrt(vector3d::distance_sqr(kpos, kpos1)) / (this->timestep * 5);
 						float* pointcolor = Color(dist, min, max);
 						glColor3f(pointcolor[0], pointcolor[1], pointcolor[2]);
-						glVertex3f(this->path[i].at(k)->xyz()[0], this->path[i].at(k)->xyz()[1], this->path[i].at(k)->xyz()[2]);
-						glVertex3f(this->path[i].at(k + 1)->xyz()[0], this->path[i].at(k + 1)->xyz()[1], this->path[i].at(k + 1)->xyz()[2]);
+						glVertex3f(kpos->xyz()[0], kpos->xyz()[1], kpos->xyz()[2]);
+						glVertex3f(kpos1->xyz()[0], kpos1->xyz()[1], kpos1->xyz()[2]);
+						km1 = kpos1;
+						++ik;
 					}
 				}
 			}
@@ -2143,17 +2157,18 @@ void Framework::PhysicsUpdater(int value) {
 	}
 	if (this->useAnimation) {
 		//this->theMovingDots.doPhysics(this->VDef, this->thePoints, this->num_dot_points);
+		float pointValArray[3];
 		for (int i = 0; i < this->num_dot_points; ++i) {
-			vector3d* newv = VectorAdvect(&this->dot_points[i], 0.1);
+			VectorAdvect(&this->dot_points[i], 0.1, pointValArray);
 			this->old_dot_pos[i].set_this_to_be_passed_in_value(&this->dot_points[i]);
-			this->dot_points[i].set_this_to_be_passed_in_value(newv);
+			this->dot_points[i].set_this_to_be_passed_in_value(pointValArray);
 			
 			if ((value % 5) == 0) {
-				this->path[i].push_front(newv);//get new place added to color path
+				this->listPath[i].push_front(new vector3d(pointValArray,vector3d::rect));//get new place added to color path
 			}
-			if (this->path[i].size() >= 20) {
-				delete this->path[i].back();//free memory!
-				this->path[i].pop_back();//get rid of old last element
+			if (this->listPath[i].size() >= 20) {
+				delete this->listPath[i].back();//free memory!
+				this->listPath[i].pop_back();//get rid of old last element
 			}
 			//this->dot_points[i].set_this_to_be_passed_in_value(newv);
 			float* xyz = this->dot_points[i].xyz();
@@ -2163,7 +2178,7 @@ void Framework::PhysicsUpdater(int value) {
 				int p = rand() % this->thePoints->size();
 				this->dot_points[i].set_this_to_be_passed_in_value(this->thePoints->at(p));
 				this->old_dot_pos[i].set_this_to_be_passed_in_value(&this->dot_points[i]);
-				this->path[i].clear();
+				this->listPath[i].clear();
 			}
 		}
 

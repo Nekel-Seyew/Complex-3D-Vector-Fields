@@ -519,3 +519,80 @@ vector3d* VectorDefiner::VectorAdvect(vector3d* inputVector, float TimeStep) {
 	vector3d* vectorReturn = new vector3d(c.m128_f32[0], c.m128_f32[1], c.m128_f32[2]);
 	return vectorReturn;
 }
+
+void VectorDefiner::VectorAdvect(vector3d* inputVector, float TimeStep, float* storeArray) {
+	float *vec = inputVector->xyz();
+	__m128 v = { vec[0],vec[1],vec[2],0 };
+	__m128 time = { TimeStep,TimeStep,TimeStep,TimeStep };
+	//xa = vec[0];
+	//ya = vec[1];
+	//za = vec[2];
+	//vector3d * firstOutputVector;
+	float firstvec[3];
+	if (this->is_file) {
+		float* in = inputVector->xyz();
+		const size_t num_results = 1;
+		size_t ret_index;
+		float out_dist_sqr;
+		nanoflann::KNNResultSet<float> resultSet(num_results);
+		resultSet.init(&ret_index, &out_dist_sqr);
+		this->index->findNeighbors(resultSet, in, nanoflann::SearchParams(10));
+
+		firstvec[0] = this->vectors->at(ret_index)->xyz()[0];
+		firstvec[1] = this->vectors->at(ret_index)->xyz()[1];
+		firstvec[2] = this->vectors->at(ret_index)->xyz()[2];
+	}
+	else {
+		this->eqr->eval(vec[0], vec[1], vec[2], firstvec); //firstvec is set inside eval, don't worry
+	}
+
+	//float *firstvec = firstOutputVector->xyz();
+	__m128 va = { firstvec[0], firstvec[1], firstvec[2], 0 };
+	//vxa = firstvec[0];
+	//vya = firstvec[1];
+	//vza = firstvec[2];
+	__m128 b = _mm_add_ps(v, _mm_mul_ps(va, time));
+	//xb = xa + TimeStep * vxa;
+	//yb = ya + TimeStep * vya;
+	//zb = za + TimeStep * vza;
+	float secondvec[3];
+	if (this->is_file) {
+		float in[3]; in[0] = b.m128_f32[0]; in[1] = b.m128_f32[1]; in[2] = b.m128_f32[2];
+		const size_t num_results = 1;
+		size_t ret_index;
+		float out_dist_sqr;
+		nanoflann::KNNResultSet<float> resultSet(num_results);
+		resultSet.init(&ret_index, &out_dist_sqr);
+		this->index->findNeighbors(resultSet, in, nanoflann::SearchParams(10));
+
+		secondvec[0] = this->vectors->at(ret_index)->xyz()[0];
+		secondvec[1] = this->vectors->at(ret_index)->xyz()[1];
+		secondvec[2] = this->vectors->at(ret_index)->xyz()[2];
+	}
+	else {
+		this->eqr->eval(b.m128_f32[0], b.m128_f32[1], b.m128_f32[2], secondvec); //firstvec is set inside eval, don't worry
+	}
+	//vector3d * secondOutputVector = VectorAtLocation(b.m128_f32[0], b.m128_f32[1], b.m128_f32[2]);
+	//float *secondvec = secondOutputVector->xyz();
+	__m128 vb = { secondvec[0],secondvec[1],secondvec[2],0 };
+	//vxb = secondvec[0];
+	//vyb = secondvec[1];
+	//vzb = secondvec[2];
+	__m128 two = { 2,2,2,2 };
+	__m128 vxyz = _mm_div_ps(_mm_add_ps(va, vb), two);
+	//vx = (vxa + vxb) / 2.;
+	//vy = (vya + vyb) / 2.;
+	//vz = (vza + vzb) / 2.;
+	__m128 c = _mm_add_ps(v, _mm_mul_ps(vxyz, time));
+	//xc = xa + TimeStep * vx;
+	//yc = ya + TimeStep * vy;
+	//zc = za + TimeStep * vz;
+	//clean up the gosh darn memory, people, please!
+	//delete firstOutputVector;
+	//delete secondOutputVector;
+	//vector3d* vectorReturn = new vector3d(c.m128_f32[0], c.m128_f32[1], c.m128_f32[2]);
+	storeArray[0] = c.m128_f32[0];
+	storeArray[1] = c.m128_f32[1];
+	storeArray[2] = c.m128_f32[2];
+	return;
+}

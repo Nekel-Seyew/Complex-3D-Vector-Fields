@@ -149,6 +149,13 @@ void vector3d::set_this_to_be_passed_in_value(vector3d* in) {
 	this->abc[2] = in->abc[2];
 	this->mode = in->mode;
 }
+//sets this to be the values in the passed in array, and sets the vector to be rectangular mode.
+void vector3d::set_this_to_be_passed_in_value(float* in) {
+	this->abc[0] = in[0];
+	this->abc[1] = in[1];
+	this->abc[2] = in[2];
+	this->mode = vector3d::rect;
+}
 
 vector3d& vector3d::operator*=(const float rhs) {
 	this->to_rect();
