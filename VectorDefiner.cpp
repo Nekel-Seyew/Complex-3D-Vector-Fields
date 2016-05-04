@@ -9,6 +9,7 @@
 #include <ctime>
 #include <cstdlib>
 #include "nanoflann.hpp"
+#include <mmintrin.h>
 
 //yes
 VectorDefiner::VectorDefiner()
