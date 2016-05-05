@@ -27,20 +27,24 @@ equation::equation(const equation& eqr) {
 }
 
 float equation::eval(float x, float y, float z){
-	this->lit_i=this->literals.size()-1;
-	this->var_i=this->variables.size()-1;
-	this->ins_i=this->instructions.size()-1;
-	this->evr_i=this->everything.size()-1;
+	this->lit_i=this->llen;
+	this->var_i=this->vlen;
+	this->ins_i=this->ilen;
+	this->evr_i=this->elen;
 	return eval_h(x,y,z);
 }
 
 float equation::eval_h(float x, float y, float z){
 	if(this->everything[this->evr_i] == 'L'){
-		this->evr_i -= 1;
-		return this->literals[this->lit_i--];
+		--this->evr_i;
+		int ret = this->lit_i;
+		--this->lit_i;
+		return this->literals[ret];
 	}else if(this->everything[this->evr_i] == 'V'){
-		this->evr_i -=1;
-		char k = this->variables[this->var_i--];
+		--this->evr_i;
+		int var = this->var_i;
+		--this->var_i;
+		char k = this->variables[var];
 		switch(k){
 			case 'X':
 				return x;
@@ -50,8 +54,10 @@ float equation::eval_h(float x, float y, float z){
 				return z;
 		}
 	}else if(this->everything[this->evr_i] == 'I'){
-		this->evr_i -= 1;
-		int k = this->instructions[this->ins_i--];
+		--this->evr_i;
+		int ins = this->ins_i;
+		--this->ins_i;
+		int k = this->instructions[ins];
 		float a = 0;
 		float b = 0;
 		a = this->eval_h(x,y,z);
@@ -232,6 +238,10 @@ equation* equation_factory::scalar_equation(std::string eq){
 		ret->instructions.push_back(ops.top());
 		ops.pop();
 	}
+	ret->elen = ret->everything.size()-1;
+	ret->ilen = ret->instructions.size()-1;
+	ret->vlen = ret->variables.size()-1;
+	ret->llen = ret->literals.size()-1;
 	return ret;
 }
 

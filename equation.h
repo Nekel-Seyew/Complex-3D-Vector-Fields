@@ -43,6 +43,11 @@ private:
 	std::vector<char> variables; //will hold the char of the variable to use.
 	std::vector<char> everything; // 'I' : instruction, 'V': variable, 'L': literal
 
+	int ilen;
+	int llen;
+	int vlen;
+	int elen;
+
 	int lit_i;
 	int var_i;
 	int ins_i;

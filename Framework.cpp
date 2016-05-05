@@ -763,8 +763,8 @@ void Framework::RestoreDefaults() {
 	vecAlphaVal = 0.5;
 	visitstream = 0;
 	ColorAlternate = 0;
-	dotPointColorR = 0.0f;
-	dotPointColorG = 1.0f;
+	dotPointColorR = 0.10f;
+	dotPointColorG = 100.f;
 	dotPointColorB = 0.0f;
 	colorAsVelocity = 0;
 	traceDotPath = 1;
@@ -1465,7 +1465,7 @@ void Framework::DrawDots() {
 				float* pointcolor = Color(velocity,min,max);
 				glColor3f(pointcolor[0], pointcolor[1], pointcolor[2]);
 			}else {
-				glColor3f(dotPointColorR, dotPointColorG, dotPointColorB);
+				glColor3f(0, 1, 0);
 			}
 			float *vec = this->dot_points[i].xyz();
 			glVertex3f(vec[0], vec[1], vec[2]);//NO MORE JITTER
@@ -1474,6 +1474,16 @@ void Framework::DrawDots() {
 		glBegin(GL_LINE_STRIP);
 			if (traceDotPath) {
 				glLineWidth(1.6);
+				//Draw segment between head and first point, always
+				if (this->listPath[i].size() > 1) {
+					vector3d* headOfList = *this->listPath[i].begin();
+					float dist = sqrt(vector3d::distance_sqr(&this->dot_points[i], headOfList)) / (this->timestep * 5);
+					float* pointcolor = Color(dist, min, max);
+					glColor3f(pointcolor[0], pointcolor[1], pointcolor[2]);
+					glVertex3f(this->dot_points[i].xyz()[0], this->dot_points[i].xyz()[1], this->dot_points[i].xyz()[2]);
+					glVertex3f(headOfList->xyz()[0], headOfList->xyz()[1], headOfList->xyz()[2]);
+				}
+				//draw reset of segment
 				unsigned int maxgo = (this->listPath[i].size() % 2 == 0) ? (this->listPath[i].size()) : (this->listPath[i].size() - 1);
 				vector3d* km1 = NULL;
 				if (maxgo > 0) {
@@ -2159,14 +2169,14 @@ void Framework::PhysicsUpdater(int value) {
 		//this->theMovingDots.doPhysics(this->VDef, this->thePoints, this->num_dot_points);
 		float pointValArray[3];
 		for (int i = 0; i < this->num_dot_points; ++i) {
-			VectorAdvect(&this->dot_points[i], 0.1, pointValArray);
+			VectorAdvect(&this->dot_points[i], this->timestep, pointValArray);
 			this->old_dot_pos[i].set_this_to_be_passed_in_value(&this->dot_points[i]);
 			this->dot_points[i].set_this_to_be_passed_in_value(pointValArray);
 			
 			if ((value % 5) == 0) {
 				this->listPath[i].push_front(new vector3d(pointValArray,vector3d::rect));//get new place added to color path
 			}
-			if (this->listPath[i].size() >= 20) {
+			while (this->listPath[i].size() >= (int)dotPointColorG/5) {
 				delete this->listPath[i].back();//free memory!
 				this->listPath[i].pop_back();//get rid of old last element
 			}

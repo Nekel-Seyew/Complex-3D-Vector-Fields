@@ -8,6 +8,8 @@
 #pragma warning(disable:4996)
 #endif
 
+#include <string.h>
+
 int MainWindow;
 
 
@@ -15,6 +17,7 @@ int MainWindow;
 #include "Framework.h"
 //#include "NameSpace.h"
 GLUI* TestGlui;
+GLUI_FileBrowser* gluiFileBrowser;
 const float SQRTTHREE = 1.732f;
 const float TRADIUSMIN = { 0.f };
 const float TRADIUSMAX = { 1.732f };
@@ -56,6 +59,14 @@ void MySliders(int numSlide) {
 	glutSetWindow(Framework::instance()->MainWindow);
 	glutPostRedisplay();
 }*/
+void GetFilePlease(int input) {
+	Framework::instance()->VectorInput = (char*)gluiFileBrowser->get_file();
+	Framework::instance()->edittext2->set_text(Framework::instance()->VectorInput);
+	gluiFileBrowser->deactivate();
+	//strcpy(Framework::instance()->VectorDefinerString, Framework::instance()->VectorInput);
+	//delete gluiFileBrowser;
+	printf("%s\n", Framework::instance()->VectorInput);
+}
 void MyTextBoxes(int textbox) {
 	
 }
@@ -102,6 +113,14 @@ void MyButtons(int button) {
 		break;
 	case(2) :
 		printf(".obj file saved");
+		break;
+	case(3) :
+		GLUI* fileselectglui = GLUI_Master.create_glui("Select a File!");
+		gluiFileBrowser = new GLUI_FileBrowser(fileselectglui, "File Selector",1,10, ((GLUI_Update_CB)GetFilePlease));
+		fileselectglui->add_statictext("Select a CSV File");
+		gluiFileBrowser->set_allow_change_dir(true);
+		//Framework::instance()->VectorInput = (char*)gfb.get_file();
+		//printf("%s\n", Framework::instance()->VectorInput);
 		break;
 	}
 }
@@ -217,8 +236,13 @@ void InitGlui() {
 	Framework::instance()->edittext->set_w(400);
 	Framework::instance()->edittext2 = TestGlui->add_edittext_to_panel(UserInput,"Vector Definer Equation:", GLUI_EDITTEXT_TEXT, Framework::instance()->VectorDefinerString);
 	Framework::instance()->edittext2->set_w(400);
-	TestGlui->add_button_to_panel(UserInput, "Redraw", 0, ((GLUI_Update_CB)MyButtons));
-	TestGlui->add_button_to_panel(UserInput, "Enter", 1, ((GLUI_Update_CB)MyButtons));
+	GLUI_Panel* buttons = TestGlui->add_panel_to_panel(UserInput, "");
+	TestGlui->add_column_to_panel(buttons, 0);
+	TestGlui->add_button_to_panel(buttons, "Reset", 0, ((GLUI_Update_CB)MyButtons));
+	TestGlui->add_column_to_panel(buttons, 0);
+	TestGlui->add_button_to_panel(buttons, "Render", 1, ((GLUI_Update_CB)MyButtons));
+	TestGlui->add_column_to_panel(buttons, 0);
+	TestGlui->add_button_to_panel(buttons, "Get File", 3, ((GLUI_Update_CB)MyButtons));
 	
 	//Visualization Settings:
 	TestGlui->add_separator();
@@ -435,15 +459,15 @@ void InitGlui() {
 	//animation items
 	TestGlui->add_checkbox_to_panel(AnimationSettings, "Color As Velocity", &Framework::instance()->colorAsVelocity);
 	TestGlui->add_checkbox_to_panel(AnimationSettings, "TracePath", &Framework::instance()->traceDotPath);//for turning off and on trace path.
-	dotPointColorSpinnerR = TestGlui->add_spinner_to_panel(AnimationSettings, "Dot Color R", GLUI_SPINNER_FLOAT, &Framework::instance()->dotPointColorR);
+	dotPointColorSpinnerR = TestGlui->add_spinner_to_panel(AnimationSettings, "Dot Time Interval", GLUI_SPINNER_FLOAT, &Framework::instance()->timestep);
 	dotPointColorSpinnerR->set_float_limits(0.0, 1.0);
 	dotPointColorSpinnerR->set_speed(0.05);
-	dotPointColorSpinnerG = TestGlui->add_spinner_to_panel(AnimationSettings, "Dot Color G", GLUI_SPINNER_FLOAT, &Framework::instance()->dotPointColorG);
-	dotPointColorSpinnerG->set_float_limits(0.0, 1.0);
-	dotPointColorSpinnerG->set_speed(0.05);
-	dotPointColorSpinnerB = TestGlui->add_spinner_to_panel(AnimationSettings, "Dot Color B", GLUI_SPINNER_FLOAT, &Framework::instance()->dotPointColorB);
-	dotPointColorSpinnerB->set_float_limits(0.0, 1.0);
-	dotPointColorSpinnerB->set_speed(0.05);
+	dotPointColorSpinnerG = TestGlui->add_spinner_to_panel(AnimationSettings, "Dot Sample Length", GLUI_SPINNER_FLOAT, &Framework::instance()->dotPointColorG);
+	dotPointColorSpinnerG->set_float_limits(0.0, 100.0);
+	dotPointColorSpinnerG->set_speed(1);
+	//dotPointColorSpinnerB = TestGlui->add_spinner_to_panel(AnimationSettings, "Dot Color B", GLUI_SPINNER_FLOAT, &Framework::instance()->dotPointColorB);
+	//dotPointColorSpinnerB->set_float_limits(0.0, 1.0);
+	//dotPointColorSpinnerB->set_speed(0.05);
 	spinNumPoints = TestGlui->add_spinner_to_panel(UserInput, "NumPoints", GLUI_SPINNER_FLOAT, &Framework::instance()->NumPoints);
 	spinNumPoints->set_float_limits(5, 1000);
 	spinNumPoints->set_speed(0.5);
