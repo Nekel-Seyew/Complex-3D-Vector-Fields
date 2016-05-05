@@ -72,6 +72,7 @@ void SpinnerCallback(int spinner) {
 		glutPostRedisplay();
 		break;
 	case(3) :
+		Framework::instance()->InitIsoNodes();
 		Framework::instance()->UpdateIsolist();
 		glutPostRedisplay();
 		break;
@@ -364,7 +365,7 @@ void InitGlui() {
 	spinIsoValue->set_float_limits(tempMin, tempMax);
 	spinIsoValue->set_speed(0.5);
 	spinIsoResolution = TestGlui->add_spinner_to_panel(IsosurfaceSettings, "IsoResolution", GLUI_SPINNER_INT, &Framework::instance()->IsoResolution, 3, SpinnerCallback);
-	spinIsoResolution->set_int_limits(10, 150);
+	spinIsoResolution->set_int_limits(10, 100);
 	spinIsoResolution->set_speed(0.1);
 	//VectorBlob Settings:
 	VectorBlobTime = TestGlui->add_spinner_to_panel(VectorBlobSettings, "Time Value", GLUI_SPINNER_INT, &Framework::instance()->VectorBlobTimeVal, 2, SpinnerCallback);
