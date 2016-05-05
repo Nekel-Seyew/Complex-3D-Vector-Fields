@@ -1478,7 +1478,7 @@ void Framework::DrawDots() {
 				vector3d* km1 = NULL;
 				if (maxgo > 0) {
 					unsigned int ik = 0;
-					for (std::list<vector3d*>::iterator it = this->listPath[i].begin(); it != this->listPath[i].end() && ik<maxgo; ++it) {
+					for (std::list<vector3d*>::iterator it = this->listPath[i].begin(); ik<maxgo; ++it) {
 						if (ik == 0) {
 							++ik;
 							km1 = *(it);

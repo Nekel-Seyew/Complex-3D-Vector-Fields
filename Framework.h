@@ -30,7 +30,7 @@
 #include <deque>
 
 #include "Cloth.h"
-#include "AnimatedPoints.h"
+//#include "AnimatedPoints.h"
 
 //This is for improved readability
 typedef glm::vec4 point4;
