@@ -213,7 +213,7 @@ public:
 	GLuint vao;
 
 	//This is the Isosurfaces Variables 
-	float numContours;
+	int numContours;
 	float IsosurfacesVal;
 	int IsoResolution;
 	struct node XYPlane[100][100];

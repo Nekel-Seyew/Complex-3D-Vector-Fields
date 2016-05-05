@@ -353,9 +353,9 @@ void InitGlui() {
 	TestGlui->add_checkbox_to_panel(PointsSettings, "Use Jitter", &Framework::instance()->useJitter);
 
 	//Isosurface Settings:
-	spinNumContours = TestGlui->add_spinner_to_panel(IsosurfaceSettings, "NumContours", GLUI_SPINNER_FLOAT, &Framework::instance()->numContours);
-	spinNumContours->set_float_limits(0.0, 1.0);
-	spinNumContours->set_speed(0.1);
+	spinNumContours = TestGlui->add_spinner_to_panel(IsosurfaceSettings, "NumContours", GLUI_SPINNER_INT, &Framework::instance()->numContours, 3, SpinnerCallback);
+	spinNumContours->set_int_limits(1, 30);
+	spinNumContours->set_speed(0.5);
 
 	float tempMin = Framework::instance()->GetVectorMin();
 	float tempMax = Framework::instance()->GetVectorMax();
@@ -364,7 +364,7 @@ void InitGlui() {
 	spinIsoValue->set_float_limits(tempMin, tempMax);
 	spinIsoValue->set_speed(0.5);
 	spinIsoResolution = TestGlui->add_spinner_to_panel(IsosurfaceSettings, "IsoResolution", GLUI_SPINNER_INT, &Framework::instance()->IsoResolution, 3, SpinnerCallback);
-	spinIsoResolution->set_float_limits(10, 150);
+	spinIsoResolution->set_int_limits(10, 150);
 	spinIsoResolution->set_speed(0.1);
 	//VectorBlob Settings:
 	VectorBlobTime = TestGlui->add_spinner_to_panel(VectorBlobSettings, "Time Value", GLUI_SPINNER_INT, &Framework::instance()->VectorBlobTimeVal, 2, SpinnerCallback);

@@ -1154,7 +1154,7 @@ void Framework::DrawArrows() {
 	}
 }
 void Framework::DrawIsosurfaces() {
-	printf("Drawing the Isosurfaces\n");
+	printf("Drawing the Isosurfaces: %d\n", numContours);
 	float Sstar = 0.15;
 	float SMax = GetVectorMax();
 	float min = GetVectorMin();
