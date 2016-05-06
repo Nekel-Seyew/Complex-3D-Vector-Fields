@@ -452,10 +452,6 @@ vector3d* VectorDefiner::VectorAdvect(vector3d* inputVector, float TimeStep) {
 	float *vec = inputVector->xyz();
 	__m128 v = { vec[0],vec[1],vec[2],0 };
 	__m128 time = { TimeStep,TimeStep,TimeStep,TimeStep };
-	//xa = vec[0];
-	//ya = vec[1];
-	//za = vec[2];
-	//vector3d * firstOutputVector;
 	float firstvec[3];
 	if (this->is_file) {
 		float* in = inputVector->xyz();
@@ -472,16 +468,8 @@ vector3d* VectorDefiner::VectorAdvect(vector3d* inputVector, float TimeStep) {
 	}else {
 		this->eqr->eval(vec[0], vec[1], vec[2], firstvec); //firstvec is set inside eval, don't worry
 	}
-
-	//float *firstvec = firstOutputVector->xyz();
 	__m128 va = { firstvec[0], firstvec[1], firstvec[2], 0 };
-	//vxa = firstvec[0];
-	//vya = firstvec[1];
-	//vza = firstvec[2];
 	__m128 b = _mm_add_ps(v, _mm_mul_ps(va, time));
-	//xb = xa + TimeStep * vxa;
-	//yb = ya + TimeStep * vya;
-	//zb = za + TimeStep * vza;
 	float secondvec[3];
 	if (this->is_file) {
 		float in[3]; in[0] = b.m128_f32[0]; in[1] = b.m128_f32[1]; in[2] = b.m128_f32[2];
@@ -499,24 +487,10 @@ vector3d* VectorDefiner::VectorAdvect(vector3d* inputVector, float TimeStep) {
 	else {
 		this->eqr->eval(b.m128_f32[0], b.m128_f32[1], b.m128_f32[2], secondvec); //firstvec is set inside eval, don't worry
 	}
-	//vector3d * secondOutputVector = VectorAtLocation(b.m128_f32[0], b.m128_f32[1], b.m128_f32[2]);
-	//float *secondvec = secondOutputVector->xyz();
 	__m128 vb = { secondvec[0],secondvec[1],secondvec[2],0 };
-	//vxb = secondvec[0];
-	//vyb = secondvec[1];
-	//vzb = secondvec[2];
 	__m128 two = { 2,2,2,2 };
 	__m128 vxyz = _mm_div_ps(_mm_add_ps(va, vb), two);
-	//vx = (vxa + vxb) / 2.;
-	//vy = (vya + vyb) / 2.;
-	//vz = (vza + vzb) / 2.;
 	__m128 c = _mm_add_ps(v, _mm_mul_ps(vxyz, time));
-	//xc = xa + TimeStep * vx;
-	//yc = ya + TimeStep * vy;
-	//zc = za + TimeStep * vz;
-	//clean up the gosh darn memory, people, please!
-	//delete firstOutputVector;
-	//delete secondOutputVector;
 	vector3d* vectorReturn = new vector3d(c.m128_f32[0], c.m128_f32[1], c.m128_f32[2]);
 	return vectorReturn;
 }

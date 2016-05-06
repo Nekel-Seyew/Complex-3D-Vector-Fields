@@ -483,7 +483,7 @@ void Framework::setUpPointsAndVectors() {
 		thePoints = VDef->cull_space(-10.0, 10.0, -10.0, 10.0, -10.0, 10.0);
 	}
 	else if (useGrid) {
-
+		thePoints = SDef->prism(2., 10, 2., 10, 2., 10);
 	}
 	else {
 		this->VDef->cull_space_vectors_rand(1000, 10);
@@ -1190,6 +1190,7 @@ void Framework::DrawIsosurfaces() {
 				Node0.z = z;
 				tempVector = VectorAtLocation(Node0.x, Node0.y, z);
 				Node0.t = tempVector-> magnitude();
+				delete tempVector;
 				
 
 				//This is point 1
@@ -1198,6 +1199,7 @@ void Framework::DrawIsosurfaces() {
 				Node1.z = z;
 				tempVector = VectorAtLocation(XYPlane[i + 1][j].x, XYPlane[i + 1][j].y, z);
 				Node1.t = tempVector->magnitude();
+				delete tempVector;
 
 				//This is point 3
 				Node3.x = XYPlane[i + 1][j + 1].x;
@@ -1205,6 +1207,7 @@ void Framework::DrawIsosurfaces() {
 				Node3.z = z;
 				tempVector = VectorAtLocation(XYPlane[i + 1][j + 1].x, XYPlane[i + 1][j + 1].y, z);
 				Node3.t = tempVector->magnitude();
+				delete tempVector;
 
 				//This is point 2
 				Node2.x = XYPlane[i][j + 1].x;
@@ -1213,6 +1216,8 @@ void Framework::DrawIsosurfaces() {
 				tempVector = VectorAtLocation(XYPlane[i][j + 1].x, XYPlane[i][j + 1].y, z);
 				Node2.t = tempVector->magnitude();
 				ProcessQuad(Node0P, Node1P, Node2P, Node3P, Sstar);
+				delete tempVector;
+
 			}
 		}
 		tempval += scale;
@@ -1240,6 +1245,7 @@ void Framework::DrawIsosurfaces() {
 				Node0.z = XZPlane[i][j].z;
 				tempVector = VectorAtLocation(Node0.x, y, Node0.z);
 				Node0.t = tempVector->magnitude();
+				delete tempVector;
 
 				//This is point 1
 				Node1.x = XZPlane[i + 1][j].x;
@@ -1247,6 +1253,7 @@ void Framework::DrawIsosurfaces() {
 				Node1.z = XZPlane[i + 1][j].z;
 				tempVector = VectorAtLocation(Node1.x, y, Node1.z);
 				Node1.t = tempVector->magnitude();
+				delete tempVector;
 
 				//This is point 3
 				Node3.x = XZPlane[i + 1][j + 1].x;
@@ -1254,6 +1261,7 @@ void Framework::DrawIsosurfaces() {
 				Node3.z = XZPlane[i + 1][j + 1].z;
 				tempVector = VectorAtLocation(Node3.x, y, Node3.z);
 				Node3.t = tempVector->magnitude();
+				delete tempVector;
 
 				//This is point 2
 				Node2.x = XZPlane[i][j + 1].x;
@@ -1262,6 +1270,7 @@ void Framework::DrawIsosurfaces() {
 				tempVector = VectorAtLocation(Node2.x, y, Node2.z);
 				Node2.t = tempVector->magnitude();
 				ProcessQuad(Node0P, Node1P, Node2P, Node3P, Sstar);
+				delete tempVector;
 			}
 		}
 		tempval += scale;
@@ -1290,6 +1299,7 @@ void Framework::DrawIsosurfaces() {
 				Node0.z = YZPlane[i][j].z;
 				tempVector = VectorAtLocation(x, Node0.y, Node0.z);
 				Node0.t = tempVector->magnitude();
+				delete tempVector;
 
 				//This is point 1
 				Node1.x = x;
@@ -1297,6 +1307,7 @@ void Framework::DrawIsosurfaces() {
 				Node1.z = YZPlane[i + 1][j].z;
 				tempVector = VectorAtLocation(x, Node1.y, Node1.z);
 				Node1.t = tempVector->magnitude();
+				delete tempVector;
 
 
 
@@ -1306,6 +1317,7 @@ void Framework::DrawIsosurfaces() {
 				Node3.z = YZPlane[i + 1][j + 1].z;
 				tempVector = VectorAtLocation(x, Node3.y, Node3.z);
 				Node3.t = tempVector->magnitude();
+				delete tempVector;
 
 
 				//This is point 2
@@ -1314,6 +1326,7 @@ void Framework::DrawIsosurfaces() {
 				Node2.z = YZPlane[i][j + 1].z;
 				tempVector = VectorAtLocation(x, Node2.y, Node2.z);
 				Node2.t = tempVector->magnitude();
+				delete tempVector;
 
 
 				ProcessQuad(Node0P, Node1P, Node2P, Node3P, Sstar);
