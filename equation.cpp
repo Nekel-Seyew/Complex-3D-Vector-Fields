@@ -35,16 +35,17 @@ float equation::eval(float x, float y, float z){
 }
 
 float equation::eval_h(float x, float y, float z){
-	if(this->everything[this->evr_i] == 'L'){
+	char e_item = this->evr_direct[this->evr_i];
+	if(e_item == 'L'){
 		--this->evr_i;
 		int ret = this->lit_i;
 		--this->lit_i;
-		return this->literals[ret];
-	}else if(this->everything[this->evr_i] == 'V'){
+		return this->lit_direct[ret];
+	}else if(e_item == 'V'){
 		--this->evr_i;
 		int var = this->var_i;
 		--this->var_i;
-		char k = this->variables[var];
+		char k = this->var_direct[var];
 		switch(k){
 			case 'X':
 				return x;
@@ -53,11 +54,11 @@ float equation::eval_h(float x, float y, float z){
 			case 'Z':
 				return z;
 		}
-	}else if(this->everything[this->evr_i] == 'I'){
+	}else if(e_item == 'I'){
 		--this->evr_i;
 		int ins = this->ins_i;
 		--this->ins_i;
-		int k = this->instructions[ins];
+		int k = this->inst_direct[ins];
 		float a = 0;
 		float b = 0;
 		a = this->eval_h(x,y,z);
@@ -242,6 +243,10 @@ equation* equation_factory::scalar_equation(std::string eq){
 	ret->ilen = ret->instructions.size()-1;
 	ret->vlen = ret->variables.size()-1;
 	ret->llen = ret->literals.size()-1;
+	ret->evr_direct = ret->everything.data();
+	ret->inst_direct = ret->instructions.data();
+	ret->var_direct = ret->variables.data();
+	ret->lit_direct = ret->literals.data();
 	return ret;
 }
 
