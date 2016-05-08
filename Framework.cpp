@@ -1879,6 +1879,7 @@ void Framework::DrawSheet() {
 	this->theCloth.render();
 }
 
+
 void Framework::DrawCuttingPlane() {
 	float Sstar = maxvec - minvec / 2;
 	float SMax = maxvec;
@@ -1893,7 +1894,7 @@ void Framework::DrawCuttingPlane() {
 	GLuint velSSbo;
 	float min = VDef->get_vector_cull_min()->magnitude();
 	float max = VDef->get_vector_cull_max()->magnitude();
-	glGenBuffers(1, &posSSbo);
+	glGenBuffers(1, &posSSbo); // THIS I THINK IS LEAKING MEMORY, STOP THAT NOW
 	glBindBuffer(GL_ARRAY_BUFFER, posSSbo);
 	glBufferData(GL_ARRAY_BUFFER, (NumShaderPoints * NumShaderPoints) * 4 * sizeof(posShader), NULL, GL_STATIC_DRAW);
 	GLint bufMask = GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT; // the invalidate makes a big difference when re-writing
