@@ -465,6 +465,8 @@ void Framework::InitGraphics2() {
 	// glutIdleFunc( NULL );
 	// let glui take care of it in InitGlui( )
 	SetUpShaders();
+	//this only needs to be set once.
+	this->haveSetUpCuttingPlane = false;
 }
 
 void Framework::setUpPointsAndVectors() {
@@ -630,6 +632,7 @@ void Framework::SetUpShaders() {
 	GLuint modelViewLoc = glGetUniformLocation(program, "ModelView"); //this returns the index of where somthing is on the shader
 	GLuint projectionLoc = glGetUniformLocation(program, "Projection");
 
+	//initCuttingPlane();
 }
 
 void Framework::InitLists() {
@@ -776,6 +779,8 @@ void Framework::RestoreDefaults() {
 	vector3d xdir(-1, 0, 0);
 	vector3d ydir(0, -1, 0);
 	this->theCloth.place(&pos, &xdir, &ydir);
+	//initCuttingPlane();
+	this->resetCuttingPlane = true;
 }
 
 void Framework::Run(int argc, char ** argv) {
@@ -1879,6 +1884,14 @@ void Framework::DrawSheet() {
 	this->theCloth.render();
 }
 
+void Framework::initCuttingPlane() {
+	this->NumShaderPoints = 20;
+	glGenBuffers(1, &(this->posSSbo)); // THIS I THINK IS LEAKING MEMORY, STOP THAT NOW
+	glBindBuffer(GL_ARRAY_BUFFER, this->posSSbo);
+	glBufferData(GL_ARRAY_BUFFER, (NumShaderPoints * NumShaderPoints) * 4 * sizeof(posShader), NULL, GL_STATIC_DRAW);
+	this->bufMask = GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT; // the invalidate makes a big difference when re-writing
+	this->DynamicNow = (posShader *)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+}
 
 void Framework::DrawCuttingPlane() {
 	float Sstar = maxvec - minvec / 2;
@@ -1889,16 +1902,25 @@ void Framework::DrawCuttingPlane() {
 	float rgb[3];
 
 	//glBegin(GL_LINES);
-	int NumShaderPoints = 20;
+	/*int NumShaderPoints = 20;
 	GLuint posSSbo;
-	GLuint velSSbo;
+	GLuint velSSbo;*/
 	float min = VDef->get_vector_cull_min()->magnitude();
 	float max = VDef->get_vector_cull_max()->magnitude();
-	glGenBuffers(1, &posSSbo); // THIS I THINK IS LEAKING MEMORY, STOP THAT NOW
-	glBindBuffer(GL_ARRAY_BUFFER, posSSbo);
-	glBufferData(GL_ARRAY_BUFFER, (NumShaderPoints * NumShaderPoints) * 4 * sizeof(posShader), NULL, GL_STATIC_DRAW);
-	GLint bufMask = GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT; // the invalidate makes a big difference when re-writing
-	posShader * DynamicNow = (posShader *)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+	if (!this->haveSetUpCuttingPlane) {
+		initCuttingPlane();
+		this->haveSetUpCuttingPlane = true;
+	}else if (resetCuttingPlane) {
+		glDeleteBuffers(1, &(this->posSSbo));
+		initCuttingPlane();
+		this->haveSetUpCuttingPlane = true;
+		this->resetCuttingPlane = false;
+	}
+	//glGenBuffers(1, &posSSbo); // THIS I THINK IS LEAKING MEMORY, STOP THAT NOW
+	//glBindBuffer(GL_ARRAY_BUFFER, posSSbo);
+	//glBufferData(GL_ARRAY_BUFFER, (NumShaderPoints * NumShaderPoints) * 4 * sizeof(posShader), NULL, GL_STATIC_DRAW);
+	//GLint bufMask = GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT; // the invalidate makes a big difference when re-writing
+	//posShader * DynamicNow = (posShader *)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
 	//printf("Before being passed in: the max value is %f, the min value is %f\n", max, min);
 
 	float testFloat = 0.; //This will be passed in by Glui - modifications can happen later
@@ -2057,7 +2079,7 @@ void Framework::DrawCuttingPlane() {
 	glUniform1i(glGetUniformLocation(program, "ContourOn"), ContourOn);
 	glUniform1f(glGetUniformLocation(program, "uTol"), Tolerence);
 	glUniform1f(glGetUniformLocation(program, "uDist"), ContDist);
-	glBindBuffer(GL_ARRAY_BUFFER, posSSbo);
+	glBindBuffer(GL_ARRAY_BUFFER, this->posSSbo);
 	//glVertexPointer( 4, GL_FLOAT, 0, (void *)0 );
 	//GLuint vPosition = glGetAttribLocation(program, "vPosition");
 	//glEnableVertexAttribArray(vPosition);

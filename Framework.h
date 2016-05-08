@@ -229,8 +229,8 @@ public:
 	/*Glui (Controller)*/
 	//These are changed by the MyButtons Callback Functions
 	char *SpaceInput = { "<(cos(2 * 3.14159265359 * X) * sin(3.14159265359 * Y) * 1), (sin(2 * 3.14159265359 * X) * sin(3.14159265359 * Y) * 1), (cos(3.14159265359 * Y) * 1)>" };
-	char *VectorInput = { "<Y*Z*(Y*Y + Z*Z), X*Z*(X*X + Z*Z), Y*X*(Y*Y + X* X)>" }; //This is the Solenoid Equation
-	//char * VectorInput = { "<((sqrt(X * X + Z * Z)^3)* e^(~3. * sqrt(X * X + Z * Z))* Z),(0.008/((Z *Z/sqrt(X * X + Z * Z)) + (X * X /sqrt(X * X + Z * Z)) + 0.0001)), ((sqrt(X * X + Z * Z)^3) * e^(~3. *sqrt(X * X + Z * Z)) * ~X)>" };
+	//char *VectorInput = { "<Y*Z*(Y*Y + Z*Z), X*Z*(X*X + Z*Z), Y*X*(Y*Y + X* X)>" }; //This is the Solenoid Equation
+	char * VectorInput = { "<((sqrt(X * X + Z * Z)^3)* e^(~3. * sqrt(X * X + Z * Z))* Z),(0.008/((Z *Z/sqrt(X * X + Z * Z)) + (X * X /sqrt(X * X + Z * Z)) + 0.0001)), ((sqrt(X * X + Z * Z)^3) * e^(~3. *sqrt(X * X + Z * Z)) * ~X)>" };
 
 	//Constants Used to Set Up Glui:
 	const char *GLUITITLE = { "User Interface Window" };
@@ -320,6 +320,14 @@ public:
 	float CuttingPlaneXLoc, CuttingPlaneYLoc, CuttingPlaneZLoc, CuttingPlaneXVec, CuttingPlaneYVec, CuttingPlaneZVec;
 	float Tolerence;
 	float ContDist;
+	int NumShaderPoints = 20;
+	GLuint posSSbo;
+	GLuint velSSbo;
+	GLint bufMask;
+	posShader* DynamicNow;
+	bool haveSetUpCuttingPlane;
+	bool resetCuttingPlane = false;
+	void initCuttingPlane();
 
 	//These are the GluiValues for the Vector Sheet:
 	float VectorSheetTimeVal=0, VectorSheetXLoc=0, VectorSheetYLoc=0, VectorSheetZLoc=0, VectorSheetXVec=0, VectorSheetYVec=0, VectorSheetZVec=1;
