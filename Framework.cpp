@@ -1363,12 +1363,13 @@ void Framework::DrawProbe() {
 		ynextvalues[l] = ProbeYVal;
 		znextvalues[l] = ProbeZVal;
 		vector3d * NextVector = new vector3d(xnextvalues[l], ynextvalues[l], znextvalues[l]);
-		NextVector = VectorAdvect(NextVector, 0.1); //change this line
-		float  * newValues = NextVector->xyz();
+		vector3d* nextVectr2 = VectorAdvect(NextVector, 0.1); //change this line
+		float  * newValues = nextVectr2->xyz();
 		xnextvalues[l] = newValues[0];
 		ynextvalues[l] = newValues[1];
 		znextvalues[l] = newValues[2];
-		free(NextVector);
+		delete NextVector;
+		delete nextVectr2;
 	}
 	glPointSize(8);
 	glShadeModel(GL_SMOOTH);
@@ -1409,12 +1410,13 @@ void Framework::DrawProbe() {
 		//advect next
 		for (int p = 0; p < 10; p++) {
 			vector3d * NextVector = new vector3d(xnextvalues[p], ynextvalues[p], znextvalues[p]);
-			NextVector = VectorAdvect(NextVector, 0.1); //change this line
-			float  * newValues = NextVector->xyz();
+			vector3d* nextVectr2 = VectorAdvect(NextVector, 0.1); //change this line
+			float  * newValues = nextVectr2->xyz();
 			xnextvalues[p] = newValues[0];
 			ynextvalues[p] = newValues[1];
 			znextvalues[p] = newValues[2];
-			free(NextVector);
+			delete NextVector;
+			delete nextVectr2;
 		}
 	}
 	glEnd();
@@ -1996,6 +1998,7 @@ void Framework::DrawCuttingPlane() {
 			DynamicNow[count].y = CuttingPlane[i][j][1];
 			DynamicNow[count].z = CuttingPlane[i][j][2];
 			DynamicNow[count].m = mag;
+			delete tempVec;
 			//printf("The t value is %f, the max value is %f, the min value is %f, the mag is %f\n", (mag - min) / (max - min), max, min, mag);
 			count++;
 
@@ -2006,6 +2009,7 @@ void Framework::DrawCuttingPlane() {
 			DynamicNow[count].y = CuttingPlane[i + 1][j][1];
 			DynamicNow[count].z = CuttingPlane[i + 1][j][2];
 			DynamicNow[count].m = mag;
+			delete tempVec;
 			//printf("The t value is %f, the max value is %f, the min value is %f, the mag is %f\n", (mag - min) / (max - min), max, min, mag);
 			count++;
 
@@ -2015,6 +2019,7 @@ void Framework::DrawCuttingPlane() {
 			DynamicNow[count].y = CuttingPlane[i + 1][j + 1][1];
 			DynamicNow[count].z = CuttingPlane[i + 1][j + 1][2];
 			DynamicNow[count].m = mag;
+			delete tempVec;
 			//printf("The t value is %f, the max value is %f, the min value is %f, the mag is %f\n", (mag - min) / (max - min), max, min, mag);
 			count++;
 
@@ -2025,6 +2030,7 @@ void Framework::DrawCuttingPlane() {
 			DynamicNow[count].y = CuttingPlane[i][j + 1][1];
 			DynamicNow[count].z = CuttingPlane[i][j + 1][2];
 			DynamicNow[count].m = mag;
+			delete tempVec;
 			//printf("The t value is %f, the max value is %f, the min value is %f, the mag is %f\n", (mag - min) / (max - min), max, min, mag);
 			count++;
 			//DynamicNow[index].m = 1.0;
