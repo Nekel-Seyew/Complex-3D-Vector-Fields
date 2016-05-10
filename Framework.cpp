@@ -55,9 +55,10 @@ void Vector(float x, float y, float z, float *vxp, float *vyp, float *vzp) {
 
 }
 
-float * Framework::Color(float VecMag) {
+float * Framework::Color(float VecMag, float* fourwideout) {
 	if (!isfinite<float>(VecMag)) {
-		return new float[4]{0.0f,0.0f,0.0f,0.0f };
+		fourwideout[0] = 0.0f; fourwideout[1] = 0.0f; fourwideout[2] = 0.0f; fourwideout[3] = 0.0f;
+		return fourwideout;
 	}
 	float hsv[3], rgb[3];
 	float min = VDef->get_vector_cull_min()->magnitude();
@@ -70,25 +71,25 @@ float * Framework::Color(float VecMag) {
 		float secondThird = min + 0.66666 * range;
 		if (VecMag < firstThird) {
 			float interpR = (VecMag - min) / (firstThird - min);
-			rgba[0] = interpR;
-			rgba[1] = 0.;
-			rgba[2] = 0.;
-			rgba[3] = vecAlphaVal;
+			fourwideout[0] = interpR;
+			fourwideout[1] = 0.;
+			fourwideout[2] = 0.;
+			fourwideout[3] = vecAlphaVal;
 		}
 		else if (VecMag < secondThird) {
 			float interpG = (VecMag - firstThird) / (secondThird - firstThird);
-			rgba[0] = 1.;
-			rgba[1] = interpG;
-			rgba[2] = 0.;
-			rgba[3] = vecAlphaVal;
+			fourwideout[0] = 1.;
+			fourwideout[1] = interpG;
+			fourwideout[2] = 0.;
+			fourwideout[3] = vecAlphaVal;
 
 		}
 		else {
 			float interpB = (VecMag - secondThird) / (max - secondThird);
-			rgba[0] = 1.;
-			rgba[1] = 1.;
-			rgba[2] = interpB;
-			rgba[3] = vecAlphaVal;
+			fourwideout[0] = 1.;
+			fourwideout[1] = 1.;
+			fourwideout[2] = interpB;
+			fourwideout[3] = vecAlphaVal;
 		}
 	}
 	else {
@@ -103,19 +104,19 @@ float * Framework::Color(float VecMag) {
 		hsv[2] = 1.;
 		color::HsvRgb(hsv, rgb);
 		
-		rgba[0] = rgb[0];
-		rgba[1] = rgb[1];
-		rgba[2] = rgb[2];
-		rgba[3] = vecAlphaVal;
+		fourwideout[0] = rgb[0];
+		fourwideout[1] = rgb[1];
+		fourwideout[2] = rgb[2];
+		fourwideout[3] = vecAlphaVal;
 	}
 	//hsv[0] = 240.- 240.* (Nodes[i][j][k].vecLength - vecmax)/(vecmax - vecmin);
 	//hsv[0] = 240. - 240.* (vecmax - Nodes[i][j][k].t) / (vecmax - vecmin);
 	//hsv[0] = 240. - 240.* (TEMPMIN - Nodes[i][j][k].t) / (TEMPMAX - TEMPMIN);
 
-	return rgba;
+	return fourwideout;
 }
 
-float* Framework::Color(float mag, float min, float max) {
+float* Framework::Color(float mag, float min, float max,float* fourwideout) {
 	if (!isfinite<float>(mag)) {
 		return new float[4]{ 0.0f,0.0f,0.0f,0.0f };
 	}
@@ -144,11 +145,11 @@ float* Framework::Color(float mag, float min, float max) {
 	hsv[2] = 1.;
 	color::HsvRgb(hsv, rgb);
 	float rgba[4];
-	rgba[0] = rgb[0];
-	rgba[1] = rgb[1];
-	rgba[2] = rgb[2];
-	rgba[3] = vecAlphaVal;
-	return rgba;
+	fourwideout[0] = rgb[0];
+	fourwideout[1] = rgb[1];
+	fourwideout[2] = rgb[2];
+	fourwideout[3] = vecAlphaVal;
+	return fourwideout;
 }
 /*
 float * ChemistryColor(float mag, float min, float max) {
@@ -1024,8 +1025,9 @@ void Framework::Display() {
 void Framework::DrawPoints() {
 	glBegin(GL_POINTS);
 	srand(time(NULL));
+	float colorarray[4];
 	for (unsigned int i = 0; i < thePoints->size(); i++) {
-		glColor3fv(Color((theVectors->at(i)->magnitude())));
+		glColor3fv(Color((theVectors->at(i)->magnitude()), colorarray));
 		float *vec = thePoints->at(i)->xyz();
 		if (useJitter) {
 			glVertex3f(vec[0] + ((rand() % 10 - 5) / 300.), vec[1] + ((rand() % 10 - 5) / 300.), vec[2] + ((rand() % 10 - 5) / 300.));
@@ -1041,6 +1043,7 @@ void Framework::DrawPoints() {
 }
 
 void Framework::DrawArrows() {
+	float colorarray[4];
 	for (unsigned int i = 0; i < thePoints->size(); i++) {
 		if ((theVectors->at(i)->magnitude()  < spinVecMin) || (theVectors->at(i)->magnitude() > spinVecMax)) {
 			continue;
@@ -1048,7 +1051,7 @@ void Framework::DrawArrows() {
 		if (theVectors->at(i)->magnitude() == 0.0f) continue;
 		vector3d* vecyes = theVectors->at(i);
 		vector3d* vecyespos = this->thePoints->at(i);
-		glColor4fv(Color((theVectors->at(i)->magnitude())));
+		glColor4fv(Color((theVectors->at(i)->magnitude()), colorarray));
 		float tail[3], head[3];
 		float *xyz = thePoints->at(i)->xyz();
 		float *veccompxyz = theVectors->at(i)->xyz();
@@ -1173,8 +1176,9 @@ void Framework::DrawIsosurfaces() {
 	//This is the XY
 	float tempval = -1.0;
 	vector3d * tempVector;
+	float colorarray[4];
 	for (int index = 0; index < (numContours + 1); index++) {
-		glColor4fv(Color(Sstar));
+		glColor4fv(Color(Sstar, colorarray));
 		for (int i = 0; i < IsoResolution - 1; i++)
 		{
 
@@ -1230,7 +1234,7 @@ void Framework::DrawIsosurfaces() {
 	//This is the XZ
 	tempval = -1.0;
 	for (int index = 0; index < (numContours + 1); index++) {
-		glColor4fv(Color(Sstar));
+		glColor4fv(Color(Sstar, colorarray));
 		for (int i = 0; i < IsoResolution - 1; i++)
 		{
 
@@ -1283,7 +1287,7 @@ void Framework::DrawIsosurfaces() {
 	//YZ
 	tempval = -1.0;
 	for (int index = 0; index < (numContours + 1); index++) {
-		glColor4fv(Color(Sstar));
+		glColor4fv(Color(Sstar, colorarray));
 		for (int i = 0; i < IsoResolution - 1; i++)
 		{
 
@@ -1341,6 +1345,7 @@ void Framework::DrawIsosurfaces() {
 	}
 	glEnd();
 }
+
 void Framework::DrawProbe() {
 	glPointSize(8);
 	glBegin(GL_POINTS);
@@ -1430,6 +1435,7 @@ void Framework::DrawProbe() {
 
 void Framework::GenStreamline(float x, float y, float z)
 {
+	float colorarray[4];
 	visitstream++;
 	//printf("Visit Stream is %d\n", visitstream);
 	glLineWidth(2.);
@@ -1457,7 +1463,7 @@ void Framework::GenStreamline(float x, float y, float z)
 			break; }//what should I make SOME_TOLERANCE? needs more tolerance around 0.00001
 		vector3d* newpos = VectorAdvect(OriginalXYZ, 0.1f);
 		float speed = (newpos->magnitude() - OriginalXYZ->magnitude()) / 0.1f;
-		float* c = this->Color(speed, VDef->get_vector_cull_min()->magnitude(), VDef->get_vector_cull_max()->magnitude());
+		float* c = this->Color(speed, VDef->get_vector_cull_min()->magnitude(), VDef->get_vector_cull_max()->magnitude(), colorarray);
 		glColor3fv(c);
 		OriginalXYZ = newpos;
 		//OriginalXYZ = VectorAdvect(OriginalXYZ, 0.1);
@@ -1469,6 +1475,7 @@ void Framework::GenStreamline(float x, float y, float z)
 }
 
 void Framework::DrawDots() {
+	float colorarray[4];
 	//this->theMovingDots.render();
 	float min = sqrt(vector3d::distance_sqr(&this->dot_points[0], &this->old_dot_pos[0])) / (this->timestep);
 	float max = min;
@@ -1482,7 +1489,7 @@ void Framework::DrawDots() {
 		glBegin(GL_POINTS);
 			if (colorAsVelocity) {
 				float velocity = sqrt(vector3d::distance_sqr(&this->dot_points[i], &this->old_dot_pos[i])) / (this->timestep);
-				float* pointcolor = Color(velocity,min,max);
+				float* pointcolor = Color(velocity,min,max, colorarray);
 				glColor3f(pointcolor[0], pointcolor[1], pointcolor[2]);
 			}else {
 				glColor3f(0, 1, 0);
@@ -1498,7 +1505,7 @@ void Framework::DrawDots() {
 				if (this->listPath[i].size() > 1) {
 					vector3d* headOfList = *this->listPath[i].begin();
 					float dist = sqrt(vector3d::distance_sqr(&this->dot_points[i], headOfList)) / (this->timestep * 5);
-					float* pointcolor = Color(dist, min, max);
+					float* pointcolor = Color(dist, min, max, colorarray);
 					glColor3f(pointcolor[0], pointcolor[1], pointcolor[2]);
 					glVertex3f(this->dot_points[i].xyz()[0], this->dot_points[i].xyz()[1], this->dot_points[i].xyz()[2]);
 					glVertex3f(headOfList->xyz()[0], headOfList->xyz()[1], headOfList->xyz()[2]);
@@ -1517,7 +1524,7 @@ void Framework::DrawDots() {
 						vector3d* kpos = km1;
 						vector3d* kpos1 = *(it);
 						float dist = sqrt(vector3d::distance_sqr(kpos, kpos1)) / (this->timestep * 5);
-						float* pointcolor = Color(dist, min, max);
+						float* pointcolor = Color(dist, min, max, colorarray);
 						glColor3f(pointcolor[0], pointcolor[1], pointcolor[2]);
 						glVertex3f(kpos->xyz()[0], kpos->xyz()[1], kpos->xyz()[2]);
 						glVertex3f(kpos1->xyz()[0], kpos1->xyz()[1], kpos1->xyz()[2]);
@@ -1527,7 +1534,7 @@ void Framework::DrawDots() {
 				}
 			}
 		glEnd();
-		glLineWidth(1.5);
+		glLineWidth(1);
 	}
 	glEnd();
 }

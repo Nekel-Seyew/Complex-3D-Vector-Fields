@@ -273,22 +273,23 @@ void Cloth::render() {
 		}
 	}
 	//yay, colors!
+	float colorarray[4];
 	glBegin(GL_TRIANGLES);
 		//glColor3f(0.1f, 0.2f, 0.3f);
 		for (int i = 0; i < 9; i++) {
 			for (int j = 0; j < 9; j++) {
-				glColor3fv(Framework::instance()->Color(the_grid[i][j].get_vel()->magnitude(), min, max));
+				glColor3fv(Framework::instance()->Color(the_grid[i][j].get_vel()->magnitude(), min, max, colorarray));
 				glVertex3f(the_grid[i][j].get_pos()->xyz()[0], the_grid[i][j].get_pos()->xyz()[1], the_grid[i][j].get_pos()->xyz()[2]);
-				glColor3fv(Framework::instance()->Color(the_grid[i+1][j].get_vel()->magnitude(), min, max));
+				glColor3fv(Framework::instance()->Color(the_grid[i+1][j].get_vel()->magnitude(), min, max, colorarray));
 				glVertex3f(the_grid[i + 1][j].get_pos()->xyz()[0], the_grid[i + 1][j].get_pos()->xyz()[1], the_grid[i + 1][j].get_pos()->xyz()[2]);
-				glColor3fv(Framework::instance()->Color(the_grid[i][j+1].get_vel()->magnitude(), min, max));
+				glColor3fv(Framework::instance()->Color(the_grid[i][j+1].get_vel()->magnitude(), min, max, colorarray));
 				glVertex3f(the_grid[i][j + 1].get_pos()->xyz()[0], the_grid[i][j + 1].get_pos()->xyz()[1], the_grid[i][j + 1].get_pos()->xyz()[2]);
 
-				glColor3fv(Framework::instance()->Color(the_grid[i+1][j].get_vel()->magnitude(), min, max));
+				glColor3fv(Framework::instance()->Color(the_grid[i+1][j].get_vel()->magnitude(), min, max, colorarray));
 				glVertex3f(the_grid[i + 1][j].get_pos()->xyz()[0], the_grid[i + 1][j].get_pos()->xyz()[1], the_grid[i + 1][j].get_pos()->xyz()[2]);
-				glColor3fv(Framework::instance()->Color(the_grid[i+1][j+1].get_vel()->magnitude(), min, max));
+				glColor3fv(Framework::instance()->Color(the_grid[i+1][j+1].get_vel()->magnitude(), min, max, colorarray));
 				glVertex3f(the_grid[i + 1][j + 1].get_pos()->xyz()[0], the_grid[i + 1][j + 1].get_pos()->xyz()[1], the_grid[i + 1][j + 1].get_pos()->xyz()[2]);
-				glColor3fv(Framework::instance()->Color(the_grid[i][j+1].get_vel()->magnitude(), min, max));
+				glColor3fv(Framework::instance()->Color(the_grid[i][j+1].get_vel()->magnitude(), min, max, colorarray));
 				glVertex3f(the_grid[i][j + 1].get_pos()->xyz()[0], the_grid[i][j + 1].get_pos()->xyz()[1], the_grid[i][j + 1].get_pos()->xyz()[2]);
 			}
 		}
