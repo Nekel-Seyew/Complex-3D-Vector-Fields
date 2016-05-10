@@ -132,7 +132,7 @@ void InitGlui() {
 	//User Input Section 
 	GLUI_Panel *UserInput;
 	GLUI_Rollout *UserInputRollout;
-	GLUI_Rollout * ReadInFileRollout;
+	//GLUI_Rollout * ReadInFileRollout;
 
 	//Visualization Settings:
 	GLUI_Panel *settings;
@@ -164,26 +164,26 @@ void InitGlui() {
 	GLUI_Rollout * CuttingPlaneSettings;
 	
 	//ObjFileSettings:
-	GLUI_Panel * ObjFileSettings;
+	//GLUI_Panel * ObjFileSettings;
 
 	//Arrow Settings:
 	GLUI_Spinner * spinArrowLength;
 	GLUI_Spinner * spinNumPoints;
 	GLUI_Spinner * spinMinVector;
 	GLUI_Spinner * spinMaxVector;
-	GLUI_Spinner * alphaVector;
+	//GLUI_Spinner * alphaVector;
 
 	//Isosurface Settings
 	GLUI_Spinner * spinIsoValue;
 	GLUI_Spinner * spinNumContours;
 	GLUI_Spinner * spinIsoResolution;
-	GLUI_Spinner * spinZPlaneVal;
+	//GLUI_Spinner * spinZPlaneVal;
 
 	//Streamline Controls:
 	GLUI_Spinner * spinNumStreamlines;
 
 	//Probe Controls:
-	GLUI_Panel * probePanel;
+	//GLUI_Panel * probePanel;
 	GLUI_Spinner * ProbeX;
 	GLUI_Spinner * ProbeY;
 	GLUI_Spinner * ProbeZ;
@@ -211,16 +211,16 @@ void InitGlui() {
 	//dot point animation controls:
 	GLUI_Spinner * dotPointColorSpinnerR;
 	GLUI_Spinner * dotPointColorSpinnerG;
-	GLUI_Spinner * dotPointColorSpinnerB;
+	//GLUI_Spinner * dotPointColorSpinnerB;
 
 	//Strings for Sliders:
-	char tempstr[128];
-	char xstr[128];
-	char ystr[128];
-	char zstr[128];
-	char radstr[128];
-	char gradstr[128];
-	char vecstr[128];
+	//char tempstr[128];
+	//char xstr[128];
+	//char ystr[128];
+	//char zstr[128];
+	//char radstr[128];
+	//char gradstr[128];
+	//char vecstr[128];
 
 	// setup the glui window:
 

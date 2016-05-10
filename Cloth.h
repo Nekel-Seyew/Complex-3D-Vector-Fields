@@ -3,7 +3,7 @@
 #include "vector3d.h"
 #include "VectorDefiner.h"
 #include <vector>
-#include <boost\numeric\odeint.hpp>
+//#include <boost\numeric\odeint.hpp>
 #include <Windows.h>
 #include "glew.h"
 #include <GL/gl.h>

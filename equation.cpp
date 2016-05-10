@@ -149,7 +149,7 @@ equation* equation_factory::vector_equation(std::string eq){
 	}
 	std::vector<std::string> all_real;
 	std::string white_space(" ");
-	for(int i = 0; i < eqrs.size(); ++i){
+	for(unsigned int i = 0; i < eqrs.size(); ++i){
 		std::string k = replacer(eqrs[i], std::string("<"), white_space);
 		std::string f = replacer(k, std::string(">"), white_space);
 		all_real.push_back(f);
@@ -176,7 +176,7 @@ equation* equation_factory::scalar_equation(std::string eq){
 	std::stack<int> ops;	
 
 	char k = 0;
-	int i = 0;
+	unsigned int i = 0;
 	for(i=0; i<eq.size(); ++i){
 		k = eq[i];
 		switch(k){
@@ -331,7 +331,7 @@ bool equation_factory::should_pop(int a, int b){
 		return true;
 	}
 	if(b > 10) return false;
-
+	return false;
 }
 
 int equation_factory::get_num_for_inst(char k, std::string q, int i){
@@ -369,6 +369,8 @@ int equation_factory::get_num_for_inst(char k, std::string q, int i){
 		case 'l':
 			if(q[i+1] == 'n' || q[i + 1] == 'N') return 14;
 			if(q[i+1] == 'o' || q[i + 1] == 'O') return 13;
+		default:
+			return 0; //shouldn't happen I hope
 	}
 }
 

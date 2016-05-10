@@ -65,7 +65,7 @@ float * Framework::Color(float VecMag, float* fourwideout) {
 	float max = VDef->get_vector_cull_max()->magnitude();
 	// finally draw the point if it passes all the tests
 	float range = (max - min);
-	float rgba[4];
+	//float rgba[4];
 	if (ColorAlternate) {
 		float firstThird = min + 0.33333 * range;
 		float secondThird = min + 0.66666 * range;
@@ -144,7 +144,7 @@ float* Framework::Color(float mag, float min, float max,float* fourwideout) {
 	hsv[1] = 1.;
 	hsv[2] = 1.;
 	color::HsvRgb(hsv, rgb);
-	float rgba[4];
+	//float rgba[4];
 	fourwideout[0] = rgb[0];
 	fourwideout[1] = rgb[1];
 	fourwideout[2] = rgb[2];
@@ -664,7 +664,7 @@ void Framework::UpdateStreamline() {
 	if (this->VDef->am_file()) {//if we have data from a table
 		this->VDef->cull_space_vectors_rand(1000, 5);
 		std::vector<vector3d*>* points = this->VDef->get_cull_space_cache();
-		int n3 = N*N*N;
+		unsigned int n3 = N*N*N;
 		for (unsigned int i = 0; i <n3; ++i) {
 			vector3d* p = points->at(rand() % points->size());
 			GenStreamline(p->xyz()[0], p->xyz()[1], p->xyz()[2]);
@@ -1169,8 +1169,8 @@ void Framework::DrawIsosurfaces() {
 	float max = GetVectorMax();
 	int numS = numContours;
 	float scale = 2.0 / numContours;
-	float hsv[3];
-	float rgb[3];
+	//float hsv[3];
+	//float rgb[3];
 	glShadeModel(GL_SMOOTH);
 	glBegin(GL_LINES);
 	//This is the XY
@@ -1184,7 +1184,7 @@ void Framework::DrawIsosurfaces() {
 
 			for (int j = 0; j < IsoResolution - 1; j++)
 			{
-				float hsv0[3], rgb0[3], hsv1[3], rgb1[3], hsv2[3], rgb2[3], hsv3[3], rgb3[3];
+				//float hsv0[3], rgb0[3], hsv1[3], rgb1[3], hsv2[3], rgb2[3], hsv3[3], rgb3[3];
 				float z = tempval;
 				struct node Node0, Node1, Node2, Node3;
 				struct node * Node0P, *Node1P, *Node2P, *Node3P;
@@ -1240,7 +1240,7 @@ void Framework::DrawIsosurfaces() {
 
 			for (int j = 0; j < IsoResolution - 1; j++)
 			{
-				float hsv0[3], rgb0[3], hsv1[3], rgb1[3], hsv2[3], rgb2[3], hsv3[3], rgb3[3];
+				//float hsv0[3], rgb0[3], hsv1[3], rgb1[3], hsv2[3], rgb2[3], hsv3[3], rgb3[3];
 				float y = tempval;
 				struct node Node0, Node1, Node2, Node3;
 				struct node * Node0P, *Node1P, *Node2P, *Node3P;
@@ -1293,7 +1293,7 @@ void Framework::DrawIsosurfaces() {
 
 			for (int j = 0; j < IsoResolution - 1; j++)
 			{
-				float hsv0[3], rgb0[3], hsv1[3], rgb1[3], hsv2[3], rgb2[3], hsv3[3], rgb3[3];
+				//float hsv0[3], rgb0[3], hsv1[3], rgb1[3], hsv2[3], rgb2[3], hsv3[3], rgb3[3];
 				float x = tempval;
 				struct node Node0, Node1, Node2, Node3;
 				struct node * Node0P, *Node1P, *Node2P, *Node3P;
@@ -1747,16 +1747,16 @@ void Framework::InitBlob() {
 void Framework::ProcessQuad(struct node *p0, struct node *p1, struct node *p2, struct node *p3, float Sstar)
 {
 	float testval;
-	int index;
-	int i;
-	int j;
+	//int index;
+	//int i;
+	//int j;
 	struct node Intersections[4];
 	int totalsides = 0;
-	float mycolor;
-	float hsv[3];
-	float rgb[3];
+	//float mycolor;
+	//float hsv[3];
+	//float rgb[3];
 
-	float vx1, vx2, vy1, vy2, vz1, vz2;
+	//float vx1, vx2, vy1, vy2, vz1, vz2;
 	totalsides = 0;
 	testval = 0;
 	if (p0->t != p1->t) {
@@ -1804,87 +1804,7 @@ void Framework::ProcessQuad(struct node *p0, struct node *p1, struct node *p2, s
 		glVertex3f(Intersections[1].x, Intersections[1].y, Intersections[1].z);
 
 	}
-
-
 }
-/*void Framework::DrawBlob() {
-	float VecBlob[10][10][3];
-	float Cross1[3];
-	float Cross2[3];
-	//Grab a perpendicular vector with 0 z
-	Cross1[0] = -VectorBlobYVec;
-	Cross1[1] = VectorBlobXVec;
-	Cross1[2] = 0;
-	//Take the cross product to find the other perpendicular with z
-	Cross2[0] = (VectorBlobYVec * Cross1[2]) - (VectorBlobZVec * Cross1[1]);
-	Cross2[1] = (VectorBlobZVec * Cross1[0]) - (VectorBlobXVec * Cross1[2]);
-	Cross2[2] = (VectorBlobXVec * Cross1[1]) - (VectorBlobYVec * Cross1[0]);
-	Unit(Cross1, Cross1);
-	Unit(Cross2, Cross2);
-	//printf("Cross1 = %f, %f, %f\n", Cross1[0], Cross1[1], Cross1[2]);
-	//printf("Cross2 = %f, %f, %f\n", Cross2[0], Cross2[1], Cross2[2]);
-
-	//Place points
-	for (int i = 0; i < 10; i++){
-		for (int j = 0; j < 10; j++) {
-			VecBlob[i][j][0] = Cross1[0] * (i - 5) / 10;
-			VecBlob[i][j][1] = Cross1[1] * (i - 5) / 10;
-			VecBlob[i][j][2] = Cross1[2] * (i - 5) / 10;
-			VecBlob[i][j][0] += Cross2[0] * (j - 5) / 10;
-			VecBlob[i][j][1] += Cross2[1] * (j - 5) / 10;
-			VecBlob[i][j][2] += Cross2[2] * (j - 5) / 10;
-			VecBlob[i][j][0] += VectorBlobXLoc;
-			VecBlob[i][j][1] += VectorBlobYLoc;
-			VecBlob[i][j][2] += VectorBlobZLoc;
-		}
-	}
-
-	//increment along stream
-	for (int i = 0; i < 10; i++) {
-		for (int j = 0; j < 10; j++) {
-			vector3d * OriginalXYZ = new vector3d(VecBlob[i][j][0], VecBlob[i][j][1], VecBlob[i][j][2]);
-			for (int m = 0; m < VectorBlobTimeVal; m++)//change to MAXITERATIONS m = 100
-			{
-				float * coordsxyz = OriginalXYZ->xyz();
-				if (coordsxyz[0] < -5.0 || coordsxyz[0] > 5.0) break; //Eventually we want to tie this into the min and max for space? Kyle is there a way to do this?
-				if (coordsxyz[1] < -5.0 || coordsxyz[1] > 5.0) break;
-				if (coordsxyz[2] < -5.0 || coordsxyz[2]> 5.0) break;
-
-				//glVertex3f(x, y, z);
-				//---glVertex3f(coordsxyz[0], coordsxyz[1], coordsxyz[2]);
-				//printf("Printing out a streamlinevertex %8.2f %8.2f %8.2f\n", x, y, z );
-				vector3d * vectorStream = VectorAtLocation(VecBlob[i][j][0], VecBlob[i][j][1], VecBlob[i][j][2]);
-				float *Svec = vectorStream->xyz();
-				if (sqrt(SQR(Svec[0]) + SQR(Svec[1]) + SQR(Svec[2])) < 0.000001) {
-					//printf("Too small!\n");
-					break;
-				}//what should I make SOME_TOLERANCE? needs more tolerance around 0.00001
-				OriginalXYZ = VectorAdvect(OriginalXYZ);
-				//printf("Printing out a streamlinevertex %8.2f %8.2f %8.2f\n", x, y, z);
-
-			}
-			VecBlob[i][j][0] = OriginalXYZ->xyz()[0];
-			VecBlob[i][j][1] = OriginalXYZ->xyz()[1];
-			VecBlob[i][j][2] = OriginalXYZ->xyz()[2];
-		}
-	}
-	//Insert Animation here?
-	//Draw the Blob
-	glBegin(GL_TRIANGLES);
-	glColor3f(0.1, 0.2, 0.3);
-	for (int i = 0; i < 9; i++) {
-		for (int j = 0; j < 9; j++) {
-			glVertex3f(VecBlob[i][j][0], VecBlob[i][j][1], VecBlob[i][j][2]);
-			glVertex3f(VecBlob[i + 1][j][0], VecBlob[i + 1][j][1], VecBlob[i + 1][j][2]);
-			glVertex3f(VecBlob[i][j + 1][0], VecBlob[i][j + 1][1], VecBlob[i][j + 1][2]);
-
-			glVertex3f(VecBlob[i + 1][j][0], VecBlob[i + 1][j][1], VecBlob[i + 1][j][2]);
-			glVertex3f(VecBlob[i + 1][j + 1][0], VecBlob[i + 1][j + 1][1], VecBlob[i + 1][j + 1][2]);
-			glVertex3f(VecBlob[i][j + 1][0], VecBlob[i][j + 1][1], VecBlob[i][j + 1][2]);
-		}
-	}
-	glEnd();
-}*/
 
 //all we need this to do is to physically draw the sheet, which will bend and flex and stuff
 void Framework::DrawSheet() {
@@ -1905,8 +1825,8 @@ void Framework::DrawCuttingPlane() {
 	float SMax = maxvec;
 	int numS = numContours;
 	float scale = 2.0 / numContours;
-	float hsv[3];
-	float rgb[3];
+	//float hsv[3];
+	//float rgb[3];
 
 	//glBegin(GL_LINES);
 	/*int NumShaderPoints = 20;
@@ -2225,7 +2145,7 @@ void Framework::PhysicsUpdater(int value) {
 			if ((value % 5) == 0) {
 				this->listPath[i].push_front(new vector3d(pointValArray,vector3d::rect));//get new place added to color path
 			}
-			while (this->listPath[i].size() >= (int)dotPointColorG/5) {
+			while (this->listPath[i].size() >= (unsigned int)dotPointColorG/5) {
 				delete this->listPath[i].back();//free memory!
 				this->listPath[i].pop_back();//get rid of old last element
 			}
@@ -2257,5 +2177,4 @@ void Framework::initSheet() {
 			VecSheet[i][j].xyz()[2] = 0;
 		}
 	}
-
 }

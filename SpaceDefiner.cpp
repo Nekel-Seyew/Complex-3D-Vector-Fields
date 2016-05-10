@@ -93,7 +93,7 @@ std::vector<vector3d*>* SpaceDefiner::prism(float x_length, float x_num, float y
 std::vector<vector3d*>* SpaceDefiner::prism_rand(float x_length, float x_num, float y_length, float y_num, float z_length, float z_num){
 	//what we are returning
 	std::vector<vector3d*>* vec = new std::vector<vector3d*>();
-	srand(time(NULL));	
+	srand((unsigned int)time(NULL));	
 	
 	float xleft = 0 - x_length/2.0f;
 	float yleft = 0 - y_length/2.0f;

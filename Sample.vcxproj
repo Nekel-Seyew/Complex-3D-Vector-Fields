@@ -147,7 +147,9 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="Cloth.cpp" />
+    <ClCompile Include="Cloth.cpp">
+      <DebugInformationFormat Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">EditAndContinue</DebugInformationFormat>
+    </ClCompile>
     <ClCompile Include="color.cpp" />
     <ClCompile Include="ControlWindow.cpp" />
     <ClCompile Include="DataSetTrainer.cpp">
