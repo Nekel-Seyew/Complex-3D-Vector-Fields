@@ -9,12 +9,14 @@ vector3d::vector3d(float a, float b, float c){
 	this->abc[1] = b;
 	this->abc[2] = c;
 	this->mode = 0;
+	this->length = sqrt((this->abc[0] * this->abc[0]) + (this->abc[1] * this->abc[1]) + (this->abc[2] * this->abc[2]));
 }
 vector3d::vector3d(float a, float b, float c, int mode){
 	this->abc[0] = a;
 	this->abc[1] = b;
 	this->abc[2] = c;
 	this->mode = mode;
+	this->length = sqrt((this->abc[0] * this->abc[0]) + (this->abc[1] * this->abc[1]) + (this->abc[2] * this->abc[2]));
 }
 
 vector3d::vector3d(float* v, int mode){
@@ -22,18 +24,21 @@ vector3d::vector3d(float* v, int mode){
 	this->abc[1] = v[1];
 	this->abc[2] = v[2];
 	this->mode = mode;
+	this->length = sqrt((this->abc[0] * this->abc[0]) + (this->abc[1] * this->abc[1]) + (this->abc[2] * this->abc[2]));
 }
 vector3d::vector3d(vector3d* in) {
 	this->abc[0] = in->abc[0];
 	this->abc[1] = in->abc[1];
 	this->abc[2] = in->abc[2];
 	this->mode = in->mode;
+	this->length = sqrt((this->abc[0] * this->abc[0]) + (this->abc[1] * this->abc[1]) + (this->abc[2] * this->abc[2]));
 }
 vector3d::vector3d(const vector3d& in) {
 	this->abc[0] = in.abc[0];
 	this->abc[1] = in.abc[1];
 	this->abc[2] = in.abc[2];
 	this->mode = in.mode;
+	this->length = sqrt((this->abc[0] * this->abc[0]) + (this->abc[1] * this->abc[1]) + (this->abc[2] * this->abc[2]));
 }
 
 vector3d::vector3d() {
@@ -41,6 +46,7 @@ vector3d::vector3d() {
 	this->abc[1] = 0;
 	this->abc[2] = 0;
 	this->mode = 0;
+	this->length = sqrt((this->abc[0] * this->abc[0]) + (this->abc[1] * this->abc[1]) + (this->abc[2] * this->abc[2]));
 }
 	
 float* vector3d::xyz(){
@@ -120,20 +126,11 @@ float* vector3d::to_sph(){
 }
 
 
-float vector3d::magnitude(){
-	if(mode == 0){
-		return sqrt((this->abc[0] * this->abc[0]) + (this->abc[1] * this->abc[1]) + (this->abc[2] * this->abc[2]));
-	}else{
-		return this->abc[0];
-	}
+inline float vector3d::magnitude(){
+	return this->length;
 }
-float vector3d::magsqr(){
-	if(mode == 0){
-		return ((this->abc[0] * this->abc[0]) + (this->abc[1] * this->abc[1]) + (this->abc[2] * this->abc[2]));
-	}else{
-		return this->abc[0] * this->abc[0];
-	}
-
+inline float vector3d::magsqr(){
+	return (this->length * this->length);
 }
 
 double vector3d::distance_sqr(vector3d* a, vector3d* b) {
@@ -148,6 +145,7 @@ void vector3d::set_this_to_be_passed_in_value(vector3d* in) {
 	this->abc[1] = in->abc[1];
 	this->abc[2] = in->abc[2];
 	this->mode = in->mode;
+	this->length = in->length;
 }
 //sets this to be the values in the passed in array, and sets the vector to be rectangular mode.
 void vector3d::set_this_to_be_passed_in_value(float* in) {
@@ -155,6 +153,7 @@ void vector3d::set_this_to_be_passed_in_value(float* in) {
 	this->abc[1] = in[1];
 	this->abc[2] = in[2];
 	this->mode = vector3d::rect;
+	this->length = sqrt((this->abc[0] * this->abc[0]) + (this->abc[1] * this->abc[1]) + (this->abc[2] * this->abc[2]));
 }
 
 vector3d& vector3d::operator*=(const float rhs) {
@@ -162,6 +161,7 @@ vector3d& vector3d::operator*=(const float rhs) {
 	this->abc[0] *= rhs;
 	this->abc[1] *= rhs;
 	this->abc[2] *= rhs;
+	this->length = sqrt((this->abc[0] * this->abc[0]) + (this->abc[1] * this->abc[1]) + (this->abc[2] * this->abc[2]));
 	return *this;
 }
 vector3d& vector3d::operator/=(const float rhs) {
@@ -169,6 +169,7 @@ vector3d& vector3d::operator/=(const float rhs) {
 	this->abc[0] /= rhs;
 	this->abc[1] /= rhs;
 	this->abc[2] /= rhs;
+	this->length = sqrt((this->abc[0] * this->abc[0]) + (this->abc[1] * this->abc[1]) + (this->abc[2] * this->abc[2]));
 	return *this;
 }
 vector3d& vector3d::operator+=(const vector3d& rhs) {
@@ -178,6 +179,7 @@ vector3d& vector3d::operator+=(const vector3d& rhs) {
 	this->abc[0] += temp.abc[0];
 	this->abc[1] += temp.abc[0];
 	this->abc[2] += temp.abc[0];
+	this->length = sqrt((this->abc[0] * this->abc[0]) + (this->abc[1] * this->abc[1]) + (this->abc[2] * this->abc[2]));
 	return *this;
 }
 
@@ -206,6 +208,7 @@ void vector3d::nullify() {
 	this->abc[0] = 0;
 	this->abc[1] = 0;
 	this->abc[2] = 0;
+	this->length = 0;
 }
 
 void vector3d::unitize() {

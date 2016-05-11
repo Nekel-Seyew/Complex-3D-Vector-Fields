@@ -1,6 +1,7 @@
 #pragma once
 #include <cstdlib>
 #include "nanoflann.hpp"
+#include "vector3d.h"
 
 template <typename Derived>
 struct VectorDefinerKDAdaptor{
@@ -19,9 +20,10 @@ struct VectorDefinerKDAdaptor{
 	inline float kdtree_distance(const float *p1, const size_t idx_p2, size_t /*size*/) const
 	{
 		const Derived obj = derived();
-		const float d0 = p1[0] - obj->space->at(idx_p2)->xyz()[0];
-		const float d1 = p1[1] - obj->space->at(idx_p2)->xyz()[1];
-		const float d2 = p1[2] - obj->space->at(idx_p2)->xyz()[2];
+		vector3d* pd2 = obj->space_static[idx_p2];
+		const float d0 = p1[0] - pd2->xyz()[0];
+		const float d1 = p1[1] - pd2->xyz()[1];
+		const float d2 = p1[2] - pd2->xyz()[2];
 		return d0*d0 + d1*d1 + d2*d2;
 	}
 
@@ -30,9 +32,9 @@ struct VectorDefinerKDAdaptor{
 	//  "if/else's" are actually solved at compile time.
 	inline float kdtree_get_pt(const size_t idx, int dim) const
 	{
-		if (dim == 0) return derived()->space->at(idx)->xyz()[0];
-		else if (dim == 1) return derived()->space->at(idx)->xyz()[1];
-		else return derived()->space->at(idx)->xyz()[2];
+		if (dim == 0) return derived()->space_static[idx]->xyz()[0];
+		else if (dim == 1) return derived()->space_static[idx]->xyz()[1];
+		else return derived()->space_static[idx]->xyz()[2];
 	}
 
 	// Optional bounding-box computation: return false to default to a standard bbox computation loop.

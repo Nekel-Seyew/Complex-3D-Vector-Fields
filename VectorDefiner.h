@@ -26,6 +26,17 @@ protected:
 	std::vector<vector3d*>* culled_vectors;
 	std::vector<vector3d*>* culled_space;
 
+	//"static" versions of the above points
+	vector3d** vectors_static;
+	unsigned int vectors_static_length;
+	vector3d** space_static;
+	unsigned int space_static_length;
+	vector3d** culled_vectors_static;
+	unsigned int culled_vectors_static_length;
+	vector3d** culled_space_static;
+	unsigned int culled_space_static_length;
+
+
 	equation* eqr;
 	std::string* filename;
 	bool is_file;
@@ -70,6 +81,8 @@ public:
 	bool am_file();
 	vector3d* get_vector_at_pos(vector3d* vec);
 	vector3d* get_vector_at_pos(float x, float y, float z);
+	float	  get_magnitude_at_pos(float x, float y, float z);
+	float	  get_magnitude_at_pos(vector3d* vec);
 
 	vector3d* VectorAdvect(vector3d* inputVector, float TimeStep);
 	void VectorAdvect(vector3d* inputVector, float TimeStep, float* storeArray);

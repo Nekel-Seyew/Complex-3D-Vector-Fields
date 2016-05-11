@@ -236,6 +236,10 @@ void VectorDefiner::populate(std::vector<vector3d*>* space){
 		
 		this->space = temp_space;
 		this->vectors = temp_vectors;
+		this->space_static = temp_space->data();
+		this->space_static_length = temp_space->size();
+		this->vectors_static = temp_vectors->data();
+		this->vectors_static_length = temp_vectors->size();
 
 		//build everything to allow for nearest-neighbor search
 		this->pc2kd = new PC2KD(this);
@@ -258,6 +262,12 @@ void VectorDefiner::populate(std::vector<vector3d*>* space){
 		}
 
 		this->space = space;//EWW
+
+		this->space_static = space->data();
+		this->space_static_length = space->size();
+		this->vectors_static = this->vectors->data();
+		this->vectors_static_length = this->vectors->size();
+
 		delete f;
 	}
 }
@@ -305,6 +315,8 @@ std::vector<vector3d*>* VectorDefiner::cull_vectors(float xmin, float xmax, floa
 		delete this->culled_vectors;
 	}
 	this->culled_vectors = vec;
+	this->culled_vectors_static = vec->data();
+	this->culled_vectors_static_length = vec->size();
 	//return
 	return vec;
 }
@@ -329,6 +341,8 @@ std::vector<vector3d*>* VectorDefiner::cull_space(float xmin, float xmax, float 
 		delete this->culled_space;
 	}
 	this->culled_space = vec;
+	this->culled_space_static = vec->data();
+	this->culled_space_static_length = vec->size();
 	return vec;
 }
 
@@ -377,10 +391,14 @@ void VectorDefiner::cull_space_vectors_rand(unsigned int step, unsigned int num_
 		//delete this->culled_space;
 	}
 	this->culled_space = space;
+	this->culled_space_static = space->data();
+	this->culled_space_static_length = space->size();
 	if (this->culled_vectors != NULL) {
 		//delete this->culled_vectors;
 	}
 	this->culled_vectors = vec;
+	this->culled_vectors_static = vec->data();
+	this->culled_vectors_static_length = vec->size();
 
 }
 
@@ -417,7 +435,7 @@ vector3d* VectorDefiner::get_vector_at_pos(vector3d* vec) {
 		resultSet.init(&ret_index, &out_dist_sqr);
 		this->index->findNeighbors(resultSet, vec->xyz(), nanoflann::SearchParams(10));
 
-		return new vector3d(this->vectors->at(ret_index));
+		return new vector3d(this->vectors_static[ret_index]);
 	}else{
 		float* out = new float[3];
 		out = this->eqr->eval(vec->xyz()[0], vec->xyz()[1], vec->xyz()[2], out);
@@ -437,7 +455,7 @@ vector3d* VectorDefiner::get_vector_at_pos(float x, float y, float z) {
 		resultSet.init(&ret_index, &out_dist_sqr);
 		this->index->findNeighbors(resultSet, in, nanoflann::SearchParams(10));
 
-		return new vector3d(this->vectors->at(ret_index));
+		return new vector3d(this->vectors_static[ret_index]);
 	}
 	else {
 		float* out = new float[3];
@@ -445,6 +463,41 @@ vector3d* VectorDefiner::get_vector_at_pos(float x, float y, float z) {
 		vector3d* outv = new vector3d(out, vector3d::rect);
 		delete out;
 		return outv;
+	}
+}
+float VectorDefiner::get_magnitude_at_pos(float x, float y, float z) {
+	if (this->is_file) {
+		float* in = new float[3]; in[0] = x; in[1] = y; in[2] = z;
+		const size_t num_results = 1;
+		size_t ret_index;
+		float out_dist_sqr;
+		nanoflann::KNNResultSet<float> resultSet(num_results);
+		resultSet.init(&ret_index, &out_dist_sqr);
+		this->index->findNeighbors(resultSet, in, nanoflann::SearchParams(10));
+
+		return this->vectors_static[ret_index]->magnitude();
+	}
+	else {
+		float out[3];
+		this->eqr->eval(x, y, z, out);
+		return sqrt((out[0]*out[0]) + (out[1]*out[1]) + (out[2]*out[2]));
+	}
+}
+float VectorDefiner::get_magnitude_at_pos(vector3d* vec) {
+	if (this->is_file) {
+		const size_t num_results = 1;
+		size_t ret_index;
+		float out_dist_sqr;
+		nanoflann::KNNResultSet<float> resultSet(num_results);
+		resultSet.init(&ret_index, &out_dist_sqr);
+		this->index->findNeighbors(resultSet, vec->xyz(), nanoflann::SearchParams(10));
+
+		return this->vectors_static[ret_index]->magnitude();
+	}
+	else {
+		float out[3];
+		this->eqr->eval(vec->xyz()[0], vec->xyz()[1], vec->xyz()[2], out);
+		return sqrt((out[0] * out[0]) + (out[1] * out[1]) + (out[2] * out[2]));
 	}
 }
 
@@ -462,9 +515,9 @@ vector3d* VectorDefiner::VectorAdvect(vector3d* inputVector, float TimeStep) {
 		resultSet.init(&ret_index, &out_dist_sqr);
 		this->index->findNeighbors(resultSet, in, nanoflann::SearchParams(10));
 
-		firstvec[0] = this->vectors->at(ret_index)->xyz()[0];
-		firstvec[1] = this->vectors->at(ret_index)->xyz()[1];
-		firstvec[2] = this->vectors->at(ret_index)->xyz()[2];
+		firstvec[0] = this->vectors_static[ret_index]->xyz()[0];
+		firstvec[1] = this->vectors_static[ret_index]->xyz()[1];
+		firstvec[2] = this->vectors_static[ret_index]->xyz()[2];
 	}else {
 		this->eqr->eval(vec[0], vec[1], vec[2], firstvec); //firstvec is set inside eval, don't worry
 	}
@@ -480,9 +533,9 @@ vector3d* VectorDefiner::VectorAdvect(vector3d* inputVector, float TimeStep) {
 		resultSet.init(&ret_index, &out_dist_sqr);
 		this->index->findNeighbors(resultSet, in, nanoflann::SearchParams(10));
 
-		secondvec[0] = this->vectors->at(ret_index)->xyz()[0];
-		secondvec[1] = this->vectors->at(ret_index)->xyz()[1];
-		secondvec[2] = this->vectors->at(ret_index)->xyz()[2];
+		secondvec[0] = this->vectors_static[ret_index]->xyz()[0];
+		secondvec[1] = this->vectors_static[ret_index]->xyz()[1];
+		secondvec[2] = this->vectors_static[ret_index]->xyz()[2];
 	}
 	else {
 		this->eqr->eval(b.m128_f32[0], b.m128_f32[1], b.m128_f32[2], secondvec); //firstvec is set inside eval, don't worry
@@ -513,9 +566,9 @@ void VectorDefiner::VectorAdvect(vector3d* inputVector, float TimeStep, float* s
 		resultSet.init(&ret_index, &out_dist_sqr);
 		this->index->findNeighbors(resultSet, in, nanoflann::SearchParams(10));
 
-		firstvec[0] = this->vectors->at(ret_index)->xyz()[0];
-		firstvec[1] = this->vectors->at(ret_index)->xyz()[1];
-		firstvec[2] = this->vectors->at(ret_index)->xyz()[2];
+		firstvec[0] = this->vectors_static[ret_index]->xyz()[0];
+		firstvec[1] = this->vectors_static[ret_index]->xyz()[1];
+		firstvec[2] = this->vectors_static[ret_index]->xyz()[2];
 	}
 	else {
 		this->eqr->eval(vec[0], vec[1], vec[2], firstvec); //firstvec is set inside eval, don't worry
@@ -540,9 +593,9 @@ void VectorDefiner::VectorAdvect(vector3d* inputVector, float TimeStep, float* s
 		resultSet.init(&ret_index, &out_dist_sqr);
 		this->index->findNeighbors(resultSet, in, nanoflann::SearchParams(10));
 
-		secondvec[0] = this->vectors->at(ret_index)->xyz()[0];
-		secondvec[1] = this->vectors->at(ret_index)->xyz()[1];
-		secondvec[2] = this->vectors->at(ret_index)->xyz()[2];
+		secondvec[0] = this->vectors_static[ret_index]->xyz()[0];
+		secondvec[1] = this->vectors_static[ret_index]->xyz()[1];
+		secondvec[2] = this->vectors_static[ret_index]->xyz()[2];
 	}
 	else {
 		this->eqr->eval(b.m128_f32[0], b.m128_f32[1], b.m128_f32[2], secondvec); //firstvec is set inside eval, don't worry

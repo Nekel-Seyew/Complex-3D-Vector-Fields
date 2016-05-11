@@ -84,6 +84,7 @@ private:
 	//variables
 	int    mode; //0-rect, 1-cylindrival, 2-spherical
 	float  abc[3];
+	float  length;
 	//methods
 	float* to_rect();
 	float* to_cyl();

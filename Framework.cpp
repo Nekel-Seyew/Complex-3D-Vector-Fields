@@ -188,13 +188,19 @@ inline vector3d* Framework::VectorAtLocation(float xCord, float yCord, float zCo
 	//returnVec = VDef->get_vector_at_pos(xCord,yCord,zCord);
 	//delete temp;
 	//printf("The values of the returnVec are %f, %f, %f\n", returnVec->xyz()[0], returnVec->xyz()[1], returnVec->xyz()[2]);
-	return VDef->get_vector_at_pos(xCord, yCord, zCord);
+	return this->VDef->get_vector_at_pos(xCord, yCord, zCord);
 }
 inline vector3d* Framework::VectorAtLocation(vector3d* pos) {
 	//vector3d* returnVec;
 	//returnVec = VDef->get_vector_at_pos(pos);
 	//printf("The values of the returnVec are %f, %f, %f\n", returnVec->xyz()[0], returnVec->xyz()[1], returnVec->xyz()[2]);
-	return VDef->get_vector_at_pos(pos);
+	return this->VDef->get_vector_at_pos(pos);
+}
+inline float Framework::VectorMagnitudeAtLocation(vector3d* pos) {
+	return this->VDef->get_magnitude_at_pos(pos);
+}
+inline float Framework::VectorMagnitudeAtLocation(float x, float y, float z) {
+	return this->VDef->get_magnitude_at_pos(x, y, z);
 }
 
 
@@ -1175,7 +1181,7 @@ void Framework::DrawIsosurfaces() {
 	glBegin(GL_LINES);
 	//This is the XY
 	float tempval = -1.0;
-	vector3d * tempVector;
+	//vector3d * tempVector;
 	float colorarray[4];
 	for (int index = 0; index < (numContours + 1); index++) {
 		glColor4fv(Color(Sstar, colorarray));
@@ -1197,35 +1203,35 @@ void Framework::DrawIsosurfaces() {
 				Node0.x = XYPlane[i][j].x;
 				Node0.y = XYPlane[i][j].y;
 				Node0.z = z;
-				tempVector = VectorAtLocation(Node0.x, Node0.y, z);
-				Node0.t = tempVector-> magnitude();
-				delete tempVector;
+				//tempVector = VectorMagnitudeAtLocation(Node0.x, Node0.y, z);
+				Node0.t = VectorMagnitudeAtLocation(Node0.x, Node0.y, z);
+				//delete tempVector;
 				
 
 				//This is point 1
 				Node1.x = XYPlane[i + 1][j].x;
 				Node1.y = XYPlane[i + 1][j].y;
 				Node1.z = z;
-				tempVector = VectorAtLocation(XYPlane[i + 1][j].x, XYPlane[i + 1][j].y, z);
-				Node1.t = tempVector->magnitude();
-				delete tempVector;
+				//tempVector = VectorAtLocation(XYPlane[i + 1][j].x, XYPlane[i + 1][j].y, z);
+				Node1.t = VectorMagnitudeAtLocation(XYPlane[i + 1][j].x, XYPlane[i + 1][j].y, z);
+				//delete tempVector;
 
 				//This is point 3
 				Node3.x = XYPlane[i + 1][j + 1].x;
 				Node3.y = XYPlane[i + 1][j + 1].y;
 				Node3.z = z;
-				tempVector = VectorAtLocation(XYPlane[i + 1][j + 1].x, XYPlane[i + 1][j + 1].y, z);
-				Node3.t = tempVector->magnitude();
-				delete tempVector;
+				//tempVector = VectorAtLocation(XYPlane[i + 1][j + 1].x, XYPlane[i + 1][j + 1].y, z);
+				Node3.t = VectorMagnitudeAtLocation(XYPlane[i + 1][j + 1].x, XYPlane[i + 1][j + 1].y, z);
+				//delete tempVector;
 
 				//This is point 2
 				Node2.x = XYPlane[i][j + 1].x;
 				Node2.y = XYPlane[i][j + 1].y;
 				Node2.z = z;
-				tempVector = VectorAtLocation(XYPlane[i][j + 1].x, XYPlane[i][j + 1].y, z);
-				Node2.t = tempVector->magnitude();
+				//tempVector = VectorAtLocation(XYPlane[i][j + 1].x, XYPlane[i][j + 1].y, z);
+				Node2.t = VectorMagnitudeAtLocation(XYPlane[i][j + 1].x, XYPlane[i][j + 1].y, z);
 				ProcessQuad(Node0P, Node1P, Node2P, Node3P, Sstar);
-				delete tempVector;
+				//delete tempVector;
 
 			}
 		}
@@ -1252,34 +1258,34 @@ void Framework::DrawIsosurfaces() {
 				Node0.x = XZPlane[i][j].x;
 				Node0.y = y;
 				Node0.z = XZPlane[i][j].z;
-				tempVector = VectorAtLocation(Node0.x, y, Node0.z);
-				Node0.t = tempVector->magnitude();
-				delete tempVector;
+				//tempVector = VectorMagnitudeAtLocation(Node0.x, y, Node0.z);
+				Node0.t = VectorMagnitudeAtLocation(Node0.x, y, Node0.z);
+				//delete tempVector;
 
 				//This is point 1
 				Node1.x = XZPlane[i + 1][j].x;
 				Node1.y = y;
 				Node1.z = XZPlane[i + 1][j].z;
-				tempVector = VectorAtLocation(Node1.x, y, Node1.z);
-				Node1.t = tempVector->magnitude();
-				delete tempVector;
+				//tempVector = VectorMagnitudeAtLocation(Node1.x, y, Node1.z);
+				Node1.t = VectorMagnitudeAtLocation(Node1.x, y, Node1.z);
+				//delete tempVector;
 
 				//This is point 3
 				Node3.x = XZPlane[i + 1][j + 1].x;
 				Node3.y = y;
 				Node3.z = XZPlane[i + 1][j + 1].z;
-				tempVector = VectorAtLocation(Node3.x, y, Node3.z);
-				Node3.t = tempVector->magnitude();
-				delete tempVector;
+				//tempVector = VectorMagnitudeAtLocation(Node3.x, y, Node3.z);
+				Node3.t = VectorMagnitudeAtLocation(Node3.x, y, Node3.z);
+				//delete tempVector;
 
 				//This is point 2
 				Node2.x = XZPlane[i][j + 1].x;
 				Node2.y = y;
 				Node2.z = XZPlane[i][j + 1].z;
-				tempVector = VectorAtLocation(Node2.x, y, Node2.z);
-				Node2.t = tempVector->magnitude();
+				//tempVector = VectorMagnitudeAtLocation(Node2.x, y, Node2.z);
+				Node2.t = VectorMagnitudeAtLocation(Node2.x, y, Node2.z);
 				ProcessQuad(Node0P, Node1P, Node2P, Node3P, Sstar);
-				delete tempVector;
+				//delete tempVector;
 			}
 		}
 		tempval += scale;
@@ -1306,17 +1312,17 @@ void Framework::DrawIsosurfaces() {
 				Node0.x = x;
 				Node0.y = YZPlane[i][j].y;
 				Node0.z = YZPlane[i][j].z;
-				tempVector = VectorAtLocation(x, Node0.y, Node0.z);
-				Node0.t = tempVector->magnitude();
-				delete tempVector;
+				//tempVector = VectorMagnitudeAtLocation(x, Node0.y, Node0.z);
+				Node0.t = VectorMagnitudeAtLocation(x, Node0.y, Node0.z);
+				//delete tempVector;
 
 				//This is point 1
 				Node1.x = x;
 				Node1.y = YZPlane[i + 1][j].y;
 				Node1.z = YZPlane[i + 1][j].z;
-				tempVector = VectorAtLocation(x, Node1.y, Node1.z);
-				Node1.t = tempVector->magnitude();
-				delete tempVector;
+				//tempVector = VectorMagnitudeAtLocation(x, Node1.y, Node1.z);
+				Node1.t = VectorMagnitudeAtLocation(x, Node1.y, Node1.z);
+				//delete tempVector;
 
 
 
@@ -1324,18 +1330,18 @@ void Framework::DrawIsosurfaces() {
 				Node3.x = x;
 				Node3.y = YZPlane[i + 1][j + 1].y;
 				Node3.z = YZPlane[i + 1][j + 1].z;
-				tempVector = VectorAtLocation(x, Node3.y, Node3.z);
-				Node3.t = tempVector->magnitude();
-				delete tempVector;
+				//tempVector = VectorMagnitudeAtLocation(x, Node3.y, Node3.z);
+				Node3.t = VectorMagnitudeAtLocation(x, Node3.y, Node3.z);
+				//delete tempVector;
 
 
 				//This is point 2
 				Node2.x = x;
 				Node2.y = YZPlane[i][j + 1].y;
 				Node2.z = YZPlane[i][j + 1].z;
-				tempVector = VectorAtLocation(x, Node2.y, Node2.z);
-				Node2.t = tempVector->magnitude();
-				delete tempVector;
+				//tempVector = VectorMagnitudeAtLocation(x, Node2.y, Node2.z);
+				Node2.t = VectorMagnitudeAtLocation(x, Node2.y, Node2.z);
+				//delete tempVector;
 
 
 				ProcessQuad(Node0P, Node1P, Node2P, Node3P, Sstar);
@@ -1942,45 +1948,45 @@ void Framework::DrawCuttingPlane() {
 		for (int i = 0; i < NumShaderPoints; i++) {
 			//vertex 0
 			//printf("Xval is %f, Yval is %f, Zval is %f\n", xval, yval, zval);
-			vector3d * tempVec = VectorAtLocation(CuttingPlane[i][j][0], CuttingPlane[i][j][1], CuttingPlane[i][j][2]);
-			float mag = tempVec->magnitude();
+			//vector3d * tempVec = VectorMagnitudeAtLocation(CuttingPlane[i][j][0], CuttingPlane[i][j][1], CuttingPlane[i][j][2]);
+			//float mag = tempVec->magnitude();
 			DynamicNow[count].x = CuttingPlane[i][j][0];
 			DynamicNow[count].y = CuttingPlane[i][j][1];
 			DynamicNow[count].z = CuttingPlane[i][j][2];
-			DynamicNow[count].m = mag;
-			delete tempVec;
+			DynamicNow[count].m = VectorMagnitudeAtLocation(CuttingPlane[i][j][0], CuttingPlane[i][j][1], CuttingPlane[i][j][2]);
+			//delete tempVec;
 			//printf("The t value is %f, the max value is %f, the min value is %f, the mag is %f\n", (mag - min) / (max - min), max, min, mag);
 			count++;
 
 			//vectex1
-			tempVec = VectorAtLocation(CuttingPlane[i + 1][j][0], CuttingPlane[i + 1][j][1], CuttingPlane[i + 1][j][2]);
-			mag = tempVec->magnitude();
+			//tempVec = VectorMagnitudeAtLocation(CuttingPlane[i + 1][j][0], CuttingPlane[i + 1][j][1], CuttingPlane[i + 1][j][2]);
+			//mag = tempVec->magnitude();
 			DynamicNow[count].x = CuttingPlane[i + 1][j][0];
 			DynamicNow[count].y = CuttingPlane[i + 1][j][1];
 			DynamicNow[count].z = CuttingPlane[i + 1][j][2];
-			DynamicNow[count].m = mag;
-			delete tempVec;
+			DynamicNow[count].m = VectorMagnitudeAtLocation(CuttingPlane[i + 1][j][0], CuttingPlane[i + 1][j][1], CuttingPlane[i + 1][j][2]);
+			//delete tempVec;
 			//printf("The t value is %f, the max value is %f, the min value is %f, the mag is %f\n", (mag - min) / (max - min), max, min, mag);
 			count++;
 
-			tempVec = VectorAtLocation(CuttingPlane[i + 1][j + 1][0], CuttingPlane[i + 1][j + 1][1], CuttingPlane[i + 1][j + 1][2]);
-			mag = tempVec->magnitude();
+			//tempVec = VectorMagnitudeAtLocation(CuttingPlane[i + 1][j + 1][0], CuttingPlane[i + 1][j + 1][1], CuttingPlane[i + 1][j + 1][2]);
+			//mag = tempVec->magnitude();
 			DynamicNow[count].x = CuttingPlane[i + 1][j + 1][0];
 			DynamicNow[count].y = CuttingPlane[i + 1][j + 1][1];
 			DynamicNow[count].z = CuttingPlane[i + 1][j + 1][2];
-			DynamicNow[count].m = mag;
-			delete tempVec;
+			DynamicNow[count].m = VectorMagnitudeAtLocation(CuttingPlane[i + 1][j + 1][0], CuttingPlane[i + 1][j + 1][1], CuttingPlane[i + 1][j + 1][2]);
+			//delete tempVec;
 			//printf("The t value is %f, the max value is %f, the min value is %f, the mag is %f\n", (mag - min) / (max - min), max, min, mag);
 			count++;
 
 			//vertex2
-			tempVec = VectorAtLocation(CuttingPlane[i][j + 1][0], CuttingPlane[i][j + 1][1], CuttingPlane[i][j + 1][2]);
-			mag = tempVec->magnitude();
+			//tempVec = VectorMagnitudeAtLocation(CuttingPlane[i][j + 1][0], CuttingPlane[i][j + 1][1], CuttingPlane[i][j + 1][2]);
+			//mag = tempVec->magnitude();
 			DynamicNow[count].x = CuttingPlane[i][j + 1][0];
 			DynamicNow[count].y = CuttingPlane[i][j + 1][1];
 			DynamicNow[count].z = CuttingPlane[i][j + 1][2];
-			DynamicNow[count].m = mag;
-			delete tempVec;
+			DynamicNow[count].m = VectorMagnitudeAtLocation(CuttingPlane[i][j + 1][0], CuttingPlane[i][j + 1][1], CuttingPlane[i][j + 1][2]);
+			//delete tempVec;
 			//printf("The t value is %f, the max value is %f, the min value is %f, the mag is %f\n", (mag - min) / (max - min), max, min, mag);
 			count++;
 			//DynamicNow[index].m = 1.0;

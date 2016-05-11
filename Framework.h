@@ -179,6 +179,8 @@ public:
 	//These are the Helper Functions for Graphics: 
 	vector3d * VectorAtLocation(float, float, float);
 	vector3d* VectorAtLocation(vector3d* pos);
+	float	  VectorMagnitudeAtLocation(vector3d* pos);
+	float     VectorMagnitudeAtLocation(float, float, float);
 	vector3d * VectorAdvect(vector3d *, float);
 	void VectorAdvect(vector3d * inputVector, float TimeStep, float* storeArray);
 	float * Color(float, float*);
@@ -229,8 +231,8 @@ public:
 	/*Glui (Controller)*/
 	//These are changed by the MyButtons Callback Functions
 	char *SpaceInput = { "<(cos(2 * 3.14159265359 * X) * sin(3.14159265359 * Y) * 1), (sin(2 * 3.14159265359 * X) * sin(3.14159265359 * Y) * 1), (cos(3.14159265359 * Y) * 1)>" };
-	char *VectorInput = { "<Y*Z*(Y*Y + Z*Z), X*Z*(X*X + Z*Z), Y*X*(Y*Y + X* X)>" }; //This is the Solenoid Equation
-	//char * VectorInput = { "<((sqrt(X * X + Z * Z)^3)* e^(~3. * sqrt(X * X + Z * Z))* Z),(0.008/((Z *Z/sqrt(X * X + Z * Z)) + (X * X /sqrt(X * X + Z * Z)) + 0.0001)), ((sqrt(X * X + Z * Z)^3) * e^(~3. *sqrt(X * X + Z * Z)) * ~X)>" };
+	//char *VectorInput = { "<Y*Z*(Y*Y + Z*Z), X*Z*(X*X + Z*Z), Y*X*(Y*Y + X* X)>" }; //This is the Solenoid Equation
+	char * VectorInput = { "<((sqrt(X * X + Z * Z)^3)* e^(~3. * sqrt(X * X + Z * Z))* Z),(0.008/((Z *Z/sqrt(X * X + Z * Z)) + (X * X /sqrt(X * X + Z * Z)) + 0.0001)), ((sqrt(X * X + Z * Z)^3) * e^(~3. *sqrt(X * X + Z * Z)) * ~X)>" };
 
 	//Constants Used to Set Up Glui:
 	const char *GLUITITLE = { "User Interface Window" };
