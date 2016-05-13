@@ -1562,18 +1562,6 @@ void Framework::InitIsoNodes() {
 			//Nodes[i][j][k].colorval = 0.1 + (0.9)* (Nodes[i][j][k].t - TEMPMIN) / (TEMPMAX - TEMPMIN);
 		}
 	}
-
-	//Then the XZ
-	for (int i = 0; i < IsoResolution; i++)
-	{
-		for (int j = 0; j < IsoResolution; j++)
-		{
-			//keep but dont use this 
-			XZPlane[i][j].x = -1. + 2. * (float)i / (float)(IsoResolution - 1);
-			XZPlane[i][j].y = -1. + 2. * (float)j / (float)(IsoResolution - 1);
-			XZPlane[i][j].z = XZPlanesYval;
-		}
-	}
 	//Then the XZ
 	for (int i = 0; i < IsoResolution; i++)
 	{
@@ -1864,56 +1852,7 @@ void Framework::DrawCuttingPlane() {
 	zval = XYPlanesZval;
 	glColor3f(1., 0., 0.);
 	int count = 0;
-	/*for (int i = 0; i < (NumShaderPoints); i++) {
-		for (int j = 0; j < NumShaderPoints; j++) {
-			//vertex 0
-			//printf("Xval is %f, Yval is %f, Zval is %f\n", xval, yval, zval);
-			vector3d * tempVec = VectorAtLocation(xval, yval, zval);
-			float mag = tempVec->magnitude();
-			DynamicNow[count].x = xval;
-			DynamicNow[count].y = yval;
-			DynamicNow[count].z = zval;
-			DynamicNow[count].m = mag;
-			//printf("The t value is %f, the max value is %f, the min value is %f, the mag is %f\n", (mag - min) / (max - min), max, min, mag);
-			count++;
-
-			//vectex1
-			tempVec = VectorAtLocation(xval + planestep, yval, zval);
-			mag = tempVec->magnitude();
-			DynamicNow[count].x = xval + planestep;
-			DynamicNow[count].y = yval;
-			DynamicNow[count].z = zval;
-			DynamicNow[count].m = mag;
-			//printf("The t value is %f, the max value is %f, the min value is %f, the mag is %f\n", (mag - min) / (max - min), max, min, mag);
-			count++;
-
-			tempVec = VectorAtLocation(xval + planestep, yval + planestep, zval);
-			mag = tempVec->magnitude();
-			DynamicNow[count].x = xval + planestep;
-			DynamicNow[count].y = yval + planestep;
-			DynamicNow[count].z = zval;
-			DynamicNow[count].m = mag;
-			//printf("The t value is %f, the max value is %f, the min value is %f, the mag is %f\n", (mag - min) / (max - min), max, min, mag);
-			count++;
-
-			//vertex2
-			tempVec = VectorAtLocation(xval, yval + planestep, zval);
-			mag = tempVec->magnitude();
-			DynamicNow[count].x = xval;
-			DynamicNow[count].y = yval + planestep;
-			DynamicNow[count].z = zval;
-			DynamicNow[count].m = mag;
-			//printf("The t value is %f, the max value is %f, the min value is %f, the mag is %f\n", (mag - min) / (max - min), max, min, mag);
-			count++;
-			//DynamicNow[index].m = 1.0;
-
-			//DynamicNow[i].m = mag;
-			xval += planestep;
-			//zval += planestep;
-		}
-		xval = -1.0;
-		yval += planestep;
-	}*/
+	
 	float Cross1[3];
 	float Cross2[3];
 	float CuttingPlane[50][50][3];
@@ -2022,19 +1961,8 @@ void Framework::DrawCuttingPlane() {
 	glDrawArrays(GL_QUADS, 0, NumShaderPoints * NumShaderPoints * 4);
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	//glutWireSphere(0.5, 5, 5);
 	glUseProgram(0);
 
-	/*glBegin(GL_POINTS);
-	glUseProgram(program);
-	glPointSize(10);
-	glBegin(GL_POINTS);
-	glColor3f(0., 1., 1.);
-	glVertex3f(0., 0., 0.);
-	glPointSize(4);
-	glEnd();
-	glUseProgram(0);
-	*/
 
 }
 
