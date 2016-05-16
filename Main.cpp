@@ -101,6 +101,8 @@ void MyButtons(int button) {
 	switch (button) {
 	case(0) :
 		Framework::instance()->setUpPointsAndVectors(); 
+		Framework::instance()->spinVecMin = Framework::instance()->GetVectorMin();
+		Framework::instance()->spinVecMax = Framework::instance()->GetVectorMax();
 		break;
 	case(1) :
 		printf("Entering Input\n");
@@ -111,6 +113,8 @@ void MyButtons(int button) {
 			Framework::instance()->SpaceInput = Framework::instance()->SpaceDefinerString;
 		}
 		Framework::instance()->setUpPointsAndVectors(); 
+		Framework::instance()->spinVecMin = Framework::instance()->GetVectorMin();
+		Framework::instance()->spinVecMax = Framework::instance()->GetVectorMax();
 		break;
 	case(2) :
 		printf(".obj file saved");
@@ -342,13 +346,15 @@ void InitGlui() {
 	spinArrowLength ->set_float_limits(0.0, 15.0);
 	spinArrowLength ->set_speed(0.1);
 
-	spinMinVector = TestGlui->add_spinner_to_panel(ArrowSettings, "Vector Magnitude Min", GLUI_SPINNER_FLOAT, &Framework::instance()->spinVecMin);
-	spinMinVector->set_float_limits(Framework::instance()->VECMIN, Framework::instance()-> spinVecMax);
-	spinMinVector->set_speed(0.1);
-	spinMaxVector = TestGlui->add_spinner_to_panel(ArrowSettings, "Vector Magnitude Max", GLUI_SPINNER_FLOAT, &Framework::instance()->spinVecMax);
-	spinMaxVector->set_float_limits(Framework::instance()->spinVecMin, Framework::instance()->VECMAX);
-	spinMaxVector->set_speed(0.1);
+	Framework::instance()->spinVecMin = Framework::instance()->GetVectorMin();
+	Framework::instance()->spinVecMax = Framework::instance()->GetVectorMax();
 
+	spinMinVector = TestGlui->add_spinner_to_panel(ArrowSettings, "Vector Magnitude Min", GLUI_SPINNER_FLOAT, &Framework::instance()->spinVecMin);
+	spinMinVector->set_float_limits(0.0, 1000.0);
+	spinMinVector->set_speed(0.05);
+	spinMaxVector = TestGlui->add_spinner_to_panel(ArrowSettings, "Vector Magnitude Max", GLUI_SPINNER_FLOAT, &Framework::instance()->spinVecMax);
+	spinMaxVector->set_float_limits(0.0, 1000.0);
+	spinMaxVector->set_speed(0.05);
 	/*
 	alphaVector = TestGlui->add_spinner_to_panel(ArrowSettings, "Arrow Alpha", GLUI_SPINNER_FLOAT, &Framework::instance()->vecAlphaVal);
 	alphaVector->set_float_limits(0.0, 1.0);
@@ -458,6 +464,9 @@ void InitGlui() {
 	ContDist->set_speed(0.4);
 	
 	//animation items
+	spinNumPoints = TestGlui->add_spinner_to_panel(AnimationSettings, "Animation NumPoints", GLUI_SPINNER_FLOAT, &Framework::instance()->NumPoints);
+	spinNumPoints->set_float_limits(5, 1000);
+	spinNumPoints->set_speed(0.5);
 	TestGlui->add_checkbox_to_panel(AnimationSettings, "Color As Velocity", &Framework::instance()->colorAsVelocity);
 	TestGlui->add_checkbox_to_panel(AnimationSettings, "TracePath", &Framework::instance()->traceDotPath);//for turning off and on trace path.
 	dotPointColorSpinnerR = TestGlui->add_spinner_to_panel(AnimationSettings, "Dot Time Interval", GLUI_SPINNER_FLOAT, &Framework::instance()->timestep);
@@ -469,9 +478,7 @@ void InitGlui() {
 	//dotPointColorSpinnerB = TestGlui->add_spinner_to_panel(AnimationSettings, "Dot Color B", GLUI_SPINNER_FLOAT, &Framework::instance()->dotPointColorB);
 	//dotPointColorSpinnerB->set_float_limits(0.0, 1.0);
 	//dotPointColorSpinnerB->set_speed(0.05);
-	spinNumPoints = TestGlui->add_spinner_to_panel(UserInput, "NumPoints", GLUI_SPINNER_FLOAT, &Framework::instance()->NumPoints);
-	spinNumPoints->set_float_limits(5, 1000);
-	spinNumPoints->set_speed(0.5);
+	
 
 	//Final Setup for Glui - making it the main window
 	TestGlui->set_main_gfx_window(Framework::instance()->MainWindow);

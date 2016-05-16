@@ -712,7 +712,7 @@ void Framework::RestoreDefaults() {
 	CuttingPlaneXVec = CuttingPlaneZVec = CuttingPlaneXLoc = CuttingPlaneYLoc = CuttingPlaneZLoc = 0.0;
 	Tolerence = 1.0;
 	ContDist = 0.1;
-	IsosurfacesVal = 0.1;
+	IsosurfacesVal = 0.05;
 	IsoResolution = 15;
 	numContours = 5.0;
 	ActiveButton = 0;
@@ -760,7 +760,7 @@ void Framework::RestoreDefaults() {
 	useCuttingPlane = 0;
 	ContourOn = 0;
 	MineCraftOn = 0;
-	useJitter = 1;
+	useJitter = 0;
 	useProbe = 0;
 	usePrism = 1;
 	useGrid = 0;
