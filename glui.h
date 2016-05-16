@@ -66,7 +66,7 @@
 
 #if defined(_WIN32)
 #if !defined(GLUI_NO_LIB_PRAGMA)
-#pragma comment(lib, "glui32.lib")  // Link automatically with GLUI library
+#pragma comment(lib, "glui32-release.lib")  // Link automatically with GLUI library
 #endif
 #endif
 
