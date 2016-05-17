@@ -1893,6 +1893,12 @@ void Framework::DrawCuttingPlane() {
 			DynamicNow[count].y = CuttingPlane[i][j][1];
 			DynamicNow[count].z = CuttingPlane[i][j][2];
 			DynamicNow[count].m = VectorMagnitudeAtLocation(CuttingPlane[i][j][0], CuttingPlane[i][j][1], CuttingPlane[i][j][2]);
+			if (MineCraftOn) {
+				DynamicNow[count].m = VectorMagnitudeAtLocation(CuttingPlane[i][j][0], CuttingPlane[i][j][1], CuttingPlane[i][j][2]);
+			}
+			else {
+				DynamicNow[count].m = VectorMagnitudeAtLocation(CuttingPlane[i][j][0], CuttingPlane[i][j][1], CuttingPlane[i][j][2]);
+			}
 			//delete tempVec;
 			//printf("The t value is %f, the max value is %f, the min value is %f, the mag is %f\n", (mag - min) / (max - min), max, min, mag);
 			count++;
@@ -1903,7 +1909,13 @@ void Framework::DrawCuttingPlane() {
 			DynamicNow[count].x = CuttingPlane[i + 1][j][0];
 			DynamicNow[count].y = CuttingPlane[i + 1][j][1];
 			DynamicNow[count].z = CuttingPlane[i + 1][j][2];
-			DynamicNow[count].m = VectorMagnitudeAtLocation(CuttingPlane[i + 1][j][0], CuttingPlane[i + 1][j][1], CuttingPlane[i + 1][j][2]);
+			
+			if (MineCraftOn) {
+				DynamicNow[count].m = VectorMagnitudeAtLocation(CuttingPlane[i][j][0], CuttingPlane[i][j][1], CuttingPlane[i][j][2]);
+			}
+			else {
+				DynamicNow[count].m = VectorMagnitudeAtLocation(CuttingPlane[i + 1][j][0], CuttingPlane[i + 1][j][1], CuttingPlane[i + 1][j][2]);
+			}
 			//delete tempVec;
 			//printf("The t value is %f, the max value is %f, the min value is %f, the mag is %f\n", (mag - min) / (max - min), max, min, mag);
 			count++;
@@ -1913,7 +1925,13 @@ void Framework::DrawCuttingPlane() {
 			DynamicNow[count].x = CuttingPlane[i + 1][j + 1][0];
 			DynamicNow[count].y = CuttingPlane[i + 1][j + 1][1];
 			DynamicNow[count].z = CuttingPlane[i + 1][j + 1][2];
-			DynamicNow[count].m = VectorMagnitudeAtLocation(CuttingPlane[i + 1][j + 1][0], CuttingPlane[i + 1][j + 1][1], CuttingPlane[i + 1][j + 1][2]);
+			
+			if (MineCraftOn) {
+				DynamicNow[count].m = VectorMagnitudeAtLocation(CuttingPlane[i][j][0], CuttingPlane[i][j][1], CuttingPlane[i][j][2]);
+			}
+			else {
+				DynamicNow[count].m = VectorMagnitudeAtLocation(CuttingPlane[i + 1][j + 1][0], CuttingPlane[i + 1][j + 1][1], CuttingPlane[i + 1][j + 1][2]);
+			}
 			//delete tempVec;
 			//printf("The t value is %f, the max value is %f, the min value is %f, the mag is %f\n", (mag - min) / (max - min), max, min, mag);
 			count++;
@@ -1924,7 +1942,13 @@ void Framework::DrawCuttingPlane() {
 			DynamicNow[count].x = CuttingPlane[i][j + 1][0];
 			DynamicNow[count].y = CuttingPlane[i][j + 1][1];
 			DynamicNow[count].z = CuttingPlane[i][j + 1][2];
-			DynamicNow[count].m = VectorMagnitudeAtLocation(CuttingPlane[i][j + 1][0], CuttingPlane[i][j + 1][1], CuttingPlane[i][j + 1][2]);
+			
+			if (MineCraftOn) {
+				DynamicNow[count].m = VectorMagnitudeAtLocation(CuttingPlane[i][j][0], CuttingPlane[i][j][1], CuttingPlane[i][j][2]);
+			}
+			else {
+				DynamicNow[count].m = VectorMagnitudeAtLocation(CuttingPlane[i][j + 1][0], CuttingPlane[i][j + 1][1], CuttingPlane[i][j + 1][2]);
+			}
 			//delete tempVec;
 			//printf("The t value is %f, the max value is %f, the min value is %f, the mag is %f\n", (mag - min) / (max - min), max, min, mag);
 			count++;
@@ -1939,12 +1963,7 @@ void Framework::DrawCuttingPlane() {
 	}
 	glUnmapBuffer(GL_ARRAY_BUFFER);
 	glUseProgram(program);
-	if (MineCraftOn) {
-		glShadeModel(GL_FLAT);
-	}
-	else {
-		glShadeModel(GL_SMOOTH);
-	}
+	glShadeModel(GL_SMOOTH);
 	glUniform1f(glGetUniformLocation(program, "VectorMax"), max);
 	glUniform1f(glGetUniformLocation(program, "VectorMin"), min);
 	glUniform1i(glGetUniformLocation(program, "AltColor"), ColorAlternate);
