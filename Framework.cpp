@@ -1889,10 +1889,13 @@ void Framework::DrawCuttingPlane() {
 			//printf("Xval is %f, Yval is %f, Zval is %f\n", xval, yval, zval);
 			//vector3d * tempVec = VectorMagnitudeAtLocation(CuttingPlane[i][j][0], CuttingPlane[i][j][1], CuttingPlane[i][j][2]);
 			//float mag = tempVec->magnitude();
+			float averageMag = (VectorMagnitudeAtLocation(CuttingPlane[i][j][0], CuttingPlane[i][j][1], CuttingPlane[i][j][2])
+				+ VectorMagnitudeAtLocation(CuttingPlane[i + 1][j][0], CuttingPlane[i + 1][j][1], CuttingPlane[i + 1][j][2])
+				+ VectorMagnitudeAtLocation(CuttingPlane[i + 1][j + 1][0], CuttingPlane[i + 1][j + 1][1], CuttingPlane[i + 1][j + 1][2])
+				+ VectorMagnitudeAtLocation(CuttingPlane[i][j + 1][0], CuttingPlane[i][j + 1][1], CuttingPlane[i][j + 1][2]) / 4);
 			DynamicNow[count].x = CuttingPlane[i][j][0];
 			DynamicNow[count].y = CuttingPlane[i][j][1];
 			DynamicNow[count].z = CuttingPlane[i][j][2];
-			DynamicNow[count].m = VectorMagnitudeAtLocation(CuttingPlane[i][j][0], CuttingPlane[i][j][1], CuttingPlane[i][j][2]);
 			if (MineCraftOn) {
 				DynamicNow[count].m = VectorMagnitudeAtLocation(CuttingPlane[i][j][0], CuttingPlane[i][j][1], CuttingPlane[i][j][2]);
 			}
