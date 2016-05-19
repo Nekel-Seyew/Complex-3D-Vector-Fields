@@ -731,8 +731,8 @@ void Framework::RestoreDefaults() {
 	VectorBlobTimeVal = 0; 
 	CuttingPlaneYVec = 0.1;
 	CuttingPlaneXVec = CuttingPlaneZVec = CuttingPlaneXLoc = CuttingPlaneYLoc = CuttingPlaneZLoc = 0.0;
-	Tolerence = 1.0;
-	ContDist = 0.1;
+	Tolerence = 0.03;
+	ContDist = 0.05;
 	IsosurfacesVal = 0.05;
 	IsoResolution = 15;
 	numContours = 5.0;
@@ -771,6 +771,7 @@ void Framework::RestoreDefaults() {
 	VectorLowHigh[0] = VECMIN;
 	VectorLowHigh[1] = VECMAX;
 	ArrowLength = 1.0;
+	jittRand = time(NULL);
 	useArrows = 1;
 	usePoints = 0;
 	useStreamlines = 0;
@@ -1051,12 +1052,14 @@ void Framework::Display() {
 
 void Framework::DrawPoints() {
 	glBegin(GL_POINTS);
-	srand(time(NULL));
+	srand(jittRand);
 	float colorarray[4];
 	for (unsigned int i = 0; i < thePoints->size(); i++) {
 		glColor3fv(Color((theVectors->at(i)->magnitude()), colorarray));
 		float *vec = thePoints->at(i)->xyz();
 		if (useJitter) {
+			srand(rand());
+			//glVertex3f(vec[0] + jittRandx, vec[1] + jittRandy, vec[2] + jittRandz);
 			glVertex3f(vec[0] + ((rand() % 10 - 5) / 300.), vec[1] + ((rand() % 10 - 5) / 300.), vec[2] + ((rand() % 10 - 5) / 300.));
 			//printf("Jitter Jitter\n");
 		}

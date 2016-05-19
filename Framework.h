@@ -227,6 +227,8 @@ public:
 	float  XZPlanesYval;
 	float YZPlanesXval;
 
+	//These are the jitter randomization values
+	int jittRand;
 
 	/*Glui (Controller)*/
 	//These are changed by the MyButtons Callback Functions

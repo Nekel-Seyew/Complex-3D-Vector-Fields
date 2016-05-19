@@ -466,11 +466,11 @@ void InitGlui() {
 	
 	Tolerence = TestGlui->add_spinner_to_panel(CuttingPlaneSettings, "Tolerence", GLUI_SPINNER_FLOAT, &Framework::instance()->Tolerence);
 	Tolerence->set_float_limits(0., 5.0);
-	Tolerence->set_speed(0.4);
+	Tolerence->set_speed(0.04);
 
 	ContDist = TestGlui->add_spinner_to_panel(CuttingPlaneSettings, "Distance", GLUI_SPINNER_FLOAT, &Framework::instance()->ContDist);
 	ContDist->set_float_limits(0., 5.0);
-	ContDist->set_speed(0.4);
+	ContDist->set_speed(0.04);
 	
 	//animation items
 	spinNumPoints = TestGlui->add_spinner_to_panel(AnimationSettings, "Animation NumPoints", GLUI_SPINNER_FLOAT, &Framework::instance()->NumPoints);
