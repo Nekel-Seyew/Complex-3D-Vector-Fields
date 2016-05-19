@@ -123,13 +123,33 @@ float* Framework::Color(float mag, float min, float max,float* fourwideout) {
 	float hsv[3], rgb[3];
 	// finally draw the point if it passes all the tests
 	float divisor = (max - min);
+	float range = max - min;
 	if (ColorAlternate) {
-		if (divisor == 0) {
-			hsv[0] = 240. - 240.* ((max - mag) / 1.);
-		}
-		else {
-			hsv[0] = 240. - 240.* ((max - mag) / divisor);
-		}
+			float firstThird = min + 0.33333 * range;
+			float secondThird = min + 0.66666 * range;
+			if (mag < firstThird) {
+				float interpR = (mag - min) / (firstThird - min);
+				fourwideout[0] = interpR;
+				fourwideout[1] = 0.;
+				fourwideout[2] = 0.;
+				fourwideout[3] = vecAlphaVal;
+			}
+			else if (mag < secondThird) {
+				float interpG = (mag - firstThird) / (secondThird - firstThird);
+				fourwideout[0] = 1.;
+				fourwideout[1] = interpG;
+				fourwideout[2] = 0.;
+				fourwideout[3] = vecAlphaVal;
+
+			}
+			else {
+				float interpB = (mag - secondThird) / (max - secondThird);
+				fourwideout[0] = 1.;
+				fourwideout[1] = 1.;
+				fourwideout[2] = interpB;
+				fourwideout[3] = vecAlphaVal;
+			}
+	
 	}
 	else {
 
@@ -140,15 +160,16 @@ float* Framework::Color(float mag, float min, float max,float* fourwideout) {
 			hsv[0] = 240. - 240.* ((mag - min) / divisor);
 		}
 
+
+		hsv[1] = 1.;
+		hsv[2] = 1.;
+		color::HsvRgb(hsv, rgb);
+		//float rgba[4];
+		fourwideout[0] = rgb[0];
+		fourwideout[1] = rgb[1];
+		fourwideout[2] = rgb[2];
+		fourwideout[3] = vecAlphaVal;
 	}
-	hsv[1] = 1.;
-	hsv[2] = 1.;
-	color::HsvRgb(hsv, rgb);
-	//float rgba[4];
-	fourwideout[0] = rgb[0];
-	fourwideout[1] = rgb[1];
-	fourwideout[2] = rgb[2];
-	fourwideout[3] = vecAlphaVal;
 	return fourwideout;
 }
 /*
@@ -1445,7 +1466,12 @@ void Framework::GenStreamline(float x, float y, float z)
 	visitstream++;
 	//printf("Visit Stream is %d\n", visitstream);
 	glLineWidth(2.);
-	glColor3f(0.0, 0.75, 0.75);
+	if (ColorAlternate) {
+		glColor3f(0.75, 0.75, 0.0);
+	}
+	else {
+		glColor3f(0.0, 0.75, 0.75);
+	}
 	glPointSize(4);
 	glBegin(GL_POINTS);
 		glVertex3f(x, y, z);

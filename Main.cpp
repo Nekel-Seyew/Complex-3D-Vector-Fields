@@ -94,7 +94,11 @@ void CheckboxCallback(int checkbox) {
 	case(0) :
 		Framework::instance()->DrawCuttingPlane();
 		break;
+	case(1) :
+		Framework::instance()->UpdateStreamline();
+		break;
 	}
+	
 
 }
 void MyButtons(int button) {
@@ -159,6 +163,11 @@ void InitGlui() {
 
 	//Graphics Rollouts:
 	GLUI_Panel * CustomSettings;
+
+
+
+
+
 	GLUI_Rollout * ArrowSettings;
 	GLUI_Rollout * AnimationSettings;
 	GLUI_Rollout * IsosurfaceSettings;
@@ -284,7 +293,7 @@ void InitGlui() {
 	//Color Settings Rollout:
 	TestGlui->add_separator();
 	ColorOptions = TestGlui->add_rollout("Color Settings", 0);
-	TestGlui->add_checkbox_to_panel(ColorOptions, "Alternate Color Scheme", &Framework::instance()->ColorAlternate);
+	TestGlui->add_checkbox_to_panel(ColorOptions, "Alternate Color Scheme", &Framework::instance()->ColorAlternate, 1, CheckboxCallback);
 	TestGlui->add_separator();
 	backgroundColorSpinnerR = TestGlui->add_spinner_to_panel(ColorOptions, "Background Color R", GLUI_SPINNER_FLOAT, &Framework::instance()->backgroundColorR);
 	backgroundColorSpinnerR->set_float_limits(0.0, 1.0);
@@ -452,8 +461,8 @@ void InitGlui() {
 	CuttingPlaneZVec->set_float_limits(-1.0, 1.0);
 	CuttingPlaneZVec->set_speed(0.2);
 
-	TestGlui->add_checkbox_to_panel(CuttingPlaneSettings, "Use Contour", &Framework::instance()->ContourOn);
-	TestGlui ->add_checkbox_to_panel(CuttingPlaneSettings, "Use MineCraft Setting", &Framework::instance()->MineCraftOn);
+	TestGlui->add_checkbox_to_panel(CuttingPlaneSettings, "Use Contour", &Framework::instance()->ContourOn,0, CheckboxCallback);
+	TestGlui ->add_checkbox_to_panel(CuttingPlaneSettings, "Use MineCraft Setting", &Framework::instance()->MineCraftOn, 0, CheckboxCallback);
 	
 	Tolerence = TestGlui->add_spinner_to_panel(CuttingPlaneSettings, "Tolerence", GLUI_SPINNER_FLOAT, &Framework::instance()->Tolerence);
 	Tolerence->set_float_limits(0., 5.0);
