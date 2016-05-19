@@ -499,7 +499,12 @@ void Framework::InitGraphics2() {
 
 void Framework::setUpPointsAndVectors() {
 	if (usePrism) {
-		thePoints = SDef->prism_rand(2., 10, 2., 10, 2., 10); //Change This Line to (6., 40, 6., 40, 6., 40) if you want to view a bigger dataset
+		if (useGrid) {
+			thePoints = SDef->prism(2., 10, 2., 10, 2., 10);
+		}
+		else {
+			thePoints = SDef->prism_rand(2., 10, 2., 10, 2., 10); //Change This Line to (6., 40, 6., 40, 6., 40) if you want to view a bigger dataset
+		}
 	}
 	else {
 		thePoints = SDef->uv_surface(SpaceInput, 0., 1., 0., 1., 30., 30.);
@@ -511,9 +516,6 @@ void Framework::setUpPointsAndVectors() {
 		VectorEquation = theEquation->vector_equation(VectorInput);
 		theVectors = VDef->cull_vectors(-10.0, 10.0, -10.0, 10.0, -10.0, 10.0);
 		thePoints = VDef->cull_space(-10.0, 10.0, -10.0, 10.0, -10.0, 10.0);
-	}
-	else if (useGrid) {
-		thePoints = SDef->prism(2., 10, 2., 10, 2., 10);
 	}
 	else {
 		this->VDef->cull_space_vectors_rand(1000, 10);
