@@ -60,7 +60,15 @@ void MySliders(int numSlide) {
 	glutPostRedisplay();
 }*/
 void GetFilePlease(int input) {
-	Framework::instance()->VectorInput = (char*)gluiFileBrowser->get_file();
+	std::string file = (char*)gluiFileBrowser->get_file();
+	TCHAR PATH[1024];
+	DWORD ret = GetCurrentDirectory(1024, PATH);
+	if (ret == 0) {
+		printf("FAILED TO GET CURRENT DIRECTORY?!?\n");
+	}
+	std::string folder = PATH;
+	std::string finalpath = folder + "\\" + file;
+	Framework::instance()->VectorInput = (char*)finalpath.c_str();
 	Framework::instance()->edittext2->set_text(Framework::instance()->VectorInput);
 	gluiFileBrowser->deactivate();
 	//strcpy(Framework::instance()->VectorDefinerString, Framework::instance()->VectorInput);
