@@ -1062,7 +1062,7 @@ void Framework::DrawPoints() {
 		if (useJitter) {
 			srand(rand());
 			//glVertex3f(vec[0] + jittRandx, vec[1] + jittRandy, vec[2] + jittRandz);
-			glVertex3f(vec[0] + ((rand() % 10 - 5) / 300.), vec[1] + ((rand() % 10 - 5) / 300.), vec[2] + ((rand() % 10 - 5) / 300.));
+			glVertex3f(vec[0] + ((rand() % 40 - 20) / 300.), vec[1] + ((rand() % 40 - 20) / 300.), vec[2] + ((rand() % 40 - 20) / 300.));
 			//printf("Jitter Jitter\n");
 		}
 		else {
