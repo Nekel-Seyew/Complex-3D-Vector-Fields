@@ -11,6 +11,9 @@
 #include "nanoflann.hpp"
 #include <mmintrin.h>
 
+#include <windows.h>
+#include <Shlwapi.h>
+
 //yes
 VectorDefiner::VectorDefiner()
 {
@@ -25,7 +28,7 @@ VectorDefiner::VectorDefiner()
 	this->space = NULL;
 	//this->data_trainer = NULL;
 
-	this->hashmap = new std::unordered_map<vector3d, vector3d*, vector3d::VectorHash, vector3d::VectorEqual>(1000, vector3d::VectorHash(), vector3d::VectorEqual());
+	//this->hashmap = new std::unordered_map<vector3d, vector3d*, vector3d::VectorHash, vector3d::VectorEqual>(1000, vector3d::VectorHash(), vector3d::VectorEqual());
 
 	this->index = NULL;
 }
@@ -50,7 +53,7 @@ VectorDefiner::VectorDefiner(const VectorDefiner& vdef) {
 	this->cull_max = new vector3d(vdef.cull_max);
 
 	//hashmap
-	this->hashmap = vdef.hashmap;
+	//this->hashmap = vdef.hashmap;
 	//kdtree
 	this->pc2kd = new PC2KD(this);
 	this->index = new my_kd_tree_t(3 /*dim*/, *(this->pc2kd), nanoflann::KDTreeSingleIndexAdaptorParams(100 /* max leaf */));

@@ -50,7 +50,7 @@ protected:
 	vector3d* cull_max;
 
 	//hashmap
-	std::unordered_map<vector3d, vector3d*, vector3d::VectorHash, vector3d::VectorEqual>* hashmap;
+	//std::unordered_map<vector3d, vector3d*, vector3d::VectorHash, vector3d::VectorEqual>* hashmap;
 	PC2KD* pc2kd;
 	my_kd_tree_t*  index;
 
