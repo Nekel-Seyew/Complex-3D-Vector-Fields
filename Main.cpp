@@ -5,6 +5,7 @@
 #include <ctype.h>
 #ifdef WIN32
 #include <windows.h>
+#include <Shlwapi.h>
 #pragma warning(disable:4996)
 #endif
 
@@ -59,6 +60,15 @@ void MySliders(int numSlide) {
 	glutSetWindow(Framework::instance()->MainWindow);
 	glutPostRedisplay();
 }*/
+
+class NoFile : std::exception {
+private:
+	std::string file;
+public:
+	NoFile(std::string s) { file = s; }
+	const char* what() { return (std::string("Bad File: ") + file).c_str(); }
+};
+
 void GetFilePlease(int input) {
 	std::string file = (char*)gluiFileBrowser->get_file();
 	TCHAR PATH[1024];
@@ -68,12 +78,17 @@ void GetFilePlease(int input) {
 	}
 	std::string folder = PATH;
 	std::string finalpath = folder + "\\" + file;
-	Framework::instance()->VectorInput = (char*)finalpath.c_str();
-	Framework::instance()->edittext2->set_text(Framework::instance()->VectorInput);
-	gluiFileBrowser->deactivate();
-	//strcpy(Framework::instance()->VectorDefinerString, Framework::instance()->VectorInput);
-	//delete gluiFileBrowser;
-	printf("%s\n", Framework::instance()->VectorInput);
+	if (PathFileExists(finalpath.c_str())) {
+		Framework::instance()->VectorInput = (char*)finalpath.c_str();
+		Framework::instance()->edittext2->set_text(Framework::instance()->VectorInput);
+		gluiFileBrowser->deactivate();
+		//strcpy(Framework::instance()->VectorDefinerString, Framework::instance()->VectorInput);
+		//delete gluiFileBrowser;
+		printf("%s\n", Framework::instance()->VectorInput);
+	}
+	else {
+		std::cout << "File Does Not Exist: " + finalpath;
+	}
 }
 void MyTextBoxes(int textbox) {
 	
@@ -116,18 +131,28 @@ void MyButtons(int button) {
 		Framework::instance()->spinVecMin = Framework::instance()->GetVectorMin();
 		Framework::instance()->spinVecMax = Framework::instance()->GetVectorMax();
 		break;
-	case(1) :
+	case(1) : {
 		printf("Entering Input\n");
+		std::string input = Framework::instance()->VectorDefinerString;
 		if ((int)strlen(Framework::instance()->VectorDefinerString) != 0) {
-			Framework::instance()->VectorInput = Framework::instance()->VectorDefinerString;
+			if (PathFileExists(input.c_str()) || input.find("<", 0) != std::string::npos) {
+				Framework::instance()->VectorInput = Framework::instance()->VectorDefinerString;
+			}else {
+				std::cout << "Either input existing file, or use the vector form <I(x,y,z),J(x,y,z),K(x,y,z)>"<<std::endl;
+			}
 		}
-		if ((int)strlen(Framework::instance()->SpaceDefinerString) != 0) {
+		input = Framework::instance()->SpaceDefinerString;
+		if ((int)strlen(Framework::instance()->SpaceDefinerString) != 0 && input.find("<", 0) != std::string::npos) {
 			Framework::instance()->SpaceInput = Framework::instance()->SpaceDefinerString;
 		}
-		Framework::instance()->setUpPointsAndVectors(); 
+		else {
+			std::cout << "Please use the vector form <I(x,y,z),J(x,y,z),K(x,y,z)>" << std::endl;
+		}
+		Framework::instance()->setUpPointsAndVectors();
 		Framework::instance()->spinVecMin = Framework::instance()->GetVectorMin();
 		Framework::instance()->spinVecMax = Framework::instance()->GetVectorMax();
 		break;
+	}
 	case(2) :
 		printf(".obj file saved");
 		break;

@@ -804,6 +804,11 @@ void Framework::RestoreDefaults() {
 	traceDotPath = 1;
 	//path = new std::vector<vector3d*>[100]();
 	num_dot_points = 100;
+	for (int i = 0; i < 1000; ++i) {
+		this->path[i].clear();
+		this->listPath[i].clear();
+		this->old_dot_pos[i].set_this_to_be_passed_in_value(&this->dot_points[i]);
+	}
 	InitIsoNodes();
 	//just for now
 	vector3d pos(1, 1, 1);
