@@ -71,7 +71,7 @@ public:
 
 void GetFilePlease(int input) {
 	std::string file = (char*)gluiFileBrowser->get_file();
-	TCHAR PATH[1024];
+	TCHAR PATH[4096];
 	DWORD ret = GetCurrentDirectory(1024, PATH);
 	if (ret == 0) {
 		printf("FAILED TO GET CURRENT DIRECTORY?!?\n");
