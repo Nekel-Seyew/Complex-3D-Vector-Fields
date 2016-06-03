@@ -1,3 +1,28 @@
+/**
+@file
+@author Kyle Sweeney
+
+@section LICENSE
+
+Copyright 2016 Kyle Sweeney
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+@section DESCRIPTION
+
+This is the Interface for the VectorDefiner, one of the cornerstone components of the project, responsible for reading in data files, or generating the vectors.
+
+*/
 #pragma once
 #define NODE_MAX 20
 
@@ -15,7 +40,9 @@ class VectorDefiner;
 
 typedef VectorDefinerKDAdaptor<VectorDefiner*> PC2KD;
 typedef nanoflann::KDTreeSingleIndexAdaptor< nanoflann::L2_Simple_Adaptor<float, PC2KD>, PC2KD, 3 /* dim */> my_kd_tree_t;
-
+/**
+Holds the vectors generated either from the passed in data file, or equation.
+*/
 class VectorDefiner {
 friend struct VectorDefinerKDAdaptor<VectorDefiner*>;
 protected:

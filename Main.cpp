@@ -1,3 +1,29 @@
+/**
+@file 
+@author Kyle Sweeney, Alex Davis, Corinne Brucks
+
+@section LICENSE
+
+Copyright 2016 Kyle Sweeney, Alex Davis, Corinne Brucks
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+@section DESCRIPTION
+
+This is the Main file for the program, storing most of the GLUI objects, and holds the main function starting everything.
+
+*/
+
 #pragma once
 #include <stdio.h>
 
@@ -32,43 +58,31 @@ GLUI_StaticText *	RadLabel2; //temperature static text label
 float VecTest[2] = { 0.f, 10.f };
 
 GLUI_Spinner * VectorBlobTime;
-/*
-void MySliders(int numSlide) {
-	//printf("Slider #%d\n", numSlide);
-	char tempstr[128];
-	char radstr[128];
-	printf("In Callback, Value of RadLowHigh[0] is %f, RadLowHigh[1] is %f,  VecTest[0] is %f, VecTest[1] is %f\n", TRadLowHigh[0], TRadLowHigh[1], VecTest[0], VecTest[1]);
-	switch (numSlide){
-	case(VecId) :
-		printf("Before: Vector Min is %f\n", Framework::instance()->VectorLowHigh[0]);
-		printf("Before: Vector Max is %f\n", Framework::instance()->VectorLowHigh[1]);
-		sprintf(tempstr, Framework::instance()->VECFORMAT, Framework::instance()->VectorLowHigh[0], Framework::instance()->VectorLowHigh[1]);
-		Framework::instance()->VectorLabel->set_text(tempstr);
-		printf("Vector Min is %f\n", Framework::instance()->VectorLowHigh[0]);
-		printf("Vector Max is %f\n", Framework::instance()->VectorLowHigh[1]);
-		break;
-	case(RADID) :
-		printf("In RADID, Value of RadLowHigh[0] is %f, RadLowHigh[1] is %f,  VecTest[0] is %f, VecTest[1] is %f\n", TRadLowHigh[0], TRadLowHigh[1], VecTest[0], VecTest[1]);
-		//TRadLowHigh[0] = VecTest[0];
-		//TRadLowHigh[1] = VecTest[1];
-		sprintf(radstr, TRADIUSFORMAT, TRadLowHigh[0], TRadLowHigh[1]);
-		TRadLabel->set_text(radstr);
-		printf("After RadLowHigh and VecTest Set, Value of RadLowHigh[0] is %f, RadLowHigh[1] is %f,  VecTest[0] is %f, VecTest[1] is %f\n", TRadLowHigh[0], TRadLowHigh[1], VecTest[0], VecTest[1]);
-		//		RadLabel2->set_text(radstr);
-		break;
-	}
-	glutSetWindow(Framework::instance()->MainWindow);
-	glutPostRedisplay();
-}*/
 
+/**
+An extension to std::exception to throw when the file doesn't exist, or is poorly formatted.
+@author Kyle Sweeney
+*/
 class NoFile : std::exception {
 private:
 	std::string file;
 public:
+	/**
+	A constructor which takes in a string with the name or path of the file.
+	@param  s path or file name
+	*/
 	NoFile(std::string s) { file = s; }
+	/**
+	Returns what the file's name or path.
+	@returns c-style string of "Bad File: "+file path/name
+	*/
 	const char* what() { return (std::string("Bad File: ") + file).c_str(); }
 };
 
+/**
+A callback function for the file selector which sets the vector input to be the selected file.
+@param  input ignore the value, automatically given by the file selector.
+*/
 void GetFilePlease(int input) {
 	std::string file = (char*)gluiFileBrowser->get_file();
 	TCHAR PATH[4096];
@@ -90,9 +104,17 @@ void GetFilePlease(int input) {
 		std::cout << "File Does Not Exist: " + finalpath;
 	}
 }
+/**
+A callback function for the text boxes, which doesn't do anything.
+@param  textbox a value passed in by the textbox.
+*/
 void MyTextBoxes(int textbox) {
 	
 }
+/**
+The callback function for spinners.
+@param  spinner value passed in by the spinner, generally the id num of the spinner calling this function.
+*/
 void SpinnerCallback(int spinner) {
 	switch (spinner) {
 	case(0) :
@@ -112,6 +134,10 @@ void SpinnerCallback(int spinner) {
 		break;
 	}
 }
+/**
+The callback function for checkboxes.
+@param  checkbox holds the id num of the checkbox calling this function.
+*/
 void CheckboxCallback(int checkbox) {
 	switch (checkbox) {
 	case(0) :
@@ -124,6 +150,10 @@ void CheckboxCallback(int checkbox) {
 	
 
 }
+/**
+The callback function for the buttons in the GLUI window.
+@param  button the id of the button calling this callback function.
+*/
 void MyButtons(int button) {
 	switch (button) {
 	case(0) :
@@ -167,7 +197,9 @@ void MyButtons(int button) {
 	}
 }
 
-
+/**
+Sets up the GLUI window.
+*/
 void InitGlui() {
 
 	//User Input Section 
@@ -530,23 +562,52 @@ void InitGlui() {
 	GLUI_Master.set_glutIdleFunc(NULL);
 }
 
+/**
+The display function passed to GLUT.
+*/
 void DisplayFuncl()
 {
 	Framework::instance()->Display();
 }
+/**
+An empty function for GLUtT for keyboard callbacks.
+*/
 void KeyboardFuncl(unsigned char c, int x, int y) {
 	//Framework::instance()->Keyboard(c, x, y);
 }
+/**
+A keyboard function which attempts to update the screen.
+@param  c the character pressed 
+@param  x location
+@param  y location
+*/
 void MainKeyboard(unsigned char c, int x, int y) {
 	TestGlui->sync_live();
 }
+/**
+The mouse movement callback function for GLUT, simply passes information to the Framework.
+@param  myx new x location
+@param  myy new y location
+*/
 void MouseMotionFuncl(int myx, int myy) {
 	Framework::instance()->MouseMotion(myx, myy);
 }
+/**
+The mouse button callback fuction for GLUT, simply passes information to the Framework.
+@param  arg1 the button pressed.
+@param  arg2 the state of the button pressed.
+@param  arg3 the x location of mouse.
+@param  arg4 the y location of mouse.
+*/
 void MouseButtonFuncl(int arg1, int arg2, int arg3, int arg4) {
 	Framework::instance()->MouseButton(arg1, arg2, arg3, arg4);
 }
 
+/**
+The Callback function for the physics updater, also resets the timer and calls for a screen redisplay.
+
+@param  value a number representing some number of ticks: will always be either greater than last time, or 0 if overflow.
+*/
 void PhysicsUpdater(int value) {
 	//printf("Updater called\n");
 	Framework::instance()->PhysicsUpdater((value));
@@ -554,6 +615,11 @@ void PhysicsUpdater(int value) {
 	glutPostRedisplay();
 }
 
+/**
+The entry point for the program.
+@param  argc number of strings in arguments passed to the program.
+@param  argv the strings passed for arguments.
+*/
 int main(int argc, char ** argv) {
 
 	//just here for compile checks. Remove when you want things to run
