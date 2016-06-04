@@ -1,3 +1,28 @@
+/**
+@file
+@author Corinne Brucks, Alex Davis, Kyle Sweeney 
+
+@section LICENSE
+
+Copyright 2016 Corinne Brucks, Alex Davis, Kyle Sweeney
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+@section DESCRIPTION
+
+This is the Main file for the program, storing most of the GLUI objects, and holds the main function starting everything.
+
+*/
 #pragma once
 //#include "KeyboardState.h"
 //#include "MouseState.h"
@@ -87,9 +112,6 @@ const float SCLFACT = { 0.005f };
 // able to use the left mouse for either rotation or scaling,
 // in case have only a 2-button mouse:
 
-
-
-
 // minimum allowable scale factor:
 
 const float MINSCALE = { 0.05f };
@@ -124,30 +146,83 @@ protected:
 		ORTHO,
 		PERSP
 	};
-	//These are Functions For Different Graphics Effects in Main:
-	void Axes(float);
-	void DrawRasterString(float, float, float, char *);
-	//To Be Initialized When We Add Mouse and Keyboard Functionality In:
-	//KeyboardState keyboard;
-	
-	//This Function Has Not Been Initialized Yet
-	void BuildClasses();
+	//These are Functions For Different Graphics Effects:
+	/**
+	Graphic Effects Function that draws the 3D axis
+	@param length is the length of the axes i.e. how far they extend from the origin
+	*/
+	void Axes(float length);
+
+	/**
+	Graphic Effects Function that draws a raster string
+	@param x xcoordinate 
+	@param y ycoordinate
+	@param z zcoordinate
+	@param s string (array of characters) that is drawn character by character
+	*/
+	void DrawRasterString(float x, float y, float z, char *s);
+
 	
 
 	
 public:
 	/*Setup Functions:*/
 	//These Intialization Functions Must Be Called in Main As Part of Our Singleton Workaround So They Are Public
+	
+	/**
+	Setup Function that
+	*/
 	void Init1();
+
+	/**
+	Setup Function that
+	*/
 	void Init2();
+
+	/**
+	Setup Function that
+	*/
 	void InitGraphics1();
+
+	/**
+	Setup Function that
+	*/
 	void InitGraphics2();
+
+	/**
+	Setup Function that
+	*/
 	void setUpPointsAndVectors();
+
+	/**
+	This function intializes the cutting plane and should be called a minimal amount of times to converse memory
+	*/
+	void initCuttingPlane();
+
+
+	/**
+	Setup Function that both initializes all of the members of Framework as well as can be used to restore
+	them to their defaults
+	*/
 	void Framework::RestoreDefaults();
-	void virtual Run(int, char **);
+
+
+	/**
+	Setup Function that start the glut main loop
+	@param argc is argc from main used to init the glut main loop
+	@param argv is argv from main used to init the glut main loop
+	*/
+	void virtual Run(int argc, char ** argv);
+
+	/**
+	This function checks the framework variables controlled by GLUI in order to determine whether to run a graphical method. If so, it calls the corresponding graphics method's function.
+	It is passed to glut using a wrapper function.
+	*/
 	void Display();
-	void Keyboard(unsigned char, int, int);
-	//
+
+	
+	
+
 	int MainWindow;
 	//MouseState mouse;
 	int	ActiveButton;
@@ -156,47 +231,182 @@ public:
 		ROTATE,
 		SCALE
 	};
-	void MouseButton(int, int, int, int);
-	void MouseMotion(int, int);
+
+	/**Mouse Button Function that is passed to Glut using a wrapper function
+	@param  buton the button pressed.
+	@param  state the state of the button pressed.
+	@param  x the x location of mouse.
+	@param  y the y location of mouse.
+	@param
+	*/
+	void Framework::MouseButton(int button, int state, int x, int y);
+
+	/**
+	Mouse Motion Function that is passed to GLUT using a wrapper function
+	@param  myx new x location
+	@param  myy new y location
+	*/
+	void MouseMotion(int x, int y);
 	int	LeftButton;				// either ROTATE or SCALE
 
 
-	//Here is the Static Instance Necessary For Our Singleton:
-	static Framework* instance();
 
 	/*Graphics (View)*/
 	//These are the Functions for drawing the Vector Data
+	/**
+	Drawing Function that draws the vector point cloud
+	*/
 	void DrawPoints();
+
+	/**
+	Drawing Function that draws the vector arrows
+	*/
 	void DrawArrows();
+
+	/**
+	Drawing Function that draws the streamline probe
+	*/
 	void DrawProbe();
+
+	/**
+	Drawing Function that initializes the Vector Blob
+	*/
 	void InitBlob();
+
+	/**
+	Drawing Function that draws the Vector Blob
+	*/
 	void DrawBlob();
+
+	/**
+	Drawing Function that draws the Vector Sheet
+	*/
 	void DrawSheet();
+
+	/**
+	Drawing Function that draws the Cutting Plane
+	*/
 	void DrawCuttingPlane();
+
+	/**
+	Drawing Function that draws the Isosurfaces, this is called by the Update
+	*/
 	void DrawIsosurfaces();
-	void ProcessQuad(struct node *, struct node *, struct node *, struct node *, float );
+
+	/**
+	Drawing Function that is used in the Isosurface Drawing Process to
+	@param  p0 is the 0th corner of a square
+	@param  p1 is the 1st corner of a square
+	@param  p2 is  the 2nd corner of a square
+	@param  p3 is to the 3rd corner of a square
+	@param  Sstar is the isosurface value 
+	*/
+	void ProcessQuad(struct node *p0, struct node *p1, struct node *p2, struct node *p3, float Sstar);
+	
+	/**
+	This function initializes the grid of nodes that is used by the Isosurface
+	*/
 	void InitIsoNodes();
-	//These are the Helper Functions for Graphics: 
-	vector3d * VectorAtLocation(float, float, float);
-	vector3d* VectorAtLocation(vector3d* pos);
-	float	  VectorMagnitudeAtLocation(vector3d* pos);
-	float     VectorMagnitudeAtLocation(float, float, float);
-	vector3d * VectorAdvect(vector3d *, float);
-	void VectorAdvect(vector3d * inputVector, float TimeStep, float* storeArray);
-	float * Color(float, float*);
-	float * Color(float mag,float min,float max,float*);
+
+	//These are the Helper Functions for Graphics:
+
+	/**
+	Graphics Helper Function that
+	*/
+	inline vector3d * Framework::VectorAdvect(vector3d * inputVector, float TimeStep); 
+
+	/**
+	Graphics Helper Function that
+	*/
+	inline void Framework::VectorAdvect(vector3d * inputVector, float TimeStep, float* storeArray);
+
+	/**
+	Graphics Helper Function that
+	*/
+	inline float Framework::GetVectorMax();
+
+	/**
+    Graphics Helper Function that
+	*/
+	inline float Framework::GetVectorMin();
+
+	/**
+    Graphics Helper Function that
+	@param
+	*/
+	inline vector3d* Framework::VectorAtLocation(float xCord, float yCord, float zCord);
+
+	/**
+	Graphics Helper Function that
+	@param
+	*/
+	inline vector3d* Framework::VectorAtLocation(vector3d* pos); 
+
+	/**
+	Graphics Helper Function that
+	@param
+	*/
+	inline float Framework::VectorMagnitudeAtLocation(vector3d* pos);  
+
+	/**
+	Graphics Helper Function that
+	@param
+	*/
+	inline float Framework::VectorMagnitudeAtLocation(float x, float y, float z);
+	
+	
+	/**
+	Graphics Helper Function that uses interpolation to determine color
+	It uses the maximum and minimum for the overall vector field
+	@param VecMag is the vector magnitude
+	@param fourwideout is the return value that points to the four float color array
+	*/
+	float * Color(float VecMag, float* fourwideout);
+
+	/**
+	Graphics Helper Function that uses interpolation to determine color
+	@param mag is the vector magnitude
+	@param min is the designtated minimum for interpolation purposes
+	@param max is the designated maximum for interpolation purposes
+	@param fourwideout is the return value that points to the four float color array
+	*/
+	float * Color(float mag,float min,float max,float* fourwideout);
+
+	/**
+	This Helper Function for the Graphics Initializes the GL display lists used including the one for the axes
+	Also, it calls the update streamlines and update isosurfaces functions
+	*/
 	void InitLists();
-	float Unit(float*, float*);
-	void Cross(float*, float*, float*);
-	float GetVectorMin();
-	float GetVectorMax();
+
+	/**
+	DESCRIPTION
+	@param
+	*/
+	float Unit(float vin[3], float vout[3]);
+
+	/**
+	DESCRIPTION
+	@param
+	*/
+	void Cross(float v1[3], float v2[3], float vout[3]);
+
 	//These are the Gluints that correspond to the Lists in InitLists:
 	GLuint IsoList;
 	GLuint AxesList;			
 	GLuint StreamlineList;
 	GLuint BlobList;
 	GLuint PathList;
+
+	/**
+	This function initializes and updates the streamline display list and 
+	is called whenever the GLUI streamline parameters are changed
+	*/
 	void Framework::UpdateStreamline();
+
+	/**
+	This function initializes and updates the isosurface display list and 
+	is called whenever the GLUI streamline parameters are changed
+	*/
 	void Framework::UpdateIsolist();
 
 	//Streamline Function and Related Variables
@@ -204,8 +414,20 @@ public:
 	int visitstream;
 
 	//These are Functions For Setting Up Shaders:
+
+	/**
+	This Shader Helper Function sets up the shaders as part of the program's initialization process. It should only be called once
+	*/
 	void Framework::SetUpShaders();
+
+	/**
+	This Shader Helper Function sets and binds the shader's vertex buffers
+	*/
 	void Framework::SetupVertexBuffers();
+
+	/**
+	This Shader Helper Function prints out errors with shader compilation to standard error
+	*/
 	void Framework::CheckGlErrors(const char*);
 
 
@@ -331,10 +553,15 @@ public:
 	posShader* DynamicNow;
 	bool haveSetUpCuttingPlane;
 	bool resetCuttingPlane = false;
-	void initCuttingPlane();
+
+	
 
 	//These are the GluiValues for the Vector Sheet:
 	float VectorSheetTimeVal=0, VectorSheetXLoc=0, VectorSheetYLoc=0, VectorSheetZLoc=0, VectorSheetXVec=0, VectorSheetYVec=0, VectorSheetZVec=1;
+	
+	/**
+	This function intializes the vector sheeet
+	*/
 	void initSheet();
 	vector3d VecSheet[10][10];
 	Cloth theCloth;
@@ -348,23 +575,60 @@ public:
 	std::deque<vector3d*> path[1000];
 	std::list<vector3d*> listPath[1000];
 	float timestep = 0.1f; // this is what VectorAdvect uses as time step
+	
+	/**
+	This function intializes the points used in animation
+	*/
 	void initDotPoints();
+
+	/**
+	This function draws the points used in animation
+	*/
 	void DrawDots();
 	//AnimatedPoints theMovingDots;
 	int colorAsVelocity;//really a bool though
 	int traceDotPath;
 	
 	/*Physics-ish*/
+	/**
+	This function updates the physics of both the vector sheet and animation
+	*/
 	void PhysicsUpdater(int value);
+
+
+	//Here is the Static Instance Necessary For Our Singleton:
+	/**
+	DESCRIPTION
+	@param
+	*/
+	static Framework* instance();
 
 private:
 		// Singleton Junk
 	static Framework *_instance;
+	/**
+	DESCRIPTION
+	@param
+	*/
 	Framework();
+	/**
+	DESCRIPTION
+	@param
+	*/
 	~Framework();
 	//singleton requirements, but they dont work?
+
+	/**
+	DESCRIPTION
+	@param
+	*/
 	Framework(const Framework& copy);
 	//it says error, but builds?
+
+	/**
+	DESCRIPTION
+	@param
+	*/
 	Framework& operator=(const Framework& rhs);
 };
 

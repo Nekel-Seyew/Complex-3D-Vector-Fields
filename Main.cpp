@@ -1,11 +1,10 @@
 /**
 @file 
-@author Kyle Sweeney, Alex Davis, Corinne Brucks
+@author Corinne Brucks, Kyle Sweeney, Alex Davis
 
 @section LICENSE
 
-Copyright 2016 Kyle Sweeney, Alex Davis, Corinne Brucks
-
+Copyright 2016 Corinne Brucks, Kyle Sweeney, Alex Davis
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -585,7 +584,7 @@ void MainKeyboard(unsigned char c, int x, int y) {
 	TestGlui->sync_live();
 }
 /**
-The mouse movement callback function for GLUT, simply passes information to the Framework.
+The mouse movement callback function for GLUT, serves as a wrapper to reference a Framework member function
 @param  myx new x location
 @param  myy new y location
 */
@@ -593,7 +592,7 @@ void MouseMotionFuncl(int myx, int myy) {
 	Framework::instance()->MouseMotion(myx, myy);
 }
 /**
-The mouse button callback fuction for GLUT, simply passes information to the Framework.
+The mouse button callback fuction for GLUT, which serves as a wrapper to reference a Framework member function
 @param  arg1 the button pressed.
 @param  arg2 the state of the button pressed.
 @param  arg3 the x location of mouse.

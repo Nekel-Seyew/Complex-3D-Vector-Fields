@@ -389,7 +389,6 @@ void Framework::Init1() {
 
 void Framework::Init2() {
 	InitGraphics2();
-	BuildClasses();
 	RestoreDefaults();
 }
 
@@ -721,9 +720,7 @@ void Framework::UpdateStreamline() {
 	glEndList();
 }
 
-void Framework::BuildClasses() {
 
-}
 
 //sets initial values of variables
 void Framework::RestoreDefaults() {
