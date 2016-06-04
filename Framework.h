@@ -170,27 +170,27 @@ public:
 	//These Intialization Functions Must Be Called in Main As Part of Our Singleton Workaround So They Are Public
 	
 	/**
-	Setup Function that
+	First half of the Setup Function that builds the initial graphics and vector field data
 	*/
 	void Init1();
 
 	/**
-	Setup Function that
+	Second half of the Setup Function that builds the initial graphics and vector field data
 	*/
 	void Init2();
 
 	/**
-	Setup Function that
+	First half of the Setup Function that builds the initial graphics
 	*/
 	void InitGraphics1();
 
 	/**
-	Setup Function that
+	Second half of the Setup Function that builds the initial graphics
 	*/
 	void InitGraphics2();
 
 	/**
-	Setup Function that
+	this Function builds the vector field data
 	*/
 	void setUpPointsAndVectors();
 
@@ -233,18 +233,18 @@ public:
 	};
 
 	/**Mouse Button Function that is passed to Glut using a wrapper function
-	@param  buton the button pressed.
-	@param  state the state of the button pressed.
-	@param  x the x location of mouse.
-	@param  y the y location of mouse.
+	@param  button is the button pressed.
+	@param  state is the state of the button pressed.
+	@param  x is the x location of mouse.
+	@param  y is the y location of mouse.
 	@param
 	*/
 	void Framework::MouseButton(int button, int state, int x, int y);
 
 	/**
 	Mouse Motion Function that is passed to GLUT using a wrapper function
-	@param  myx new x location
-	@param  myy new y location
+	@param  x is the new x location
+	@param  y is the new y location
 	*/
 	void MouseMotion(int x, int y);
 	int	LeftButton;				// either ROTATE or SCALE
@@ -289,12 +289,12 @@ public:
 	void DrawCuttingPlane();
 
 	/**
-	Drawing Function that draws the Isosurfaces, this is called by the Update
+	Drawing Function that draws the Isosurfaces, this is called by the Update function
 	*/
 	void DrawIsosurfaces();
 
 	/**
-	Drawing Function that is used in the Isosurface Drawing Process to
+	Drawing Function that is used in the Isosurface Drawing Process to run the marching squares algorithm
 	@param  p0 is the 0th corner of a square
 	@param  p1 is the 1st corner of a square
 	@param  p2 is  the 2nd corner of a square
@@ -311,46 +311,55 @@ public:
 	//These are the Helper Functions for Graphics:
 
 	/**
-	Graphics Helper Function that
+	Graphics Helper Function that finds where a point would move if placed into the vector field at a point for a given time
+	@param  inputVector is the vector at the initial position
+	@param  Timestep is the amount of time given
 	*/
 	inline vector3d * Framework::VectorAdvect(vector3d * inputVector, float TimeStep); 
 
 	/**
-	Graphics Helper Function that
+	Graphics Helper Function that finds where a point would move if placed into a vector field array at a point for a given time
+	@param  inputVector is the vector at the initial position
+	@param  Timestep is the amount of time given
+	@param  storeArray is a pointer to the vector array
 	*/
 	inline void Framework::VectorAdvect(vector3d * inputVector, float TimeStep, float* storeArray);
 
 	/**
-	Graphics Helper Function that
+	Graphics Helper Function that returns the highest vector magnitude in the vector field
 	*/
 	inline float Framework::GetVectorMax();
 
 	/**
-    Graphics Helper Function that
+	Graphics Helper Function that returns the lowest vector magnitude in the vector field
 	*/
 	inline float Framework::GetVectorMin();
 
 	/**
-    Graphics Helper Function that
-	@param
+	Graphics Helper Function that returns the vector or estimated vector at a specific coordinate in the vector field
+	@param xCord is the X coordinate in the field
+	@param yCord is the Y coordinate in the field
+	@param zCord is the Z coordinate in the field
 	*/
 	inline vector3d* Framework::VectorAtLocation(float xCord, float yCord, float zCord);
 
 	/**
-	Graphics Helper Function that
-	@param
+	Graphics Helper Function that returns the vector or estimated vector at a specific coordinate in the vector field
+	@param pos is the pointer to a vector containing the position of the vector to return
 	*/
 	inline vector3d* Framework::VectorAtLocation(vector3d* pos); 
 
 	/**
-	Graphics Helper Function that
-	@param
+	Graphics Helper Function that returns the vector magnitude at a specific coordinate in the vector field
+	@param pos is the pointer to a vector containing the position of the vector to return the magnitude of
 	*/
 	inline float Framework::VectorMagnitudeAtLocation(vector3d* pos);  
 
 	/**
-	Graphics Helper Function that
-	@param
+	Graphics Helper Function that returns the vector magnitude at a specific coordinate in the vector field
+	@param x is the X coordinate in the field
+	@param y is the Y coordinate in the field
+	@param z is the Z coordinate in the field
 	*/
 	inline float Framework::VectorMagnitudeAtLocation(float x, float y, float z);
 	
@@ -366,7 +375,7 @@ public:
 	/**
 	Graphics Helper Function that uses interpolation to determine color
 	@param mag is the vector magnitude
-	@param min is the designtated minimum for interpolation purposes
+	@param min is the designated minimum for interpolation purposes
 	@param max is the designated maximum for interpolation purposes
 	@param fourwideout is the return value that points to the four float color array
 	*/
@@ -379,14 +388,17 @@ public:
 	void InitLists();
 
 	/**
-	DESCRIPTION
-	@param
+	This Unit function finds the unit vector of the input vector
+	@param vin is the original vector
+	@param vout is the is the output vector
 	*/
 	float Unit(float vin[3], float vout[3]);
 
 	/**
-	DESCRIPTION
-	@param
+	This Unit function finds the Cross product vector of the two input vectors
+	@param v1 is the first input vector
+	@param v2 is the first input vector
+	@param vout is the is the output vector
 	*/
 	void Cross(float v1[3], float v2[3], float vout[3]);
 
@@ -598,8 +610,7 @@ public:
 
 	//Here is the Static Instance Necessary For Our Singleton:
 	/**
-	DESCRIPTION
-	@param
+	This is the Static Instance for our Framework Singleton:
 	*/
 	static Framework* instance();
 
@@ -607,27 +618,25 @@ private:
 		// Singleton Junk
 	static Framework *_instance;
 	/**
-	DESCRIPTION
-	@param
+	Here is the Constructor for the Framework, hidden to enforce our Singleton
 	*/
 	Framework();
 	/**
-	DESCRIPTION
-	@param
+	Here is the Destructor for the Framework, hidden to enforce our Singleton
 	*/
 	~Framework();
 	//singleton requirements, but they dont work?
 
 	/**
-	DESCRIPTION
-	@param
+	Here is the Copy function for the Framework, hidden to enforce our Singleton
+	@param copy is the address to copy from
 	*/
 	Framework(const Framework& copy);
 	//it says error, but builds?
 
 	/**
-	DESCRIPTION
-	@param
+	Here is the Assignment function for the Framework, hidden to enforce our Singleton
+	@param rhs right hand side of the assignment
 	*/
 	Framework& operator=(const Framework& rhs);
 };
