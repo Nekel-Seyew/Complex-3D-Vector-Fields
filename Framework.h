@@ -579,7 +579,7 @@ public:
 	Cloth theCloth;
 
 	//animation points
-	float NumPoints;//max value is hardset at 1000
+	int NumPoints;//max value is hardset at 1000
 	float dotPointColorR, dotPointColorG, dotPointColorB;
 	vector3d dot_points[1000];
 	int num_dot_points=100;

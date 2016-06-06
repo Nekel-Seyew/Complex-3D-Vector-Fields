@@ -537,8 +537,8 @@ void InitGlui() {
 	ContDist->set_speed(0.04);
 	
 	//animation items
-	spinNumPoints = TestGlui->add_spinner_to_panel(AnimationSettings, "Animation NumPoints", GLUI_SPINNER_FLOAT, &Framework::instance()->NumPoints);
-	spinNumPoints->set_float_limits(5, 1000);
+	spinNumPoints = TestGlui->add_spinner_to_panel(AnimationSettings, "Animation NumPoints", GLUI_SPINNER_INT, &Framework::instance()->NumPoints);
+	spinNumPoints->set_int_limits(5, 1000);
 	spinNumPoints->set_speed(0.5);
 	TestGlui->add_checkbox_to_panel(AnimationSettings, "Color As Velocity", &Framework::instance()->colorAsVelocity);
 	TestGlui->add_checkbox_to_panel(AnimationSettings, "TracePath", &Framework::instance()->traceDotPath);//for turning off and on trace path.
