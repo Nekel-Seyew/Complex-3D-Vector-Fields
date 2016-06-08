@@ -162,13 +162,11 @@
     <ClCompile Include="Framework.cpp" />
     <ClCompile Include="HeatMapCenters.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="RenderingEngine.cpp" />
     <ClCompile Include="RenderWindow.cpp" />
     <ClCompile Include="Sliders.cpp" />
     <ClCompile Include="SpaceDefiner.cpp" />
     <ClCompile Include="SphericalInterpolator.cpp" />
-    <ClCompile Include="SweeneyTest.cpp" />
     <ClCompile Include="vector3d.cpp" />
     <ClCompile Include="VectorDefiner.cpp" />
     <ClCompile Include="VectorDefinerKDAdaptor.cpp" />
@@ -330,7 +328,6 @@
     <ClInclude Include="glm\vec4.hpp" />
     <ClInclude Include="glm\vector_relational.hpp" />
     <ClInclude Include="HeatMapCenters.h" />
-    <ClInclude Include="Mouse.h" />
     <ClInclude Include="NameSpace.h" />
     <ClInclude Include="nanoflann.hpp" />
     <ClInclude Include="odeint-boost\boost\numeric\odeint.hpp" />
@@ -339,7 +336,6 @@
     <ClInclude Include="SphericalInterpolator.h" />
     <ClInclude Include="Sliders.h" />
     <ClInclude Include="SpaceDefiner.h" />
-    <ClInclude Include="SweeneyTest.h" />
     <ClInclude Include="vector3d.h" />
     <ClInclude Include="VectorDefiner.h" />
     <ClInclude Include="VectorDefinerKDAdaptor.h" />

@@ -45,7 +45,6 @@ This is the Main file for the program, storing most of the GLUI objects, and hol
 #include "ControlWindow.h"
 #include "RenderWindow.h"
 #include "Sliders.h"
-#include "Mouse.h"
 
 #include "vector3d.h"
 #include "color.h"

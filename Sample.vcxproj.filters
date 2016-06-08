@@ -24,9 +24,6 @@
     <ClCompile Include="HeatMapCenters.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SweeneyTest.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Framework.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -49,9 +46,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Sliders.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Mouse.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SphericalInterpolator.cpp">
@@ -92,9 +86,6 @@
     <ClInclude Include="HeatMapCenters.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SweeneyTest.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Framework.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -114,9 +105,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Sliders.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Mouse.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SphericalInterpolator.h">
