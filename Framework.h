@@ -20,7 +20,6 @@ limitations under the License.
 
 @section DESCRIPTION
 
-This is the Main file for the program, storing most of the GLUI objects, and holds the main function starting everything.
 
 */
 #pragma once
@@ -79,7 +78,7 @@ static float axx[3] = { 1., 0., 0. };
 static float ayy[3] = { 0., 1., 0. };
 static float azz[3] = { 0., 0., 1. };
 
-struct node {//This is used in the Space Definer Code
+/*struct node {//This is used in the Space Definer Code
 	float x, y, z;          // location
 	float t;                // temperature
 	float r, g, b;		// the assigned color (to be used later)
@@ -89,7 +88,7 @@ struct node {//This is used in the Space Definer Code
 	float colorval;
 	float vx, vy, vz;
 	float vecLength;
-};
+};*/
 
 struct posShader
 {//This Struct is For Using Shaders
@@ -452,9 +451,9 @@ public:
 	int numContours;
 	float IsosurfacesVal;
 	int IsoResolution;
-	struct node XYPlane[100][100];
-	struct node XZPlane[100][100];
-	struct node YZPlane[100][100];
+	//struct node XYPlane[100][100];
+	//struct node XZPlane[100][100];
+	//struct node YZPlane[100][100];
 
 	//These are for drawing the Cutting Planes - Still to be implemented:
 	float XYPlanesZval;
