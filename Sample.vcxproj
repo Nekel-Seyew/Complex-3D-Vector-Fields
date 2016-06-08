@@ -159,14 +159,12 @@
     <ClCompile Include="dlib-18.18\dlib\all\source.cpp" />
     <ClCompile Include="equation.cpp" />
     <ClCompile Include="Framework.cpp" />
-    <ClCompile Include="HeatMapCenters.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="SpaceDefiner.cpp" />
     <ClCompile Include="SphericalInterpolator.cpp" />
     <ClCompile Include="vector3d.cpp" />
     <ClCompile Include="VectorDefiner.cpp" />
     <ClCompile Include="VectorDefinerKDAdaptor.cpp" />
-    <ClCompile Include="Wrappers.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnimatedPoints.h" />
@@ -321,7 +319,6 @@
     <ClInclude Include="glm\vec3.hpp" />
     <ClInclude Include="glm\vec4.hpp" />
     <ClInclude Include="glm\vector_relational.hpp" />
-    <ClInclude Include="HeatMapCenters.h" />
     <ClInclude Include="nanoflann.hpp" />
     <ClInclude Include="odeint-boost\boost\numeric\odeint.hpp" />
     <ClInclude Include="SphericalInterpolator.h" />
