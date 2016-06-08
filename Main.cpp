@@ -93,7 +93,7 @@ void GetFilePlease(int input) {
 	std::string finalpath = folder + "\\" + file;
 	if (PathFileExists(finalpath.c_str())) {
 		Framework::instance()->VectorInput = (char*)finalpath.c_str();
-		Framework::instance()->edittext2->set_text(Framework::instance()->VectorInput);
+		Framework::instance()->vectorEditText ->set_text(Framework::instance()->VectorInput);
 		gluiFileBrowser->deactivate();
 		//strcpy(Framework::instance()->VectorDefinerString, Framework::instance()->VectorInput);
 		//delete gluiFileBrowser;
@@ -310,10 +310,10 @@ void InitGlui() {
 	UserInput = TestGlui->add_panel_to_panel(UserInputRollout, "User Input Options");
 	TestGlui->add_checkbox_to_panel(UserInput, "Use Prism Space Definer", &Framework::instance()->usePrism);
 	TestGlui->add_checkbox_to_panel(UserInput, "Use Point Grid", &Framework::instance()->useGrid);
-	Framework::instance()->edittext = TestGlui->add_edittext_to_panel(UserInput, "Space Definer Equation:", GLUI_EDITTEXT_TEXT, Framework::instance()->SpaceDefinerString);
-	Framework::instance()->edittext->set_w(400);
-	Framework::instance()->edittext2 = TestGlui->add_edittext_to_panel(UserInput,"Vector Definer Equation:", GLUI_EDITTEXT_TEXT, Framework::instance()->VectorDefinerString);
-	Framework::instance()->edittext2->set_w(400);
+	Framework::instance()->spaceEditText = TestGlui->add_edittext_to_panel(UserInput, "Space Definer Equation:", GLUI_EDITTEXT_TEXT, Framework::instance()->SpaceDefinerString);
+	Framework::instance()->spaceEditText->set_w(400);
+	Framework::instance()->vectorEditText = TestGlui->add_edittext_to_panel(UserInput,"Vector Definer Equation:", GLUI_EDITTEXT_TEXT, Framework::instance()->VectorDefinerString);
+	Framework::instance()->vectorEditText->set_w(400);
 	GLUI_Panel* buttons = TestGlui->add_panel_to_panel(UserInput, "");
 	TestGlui->add_column_to_panel(buttons, 0);
 	TestGlui->add_button_to_panel(buttons, "Reset", 0, ((GLUI_Update_CB)MyButtons));
