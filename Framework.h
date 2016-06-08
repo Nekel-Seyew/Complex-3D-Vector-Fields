@@ -40,11 +40,6 @@ limitations under the License.
 //Defined in our solution:
 #include "SpaceDefiner.h"
 #include "VectorDefiner.h"
-#include "RenderingEngine.h"
-#include "ControlWindow.h"
-#include "RenderWindow.h"
-#include "Sliders.h"
-#include "Mouse.h"
 
 #include "vector3d.h"
 #include "color.h"

@@ -10,7 +10,6 @@
 #endif
 #include "Framework.h"
 #include "vector3d.h"
-#include "VectorUpdating.h"
 #include <cstring>
 
 #include <mmintrin.h>

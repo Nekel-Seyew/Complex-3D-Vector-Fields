@@ -151,7 +151,6 @@
       <DebugInformationFormat Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <ClCompile Include="color.cpp" />
-    <ClCompile Include="ControlWindow.cpp" />
     <ClCompile Include="DataSetTrainer.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
       <IntrinsicFunctions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</IntrinsicFunctions>
@@ -162,24 +161,17 @@
     <ClCompile Include="Framework.cpp" />
     <ClCompile Include="HeatMapCenters.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Mouse.cpp" />
-    <ClCompile Include="RenderingEngine.cpp" />
-    <ClCompile Include="RenderWindow.cpp" />
-    <ClCompile Include="Sliders.cpp" />
     <ClCompile Include="SpaceDefiner.cpp" />
     <ClCompile Include="SphericalInterpolator.cpp" />
-    <ClCompile Include="SweeneyTest.cpp" />
     <ClCompile Include="vector3d.cpp" />
     <ClCompile Include="VectorDefiner.cpp" />
     <ClCompile Include="VectorDefinerKDAdaptor.cpp" />
-    <ClCompile Include="VectorUpdating.cpp" />
     <ClCompile Include="Wrappers.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnimatedPoints.h" />
     <ClInclude Include="Cloth.h" />
     <ClInclude Include="color.h" />
-    <ClInclude Include="ControlWindow.h" />
     <ClInclude Include="DataSetTrainer.h" />
     <ClInclude Include="equation.h" />
     <ClInclude Include="Framework.h" />
@@ -330,20 +322,13 @@
     <ClInclude Include="glm\vec4.hpp" />
     <ClInclude Include="glm\vector_relational.hpp" />
     <ClInclude Include="HeatMapCenters.h" />
-    <ClInclude Include="Mouse.h" />
-    <ClInclude Include="NameSpace.h" />
     <ClInclude Include="nanoflann.hpp" />
     <ClInclude Include="odeint-boost\boost\numeric\odeint.hpp" />
-    <ClInclude Include="RenderingEngine.h" />
-    <ClInclude Include="RenderWindow.h" />
     <ClInclude Include="SphericalInterpolator.h" />
-    <ClInclude Include="Sliders.h" />
     <ClInclude Include="SpaceDefiner.h" />
-    <ClInclude Include="SweeneyTest.h" />
     <ClInclude Include="vector3d.h" />
     <ClInclude Include="VectorDefiner.h" />
     <ClInclude Include="VectorDefinerKDAdaptor.h" />
-    <ClInclude Include="VectorUpdating.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="fshader.glsl" />
