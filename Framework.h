@@ -19,7 +19,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 @section DESCRIPTION
-
+Framework holds all of the variables used in GLUI, handles the display method and all related graphics functions
 
 */
 #pragma once
@@ -73,33 +73,37 @@ static float axx[3] = { 1., 0., 0. };
 static float ayy[3] = { 0., 1., 0. };
 static float azz[3] = { 0., 0., 1. };
 
-/*struct node {//This is used in the Space Definer Code
+
+/**
+struct node is usedc for each point in the grid use to draw the Isosurfaces
+x,y,z is location in 3D space
+t is the Vector Magnitude 
+*/
+struct node {
 	float x, y, z;          // location
-	float t;                // temperature
-	float r, g, b;		// the assigned color (to be used later)
-	float rad;              // radius (to be used later)
-	float grad;             // total gradient (to be used later)
-	float dTdx, dTdy, dTdz;	// can store these if you want, or not
-	float colorval;
-	float vx, vy, vz;
-	float vecLength;
-};*/
+	float t;                //Vector Magnitude
+};
 
+
+/**
+possShader struct is used in the cutting plane code
+x,y,z correspond to the location in 3D space
+m is the magnitude, it is extracted in vertex shader and interpolated through the graphics pipeline
+*/
 struct posShader
-{//This Struct is For Using Shaders
-	float x, y, z, m; // m is magnitude
+{
+	float x, y, z, m; 
 };
 
-struct VectorNode {
-	vector3d vector;
-	float magnitude;
 
-};
-//Constants for the Mouse Motion:
-// multiplication factors for input interaction:
-//  (these are known from previous experience)
-
+/**ANGFACT is a constant for the Mouse Motion:
+multiplication factors for input interaction:
+(these are known from previous experience)*/
 const float ANGFACT = { 1. };
+
+/**SCLFACT is a constant for the Mouse Motion:
+multiplication factors for input interaction:
+(these are known from previous experience)*/
 const float SCLFACT = { 0.005f };
 
 
@@ -216,16 +220,34 @@ public:
 
 	
 	
-
+	/**
+	This is the integer that holds the designation for the main window which is returned by glutCreateWindow
+	*/
 	int MainWindow;
-	//MouseState mouse;
+
+	/**
+	This stores the designation for the active button used in the mouse clicking function
+	*/
 	int	ActiveButton;
+
+	/**
+	This enum is related to the mouse clicking function - whether rotated or scale
+	*/
 	enum LeftButton
 	{
 		ROTATE,
 		SCALE
 	};
 
+	/**
+	This LeftButton corresponds with the enum is is either rotate or scale
+	*/
+	int	LeftButton;				// either ROTATE or SCALE
+	
+	/**
+	The mouse values used in the mouse button functionn
+	*/
+	int	Xmouse, Ymouse;			// mouse values
 	/**Mouse Button Function that is passed to Glut using a wrapper function
 	@param  button is the button pressed.
 	@param  state is the state of the button pressed.
@@ -241,7 +263,8 @@ public:
 	@param  y is the new y location
 	*/
 	void MouseMotion(int x, int y);
-	int	LeftButton;				// either ROTATE or SCALE
+
+	
 
 
 
@@ -363,6 +386,7 @@ public:
 	It uses the maximum and minimum for the overall vector field
 	@param VecMag is the vector magnitude
 	@param fourwideout is the return value that points to the four float color array
+	@return float * that points to the four element color array
 	*/
 	float * Color(float VecMag, float* fourwideout);
 
@@ -372,6 +396,7 @@ public:
 	@param min is the designated minimum for interpolation purposes
 	@param max is the designated maximum for interpolation purposes
 	@param fourwideout is the return value that points to the four float color array
+	@return float * that points to the four element color array 
 	*/
 	float * Color(float mag,float min,float max,float* fourwideout);
 
@@ -397,10 +422,29 @@ public:
 	void Cross(float v1[3], float v2[3], float vout[3]);
 
 	//These are the Gluints that correspond to the Lists in InitLists:
+	/**
+	GLuint that corresponds to the isosurfaces display list 
+	*/
 	GLuint IsoList;
-	GLuint AxesList;			
+
+	/**
+	GLuint that corresponds to the axes display list 
+	*/
+	GLuint AxesList;	
+
+	/**
+	GLuint that corresponds to the streamlines display list
+	*/
 	GLuint StreamlineList;
+
+	/**
+	GLuint that corresponds to the blob display list
+	*/
 	GLuint BlobList;
+	
+	/**
+	GLuint that corresponds to the  path display list
+	*/
 	GLuint PathList;
 
 	/**
@@ -417,7 +461,7 @@ public:
 
 	//Streamline Function and Related Variables
 	void GenStreamline(float, float, float);
-	int visitstream;
+
 
 	//These are Functions For Setting Up Shaders:
 
@@ -438,48 +482,104 @@ public:
 
 
 	//Variables For Shaders:
+
+	/**
+	GLuint program is the shaders program that set-up shaders generates
+	*/
 	GLuint program;
+
+	/**
+	GLuint buffer[2] is an array of GLuints used for the vertex buffer objects in the shader code
+	*/
 	GLuint buffer[2];
+
+	/**
+	The vertex array object used in the shader code
+	*/
 	GLuint vao;
 
 	//This is the Isosurfaces Variables 
 	int numContours;
 	float IsosurfacesVal;
 	int IsoResolution;
-	//struct node XYPlane[100][100];
-	//struct node XZPlane[100][100];
-	//struct node YZPlane[100][100];
-
-	//These are for drawing the Cutting Planes - Still to be implemented:
+	struct node XYPlane[100][100];
+	struct node XZPlane[100][100];
+	struct node YZPlane[100][100];
+	
 	float XYPlanesZval;
 	float  XZPlanesYval;
 	float YZPlanesXval;
 
-	//These are the jitter randomization values
+
+
+	/**This is jitter randomization value
+	*/
 	int jittRand;
 
 	/*Glui (Controller)*/
 	//These are changed by the MyButtons Callback Functions
+	/**
+	This is the default space definer input that corresponds to mapping onto a circle
+	It is overwritten by the user input
+	*/
 	char *SpaceInput = { "<(cos(2 * 3.14159265359 * X) * sin(3.14159265359 * Y) * 1), (sin(2 * 3.14159265359 * X) * sin(3.14159265359 * Y) * 1), (cos(3.14159265359 * Y) * 1)>" };
-	//char *VectorInput = { "<Y*Z*(Y*Y + Z*Z), X*Z*(X*X + Z*Z), Y*X*(Y*Y + X* X)>" }; //This is the Solenoid Equation
+	
+	/**
+	This is an alternative vector input equation which correponds to a Solenoid
+	The Solenoid typically shows off the color scheme better but is not as dynamic as the tornado
+	*/
+	char *VectorInput2 = { "<Y*Z*(Y*Y + Z*Z), X*Z*(X*X + Z*Z), Y*X*(Y*Y + X* X)>" }; //This is the Solenoid Equation
+	
+	/**
+	This is the default vector definer input that corresponds to our simple tornado model
+	*/
 	char * VectorInput = { "<((sqrt(X * X + Z * Z)^3)* e^(~3. * sqrt(X * X + Z * Z))* Z),(0.008/((Z *Z/sqrt(X * X + Z * Z)) + (X * X /sqrt(X * X + Z * Z)) + 0.0001)), ((sqrt(X * X + Z * Z)^3) * e^(~3. *sqrt(X * X + Z * Z)) * ~X)>" };
 
 	//Constants Used to Set Up Glui:
+	/**
+	This is the string for the title for the GLUI window
+	*/
 	const char *GLUITITLE = { "User Interface Window" };
+
+	/**
+	This is the initial window size for the graphics window
+	*/
 	const int INIT_WINDOW_SIZE = { 600 };
+
+	/**
+	This is the window title for the graphics window
+	*/
 	const char *WINDOWTITLE = { "OpenGL / GLUT / GLUI Sample --Team TARDIS" };
 
 	//These are the User Input Controls:
+	/**
+	usePrism is toggled to turn on and off the prism or use space definer
+	*/
 	int usePrism;
+	/**
+	useGrid is toggled to turn on and off to switch between random points or a point grid
+	*/
 	int useGrid;
+
+	/**
+	char * given to the space definer edit textbox
+	*/
 	char SpaceDefinerString[sizeof(GLUI_String)] = "";
+	/**
+	char * given to the vector space definer edit textbox
+	*/
 	char VectorDefinerString[sizeof(GLUI_String)] = "";
-	char FileNameString[sizeof(GLUI_String)] = "";
-	char ObjFileNameString[sizeof(GLUI_String)] = "";
-	GLUI_EditText *edittext;
-	GLUI_EditText *edittext2;
-	GLUI_EditText *edittext3;
-	GLUI_EditText *SavedFileName;
+
+	/**
+	space definer edit textbox
+	*/
+	GLUI_EditText * spaceEditText;
+
+	/**
+	vector definer edit text box 
+	*/
+	GLUI_EditText * vectorEditText;
+
 
 	//These are the Visual Setting Checkbox Values:
 	int AxesOn;
@@ -488,18 +588,60 @@ public:
 	int DepthCueOn;
 
 	//These are the Transformation Variables in Glui:
+	/**
+	Minimum in the scaling transformation
+	*/
 	float MINSCALE;
-	GLfloat	RotMatrix[4][4];	// set by glui rotation widget
-	float	Scale, Scale2;		// scaling factors
-	int	Xmouse, Ymouse;			// mouse values
+	/**
+	Scaling factors in the scaling transformation
+	*/
+	float	Scale, Scale2;
+
+	/**
+	This rotation matrix is set by the GLUI rotation widget
+	*/
+	GLfloat	RotMatrix[4][4];	
+
+	
+
+	/**
+	float the green component of the background color
+	*/
 	float	Xrot, Yrot;			// rotation angles in degrees
+
+	/**
+	float the green component of the background color
+	*/
 	float	TransXYZ[3];		// set by glui translation widgets
+	
+								
 	//Color Options Settings:
+	/**
+	int that toggles the alternate color scheme on and off
+	*/
 	int ColorAlternate;
+
+	/**
+	float the red component of the background color
+	*/
 	float backgroundColorR;
+	/**
+	float the green component of the background color
+	*/
 	float backgroundColorG;
+
+	/**
+	float the blue component of the background color
+	*/
 	float backgroundColorB;
+
+	/**
+	float the 2 x 2 box around the origin color in gray scale
+	*/
 	float boxColor;
+	/**
+	float the axesColor in grey scale
+	*/
 	float axesColor;
 
 	//Checkboxes for Different Graphics Methods in Glui
@@ -563,12 +705,13 @@ public:
 	
 
 	//These are the GluiValues for the Vector Sheet:
-	float VectorSheetTimeVal=0, VectorSheetXLoc=0, VectorSheetYLoc=0, VectorSheetZLoc=0, VectorSheetXVec=0, VectorSheetYVec=0, VectorSheetZVec=1;
+	float VectorSheetTimeVal = 0, VectorSheetXLoc = 0, VectorSheetYLoc = 0, VectorSheetZLoc=0, VectorSheetXVec=0, VectorSheetYVec=0, VectorSheetZVec=1;
 	
 	/**
 	This function intializes the vector sheeet
 	*/
 	void initSheet();
+
 	vector3d VecSheet[10][10];
 	Cloth theCloth;
 
@@ -582,6 +725,7 @@ public:
 	std::list<vector3d*> listPath[1000];
 	float timestep = 0.1f; // this is what VectorAdvect uses as time step
 	
+
 	/**
 	This function intializes the points used in animation
 	*/

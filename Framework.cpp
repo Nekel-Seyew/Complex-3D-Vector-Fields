@@ -791,7 +791,6 @@ void Framework::RestoreDefaults() {
 	spinVecMax = VECMAX;
 	spinVecMin = VECMIN;
 	vecAlphaVal = 0.5;
-	visitstream = 0;
 	ColorAlternate = 0;
 	dotPointColorR = 0.10f;
 	dotPointColorG = 100.f;
@@ -1469,8 +1468,6 @@ void Framework::DrawProbe() {
 void Framework::GenStreamline(float x, float y, float z)
 {
 	float colorarray[4];
-	visitstream++;
-	//printf("Visit Stream is %d\n", visitstream);
 	glLineWidth(2.);
 	if (ColorAlternate) {
 		glColor3f(0.75, 0.75, 0.0);
