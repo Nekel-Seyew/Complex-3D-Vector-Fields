@@ -68,20 +68,42 @@ typedef glm::vec4 color4;
 #define Y	2
 #define Z	3
 
-// x, y, z, axes: Used For Drawing Axes
+/**
+This is the normal for the x-axis in 3d
+*/
 static float axx[3] = { 1., 0., 0. };
+/**
+This is the normal for the y-axis in 3d
+*/
 static float ayy[3] = { 0., 1., 0. };
+/**
+This is the normal for the z-axis in 3d
+*/
 static float azz[3] = { 0., 0., 1. };
 
 
 /**
-struct node is usedc for each point in the grid use to draw the Isosurfaces
+struct node is used for each point in the grid use to draw the Isosurfaces
 x,y,z is location in 3D space
 t is the Vector Magnitude 
 */
 struct node {
-	float x, y, z;          // location
-	float t;                //Vector Magnitude
+	/**
+	This is the x-coordinate for the node
+	*/
+	float x;
+	/**
+	This is the y-coordinate for the node
+	*/
+	float y;
+	/**
+	This is the z-coordinate for the node
+	*/
+	float z;
+	/**
+	This is the magnitude of the node
+	*/
+	float t;
 };
 
 
@@ -92,7 +114,22 @@ m is the magnitude, it is extracted in vertex shader and interpolated through th
 */
 struct posShader
 {
-	float x, y, z, m; 
+	/**
+	This is the x-coordinate in 3d space
+	*/
+	float x;
+	/**
+	This is the y-coordinate in 3d space
+	*/
+	float y;
+	/**
+	This is the z-coordinate in 3d space
+	*/
+	float z;
+	/**
+	This is the magnitude
+	*/
+	float m; 
 };
 
 
@@ -112,13 +149,25 @@ const float SCLFACT = { 0.005f };
 
 // minimum allowable scale factor:
 
+/**
+This is the minimum allowed scale factor
+*/
 const float MINSCALE = { 0.05f };
 
 
 // active mouse buttons (or them together):
 
+/**
+This is the id for the left mouse button
+*/
 const int LEFT = { 4 };
+/**
+This is the id for the middle mouse button
+*/
 const int MIDDLE = { 2 };
+/**
+This is the id for the right mouse button
+*/
 const int RIGHT = { 1 };
 
 //#pragma warning(default:C4005)
@@ -331,6 +380,7 @@ public:
 	Graphics Helper Function that finds where a point would move if placed into the vector field at a point for a given time
 	@param  inputVector is the vector at the initial position
 	@param  Timestep is the amount of time given
+	@returns the vector moved by the vector field.
 	*/
 	inline vector3d * Framework::VectorAdvect(vector3d * inputVector, float TimeStep); 
 
@@ -344,11 +394,13 @@ public:
 
 	/**
 	Graphics Helper Function that returns the highest vector magnitude in the vector field
+	@returns the highest magnitude vector in the field.
 	*/
 	inline float Framework::GetVectorMax();
 
 	/**
 	Graphics Helper Function that returns the lowest vector magnitude in the vector field
+	@returns the lowest magnitude vector in the field.
 	*/
 	inline float Framework::GetVectorMin();
 
@@ -357,18 +409,21 @@ public:
 	@param xCord is the X coordinate in the field
 	@param yCord is the Y coordinate in the field
 	@param zCord is the Z coordinate in the field
+	@returns the vector at the coordinate.
 	*/
 	inline vector3d* Framework::VectorAtLocation(float xCord, float yCord, float zCord);
 
 	/**
 	Graphics Helper Function that returns the vector or estimated vector at a specific coordinate in the vector field
 	@param pos is the pointer to a vector containing the position of the vector to return
+	@returns the vector at the location.
 	*/
 	inline vector3d* Framework::VectorAtLocation(vector3d* pos); 
 
 	/**
 	Graphics Helper Function that returns the vector magnitude at a specific coordinate in the vector field
 	@param pos is the pointer to a vector containing the position of the vector to return the magnitude of
+	@returns the magnitude at the location.
 	*/
 	inline float Framework::VectorMagnitudeAtLocation(vector3d* pos);  
 
@@ -377,6 +432,7 @@ public:
 	@param x is the X coordinate in the field
 	@param y is the Y coordinate in the field
 	@param z is the Z coordinate in the field
+	@returns the magnitude at the location.
 	*/
 	inline float Framework::VectorMagnitudeAtLocation(float x, float y, float z);
 	
@@ -410,6 +466,7 @@ public:
 	This Unit function finds the unit vector of the input vector
 	@param vin is the original vector
 	@param vout is the is the output vector
+	@returns the magnitude of the original vector.
 	*/
 	float Unit(float vin[3], float vout[3]);
 
@@ -460,7 +517,13 @@ public:
 	void Framework::UpdateIsolist();
 
 	//Streamline Function and Related Variables
-	void GenStreamline(float, float, float);
+	/**
+	This Function draws a streamline starting at a given coordinate
+	@param x is the x coordinate
+	@param y is the y coordinate
+	@param z is the z coordinate
+	*/
+	void GenStreamline(float x, float y, float z);
 
 
 	//These are Functions For Setting Up Shaders:
@@ -477,8 +540,9 @@ public:
 
 	/**
 	This Shader Helper Function prints out errors with shader compilation to standard error
+	@param caller is the caller with the error
 	*/
-	void Framework::CheckGlErrors(const char*);
+	void Framework::CheckGlErrors(const char* caller);
 
 
 	//Variables For Shaders:
@@ -499,15 +563,48 @@ public:
 	GLuint vao;
 
 	//This is the Isosurfaces Variables 
+	/**
+	numcontours is the number of contours in the isosurface
+	*/
 	int numContours;
+
+	/**
+	IsosurfacesVal is the magnitude for the isosurface to follow
+	*/
 	float IsosurfacesVal;
+	/**
+	IsoResolution is the resolution/accuracy for the isosuface line drawn
+	*/
 	int IsoResolution;
+
+	/**
+	XYPlane is an array of nodes discribing an XY plane
+	*/
 	struct node XYPlane[100][100];
+
+	/**
+	XZPlane is an array of nodes discribing an XZ plane
+	*/
 	struct node XZPlane[100][100];
+
+	/**
+	YZPlane is an array of nodes discribing an YZ plane
+	*/
 	struct node YZPlane[100][100];
 	
+	/**
+	XYPlane is the shifted distance of the XY plane
+	*/
 	float XYPlanesZval;
+
+	/**
+	XZPlane is the shifted distance of the XZ plane
+	*/
 	float  XZPlanesYval;
+
+	/**
+	YZPlane is the shifted distance of the YZ plane
+	*/
 	float YZPlanesXval;
 
 
@@ -582,9 +679,21 @@ public:
 
 
 	//These are the Visual Setting Checkbox Values:
+	/**
+	this is the Axis checkbox value
+	*/
 	int AxesOn;
+	/**
+	this is the Box checkbox value
+	*/
 	int BoxOn;
+	/**
+	this is the Projection checkbox value
+	*/
 	int WhichProjection;
+	/**
+	this is the DepthCue checkbox value
+	*/
 	int DepthCueOn;
 
 	//These are the Transformation Variables in Glui:
@@ -593,9 +702,13 @@ public:
 	*/
 	float MINSCALE;
 	/**
-	Scaling factors in the scaling transformation
+	Scale factor 1 in the scaling transformation
 	*/
-	float	Scale, Scale2;
+	float	Scale;
+	/**
+	Scale factor 2 in the scaling transformation
+	*/
+	float   Scale2;
 
 	/**
 	This rotation matrix is set by the GLUI rotation widget
@@ -605,12 +718,16 @@ public:
 	
 
 	/**
-	float the green component of the background color
+	the veiw x rotation angle in degrees
 	*/
-	float	Xrot, Yrot;			// rotation angles in degrees
+	float	Xrot;
+	/**
+	the veiw y rotation angle in degrees
+	*/
+	float   Yrot;			// rotation angles in degrees
 
 	/**
-	float the green component of the background color
+	the veiw translation
 	*/
 	float	TransXYZ[3];		// set by glui translation widgets
 	
@@ -645,55 +762,201 @@ public:
 	float axesColor;
 
 	//Checkboxes for Different Graphics Methods in Glui
+	/**
+	the Arrows checkbox value
+	*/
 	int useArrows;
+	/**
+	the Points checkbox value
+	*/
 	int usePoints;
+	/**
+	the Streamlines checkbox value
+	*/
 	int useStreamlines;
+	/**
+	the Animation checkbox value
+	*/
 	int useAnimation;
+	/**
+	the Isosurface checkbox value
+	*/
 	int useIsosurfaces;
+	/**
+	the VectorBlob checkbox value
+	*/
 	int useVectorBlob;
+	/**
+	the VectorSheet checkbox value
+	*/
 	int useVectorSheet;
+	/**
+	the Jitter checkbox value
+	*/
 	int useJitter;
+	/**
+	the Probe checkbox value
+	*/
 	int useProbe;
+	/**
+	the CuttingPlane checkbox value
+	*/
 	int useCuttingPlane;
+	/**
+	the Contour checkbox value
+	*/
 	int ContourOn;
+	/**
+	the Minecraft checkbox value
+	*/
 	int MineCraftOn;
 
 
 
 	//These are the Arrows Controls
+	/**
+	the minimum magnitude for reference in the cutting plane
+	*/
 	float minvec;
+	/**
+	the maximum magnitude for reference in the cutting plane
+	*/
 	float maxvec;
-	float testMinvec;
-	float testMaxvec;
+	/**
+	the multiplier for the size of an Arrow
+	*/
 	float ArrowLength;
+	/**
+	the spinner for the minimum magnitude for an Arrow
+	*/
 	float spinVecMin;
+	/**
+	the spinner for the maximum magnitude for an Arrow
+	*/
 	float spinVecMax;
+	/**
+	the spinner for the alpha value of colors
+	*/
 	float vecAlphaVal;
 
 	//These are the arrow slider controls:
+	/**
+	the text for Vector Magnitude
+	*/
 	const char * VECFORMAT = { "Vector Magnitude: %5.2f - %5.2f" };
+	/**
+	the low and high values for temperature
+	*/
 	float			VectorLowHigh[2]; //temperature highlow
 	//GLUI_HSlider *		VectorSlider; //temperature slider
+	/**
+	the label for temperature
+	*/
 	GLUI_StaticText *	VectorLabel; //temperature static text label
-	float VECMIN, VECMAX;
+	/**
+	the minimum value for a vector
+	*/
+	float VECMIN;
+	/**
+	the maximum value for a vector
+	*/
+	float VECMAX;
 
 	//These are the Glui Values for Probe Manipulation:
-	float ProbeXVal, ProbeYVal, ProbeZVal;
+	/**
+	the x coordinate of the probe
+	*/
+	float ProbeXVal;
+	/**
+	the y coordinate of the probe
+	*/
+	float ProbeYVal;
+	/**
+	the z coordinate of the probe
+	*/
+	float ProbeZVal;
 
 	//These are the Glui Values For Streamlines:
+	/**
+	the number of streamlines to draw
+	*/
 	int NumStreamlines;
 
 	//These are the GluiValues for the Vector Blob:
+	/**
+	the time value for the vector blob
+	*/
 	int VectorBlobTimeVal; 
+	/**
+	the old time value for the vector blob
+	*/
 	int OldVectorBlobTimeVal;
+	/**
+	the old coordinates for the vector blob
+	*/
 	float OldVecBlob[10][10][3];
 	//vector3d VecBlob[10][10];
-	float VectorBlobXLoc, VectorBlobYLoc, VectorBlobZLoc, VectorBlobXVec, VectorBlobYVec, VectorBlobZVec;
+	/**
+	the x coordinate for the vector blob
+	*/
+	float VectorBlobXLoc;
+	/**
+	the y coordinate for the vector blob
+	*/
+	float VectorBlobYLoc;
+	/**
+	the z coordinate for the vector blob
+	*/
+	float VectorBlobZLoc;
+	/**
+	the x value for the vector blob vector
+	*/
+	float VectorBlobXVec;
+	/**
+	the y value for the vector blob vector
+	*/
+	float VectorBlobYVec;
+	/**
+	the z value for the vector blob vector
+	*/
+	float VectorBlobZVec;
 
 	//These are the GluiValues for the Cutting Plane:
-	float CuttingPlaneXLoc, CuttingPlaneYLoc, CuttingPlaneZLoc, CuttingPlaneXVec, CuttingPlaneYVec, CuttingPlaneZVec;
+	/**
+	the x coordinate for the cutting plane
+	*/
+	float CuttingPlaneXLoc;
+	/**
+	the y coordinate for the cutting plane
+	*/
+	float CuttingPlaneYLoc;
+	/**
+	the z coordinate for the cutting plane
+	*/
+	float CuttingPlaneZLoc;
+	/**
+	the x value for the cutting plane vector
+	*/
+	float CuttingPlaneXVec;
+	/**
+	the y value for the cutting plane vector
+	*/
+	float CuttingPlaneYVec;
+	/**
+	the z value for the cutting plane vector
+	*/
+	float CuttingPlaneZVec;
+	/**
+	the tolerence for the cutting plane
+	*/
 	float Tolerence;
+	/**
+	the contour distance for the cutting plane
+	*/
 	float ContDist;
+	/**
+	the number of points for the shader for the cutting plane
+	*/
 	int NumShaderPoints = 20;
 	GLuint posSSbo;
 	GLuint velSSbo;
