@@ -41,10 +41,6 @@ This is the Main file for the program, storing most of the GLUI objects, and hol
 //Defined in our solution:
 #include "SpaceDefiner.h"
 #include "VectorDefiner.h"
-#include "RenderingEngine.h"
-#include "ControlWindow.h"
-#include "RenderWindow.h"
-#include "Sliders.h"
 
 #include "vector3d.h"
 #include "color.h"
