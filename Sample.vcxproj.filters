@@ -36,18 +36,6 @@
     <ClCompile Include="VectorDefiner.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="RenderingEngine.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ControlWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Sliders.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SphericalInterpolator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -64,9 +52,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="VectorDefinerKDAdaptor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="VectorUpdating.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Cloth.cpp">
@@ -95,22 +80,7 @@
     <ClInclude Include="VectorDefiner.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RenderingEngine.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ControlWindow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderWindow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Sliders.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SphericalInterpolator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="NameSpace.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="equation.h">
@@ -561,9 +531,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="VectorDefinerKDAdaptor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="VectorUpdating.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Cloth.h">
