@@ -23,6 +23,16 @@ This is the Main file for the program, storing most of the GLUI objects, and hol
 
 */
 
+/** \mainpage Complex 3D Vector Fields Project
+*  The Complex 3D Vector Fields Project was designed and implemented by Kyle Sweeney, Corinne Brucks, and Alex Davis as their 2016 Senior Project,
+*  commisioned by Dr. Pavel Kornilovich and Prof. Mike Bailey. The main purpose is to render complicated 3D vector fields, and provide methods
+*  for better visualizing them.
+*
+*
+*  See:
+*   - <a href="https://github.com/Nekel-Seyew/Complex-3D-Vector-Fields/" >Online REPO</a>
+*/
+
 #pragma once
 #include <stdio.h>
 

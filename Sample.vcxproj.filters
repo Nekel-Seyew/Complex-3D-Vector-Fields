@@ -39,9 +39,6 @@
     <ClCompile Include="SphericalInterpolator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Wrappers.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="equation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

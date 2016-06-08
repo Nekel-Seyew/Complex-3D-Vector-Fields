@@ -166,7 +166,6 @@
     <ClCompile Include="vector3d.cpp" />
     <ClCompile Include="VectorDefiner.cpp" />
     <ClCompile Include="VectorDefinerKDAdaptor.cpp" />
-    <ClCompile Include="Wrappers.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnimatedPoints.h" />
