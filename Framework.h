@@ -171,6 +171,9 @@ This is the id for the right mouse button
 const int RIGHT = { 1 };
 
 //#pragma warning(default:C4005)
+/**
+The Framework class holds all of the necessary variables and functions for GLUI and rendering: it's the heart of the program.
+*/
 class Framework{
 protected:
 	//Space Definer and Vector Definer Variables 
@@ -213,9 +216,10 @@ protected:
 
 	
 public:
-	/*Setup Functions:*/
-	//These Intialization Functions Must Be Called in Main As Part of Our Singleton Workaround So They Are Public
-	
+	/**@name SetupFunctions
+	These Intialization Functions Must Be Called in Main As Part of Our Singleton Workaround So They Are Public
+	*/
+	///@{
 	/**
 	First half of the Setup Function that builds the initial graphics and vector field data
 	*/
@@ -252,6 +256,7 @@ public:
 	them to their defaults
 	*/
 	void Framework::RestoreDefaults();
+	///@}
 
 
 	/**
