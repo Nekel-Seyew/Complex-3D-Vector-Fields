@@ -963,34 +963,91 @@ public:
 	the number of points for the shader for the cutting plane
 	*/
 	int NumShaderPoints = 20;
+	/**
+	Position shader buffer.
+	*/
 	GLuint posSSbo;
+	/**
+	Velocity shader buffer.
+	*/
 	GLuint velSSbo;
+	/**
+	Cutting plane buffer mask.
+	*/
 	GLint bufMask;
+	/**
+	The actual position shader data.
+	*/
 	posShader* DynamicNow;
+	/**
+	Boolean controlling if the cutting plane has been setup.
+	*/
 	bool haveSetUpCuttingPlane;
+	/**
+	Boolean controlling if the cutting plane needs to be reset.
+	*/
 	bool resetCuttingPlane = false;
 
 	
 
 	//These are the GluiValues for the Vector Sheet:
-	float VectorSheetTimeVal = 0, VectorSheetXLoc = 0, VectorSheetYLoc = 0, VectorSheetZLoc=0, VectorSheetXVec=0, VectorSheetYVec=0, VectorSheetZVec=1;
+	//float VectorSheetTimeVal = 0;
+	//float VectorSheetXLoc = 0; 
+	//float VectorSheetYLoc = 0;
+	//float VectorSheetZLoc = 0;
+	//float VectorSheetXVec = 0;
+	//float VectorSheetYVec = 0;
+	//float VectorSheetZVec = 1;
 	
-	/**
-	This function intializes the vector sheeet
-	*/
-	void initSheet();
 
-	vector3d VecSheet[10][10];
+	//vector3d VecSheet[10][10];
+	/**
+	The Object containing the VectorSheet/Cloth.
+	*/
 	Cloth theCloth;
 
 	//animation points
+	/**
+	The Number of points [0,1000] to be animated.
+	*/
 	int NumPoints;//max value is hardset at 1000
-	float dotPointColorR, dotPointColorG, dotPointColorB;
+	/**
+	@deprecated
+	Not used.
+	*/
+	float dotPointColorR;
+	/**
+	Dot length sample controller. 
+	*/
+	float dotPointColorG;
+	/**
+	@deprecated
+	Not used.
+	*/
+	float dotPointColorB;
+	/**
+	The head of all the animated points.
+	*/
 	vector3d dot_points[1000];
+	/**
+	stores the number of points being used.
+	*/
 	int num_dot_points=100;
+	/**
+	Holds the immediate previous location of animated point heads.
+	*/
 	vector3d old_dot_pos[1000];
+	/**
+	One of the control structures used to draw the tails.
+	*/
 	std::deque<vector3d*> path[1000];
+	/**
+	The other of the control structures used to draw the tails.
+	*/
 	std::list<vector3d*> listPath[1000];
+	/**
+	Controls the speed of the animated points.
+	*/
 	float timestep = 0.1f; // this is what VectorAdvect uses as time step
 	
 
@@ -1004,7 +1061,13 @@ public:
 	*/
 	void DrawDots();
 	//AnimatedPoints theMovingDots;
+	/**
+	Boolean controlling whether or not to color moving points based on velocity or not.
+	*/
 	int colorAsVelocity;//really a bool though
+	/**
+	Boolean controlling whether or not to have a tail behind moving points.
+	*/
 	int traceDotPath;
 	
 	/*Physics-ish*/

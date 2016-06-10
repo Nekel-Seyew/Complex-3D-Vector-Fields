@@ -381,7 +381,7 @@ void Framework::Init1() {
 	setUpPointsAndVectors();
 	//Only do this once for each specified list if you want to access the cullspace cullvector again use the corresponding cache returners
 	srand(time(NULL));
-	this->initSheet();
+	//this->initSheet();
 	this->initDotPoints();
 	Framework::instance()->InitLists();
 }
@@ -723,7 +723,7 @@ void Framework::UpdateStreamline() {
 
 //sets initial values of variables
 void Framework::RestoreDefaults() {
-	VectorSheetTimeVal = 0;
+	//VectorSheetTimeVal = 0;
 	VectorBlobYVec = 0.1;
 	VectorBlobXVec = VectorBlobZVec = VectorBlobXLoc = VectorBlobYLoc = VectorBlobZLoc = 0.0;
 	VectorBlobTimeVal = 0; 
@@ -787,7 +787,7 @@ void Framework::RestoreDefaults() {
 	NumStreamlines = 3; /*This will be cubed*/
 	NumPoints = 100;
 	ProbeXVal = ProbeYVal = ProbeZVal = 0.0;
-	VectorSheetTimeVal = VectorSheetXVec = VectorSheetYVec = VectorSheetZVec = VectorSheetXLoc = VectorSheetYLoc =  VectorSheetZLoc = 0.0;
+	//VectorSheetTimeVal = VectorSheetXVec = VectorSheetYVec = VectorSheetZVec = VectorSheetXLoc = VectorSheetYLoc =  VectorSheetZLoc = 0.0;
 	spinVecMax = VECMAX;
 	spinVecMin = VECMIN;
 	vecAlphaVal = 0.5;
@@ -2152,14 +2152,4 @@ void Framework::PhysicsUpdater(int value) {
 void Framework::initDotPoints() {
 	this->num_dot_points = 100;
 	//this->theMovingDots.initDotPoints();
-}
-
-void Framework::initSheet() {
-	for (int i = 0; i < 10; i++) {
-		for (int j = 0; j < 10; j++) {
-			VecSheet[i][j].xyz()[0] = (i - 5) / 10.0f;
-			VecSheet[i][j].xyz()[1] = (i - 5) / 10.0f;
-			VecSheet[i][j].xyz()[2] = 0;
-		}
-	}
 }
